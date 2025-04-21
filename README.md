@@ -1,59 +1,58 @@
 # Mulu
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.8.
+**Mulu** dient dazu, Musikstücke zu üben – sei es für Tanz oder Gesang.  
+Man kann ein Lied oder Video in den lokalen Browser-Storage laden, den Text dazu in Markdown erfassen und bei laufendem Lied auf den Text tippen, um zu markieren, welche Textstelle zu welchem Teil des Lieds gehört. Danach kann man einfach auf Textstellen tippen, um im Lied dorthin zu springen. Außerdem kann man einen Loop-Bereich festlegen, der dann immer wieder wiederholt wird – wahlweise mit Einzählen vor jeder Wiederholung.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🔁 Weitere Loop-Funktionen
 
-```bash
-ng serve
-```
+- **Mehrere Loops speichern**: Nicht nur ein Loop-Bereich, sondern mehrere benannte Loops anlegen (z. B. „Refrain“, „Bridge“, „Schwierige Stelle 1“).
+- **Automatisches Durchlaufen mehrerer Loops**: Mit Pausen oder Wiederholungen dazwischen – z. B. für gezieltes Training.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## 🎵 Audio-Features
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Abspielgeschwindigkeit anpassen** (ohne Tonhöhe zu ändern): Sehr nützlich für Gesang oder schwierige Tanzstellen.
+- **Tonhöhe anpassen**: Hilfreich zum Singen in anderen Tonlagen.
+- **EQ/Balance/Mono-Optionen**: Z. B. um Lead-Vocals besser zu hören oder zu unterdrücken.
 
-```bash
-ng generate component component-name
-```
+---
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## ⌨️ Markdown-Text-Features
 
-```bash
-ng generate --help
-```
+- **Unterstützung für Abschnitte, Überschriften, Refrains etc.** per Markdown (`#`, `##`, `**` etc.).
+- **Auto-Sync-Vorschläge**: Vorschläge für Textstellen durch Erkennung von Pausen oder Beats.
+- **Option zum Importieren von LRC-Dateien**: Falls jemand bereits getimte Lyrics hat.
 
-## Building
+---
 
-To build the project run:
+## 🧠 Übungsmodus
 
-```bash
-ng build
-```
+- **Quiz-Modus**: „Sing weiter ab hier“ – das Audio stoppt und der Text wird teilweise ausgeblendet.
+- **Blenden-Modus**: Text wird bei Wiederholungen Stück für Stück weniger angezeigt.
+- **Fortschrittsanzeige**: Z. B. wie oft eine Stelle korrekt geübt wurde.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+## 📁 Verwaltung & Sharing
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+- **Export/Import-Funktion**: Lied, Markdown und Markierungen als Bundle speichern und laden.
+- **Teilen per QR-Code oder Link**: Optional auch über Cloud/Backend, falls lokal nicht ausreicht.
 
-```bash
-ng test
-```
+---
 
-## Running end-to-end tests
+## 🖱️ UI-Ideen
 
-For end-to-end (e2e) testing, run:
+- **Mini-Wellenform-Ansicht**: Zur besseren Orientierung.
+- **Text farblich markieren**: Nach Status („unmarkiert“, „markiert“, „Loop-Ziel“).
+- **Tooltips oder visuelle Hinweise**: Beim Markieren oder Setzen von Loops.
 
-```bash
-ng e2e
-```
+---
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## 🧰 Technisches
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Kompatibilität mit mobilen und Touch-Geräten**.
+- **Undo/Redo**: Für Markierungen.
+- **Lokale Speicherung mit Backup-Möglichkeit**: Z. B. Datei-Export.
