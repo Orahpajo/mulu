@@ -1,0 +1,9 @@
+.file-header {
+    display: flex;
+    align-items: center;
+    gap: 8px; // optional: Abstand zwischen Icon und Text
+}
+
+.file-child {
+    padding-left: 24px; /* oder margin-left: 24px; */
+}

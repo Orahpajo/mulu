@@ -1,0 +1,14 @@
+<div class="file-header">
+    @if (file.isDirectory()) {
+        <mat-icon aria-hidden="false" aria-label="folder icon" fontIcon="folder"></mat-icon>
+        <p>{{file.name}}</p>
+    } @else {
+        <mat-icon aria-hidden="false" aria-label="song icon" fontIcon="lyrics"></mat-icon>
+        <a [routerLink]="['/song', file.id]">{{file.name}}</a>
+    }
+</div>
+@for (child of file.children; track child.name) {
+    <div class="file-child">
+        <app-song-file [file]="child"></app-song-file>
+    </div>
+}
