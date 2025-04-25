@@ -1,16 +1,23 @@
 import { Component, Input } from '@angular/core';
 import { SongFile } from '../song-file.model';
-import {MatIconModule} from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { Store } from '@ngrx/store';
+import { openSongFile } from '../../store/song-file.actions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-song-file',
-  imports: [MatIconModule, RouterModule],
+  imports: [MatIconModule],
   templateUrl: './song-file.component.html',
-  styleUrl: './song-file.component.scss'
+  styleUrl: './song-file.component.scss',
 })
 export class SongFileComponent {
-
   @Input() file!: SongFile;
 
+  constructor(readonly store: Store, private router: Router) {}
+
+  openSong() {
+    this.store.dispatch(openSongFile(this.file.id));
+    this.router.navigate(['/song']);
+  }
 }

@@ -4,7 +4,7 @@
         <p>{{file.name}}</p>
     } @else {
         <mat-icon aria-hidden="false" aria-label="song icon" fontIcon="lyrics"></mat-icon>
-        <a [routerLink]="['/song', file.id]">{{file.name}}</a>
+        <a (click)="openSong()">{{file.name}}</a>
     }
 </div>
 @for (child of file.children; track child.name) {

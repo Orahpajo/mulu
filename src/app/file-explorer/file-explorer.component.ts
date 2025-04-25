@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { v4 as uuidv4 } from 'uuid';
 import { Store } from '@ngrx/store';
 import { createSongFile } from '../store/song-file.actions';
-import { selectLatestSongFile, selectSongFiles } from '../store/song-file.feature';
+import { selectSongFiles } from '../store/song-file.feature';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -26,8 +26,6 @@ export class FileExplorerComponent {
 
   newSong() {
     this.store.dispatch(createSongFile());
-    this.store.select(selectLatestSongFile).subscribe((songFile) => {
-      this.router.navigate(['/song', songFile.id]);
-    });
+    this.router.navigate(['/song']);
   }
 }

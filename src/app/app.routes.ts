@@ -5,5 +5,5 @@ import { SongViewComponent } from './song-view/song-view.component';
 
 export const routes: Routes = [
     { path: '', component: FileExplorerComponent, pathMatch: 'full' },
-    { path: 'song/:id', component: SongViewComponent, pathMatch: 'full' },
+    { path: 'song', component: SongViewComponent, pathMatch: 'full' },
 ];
