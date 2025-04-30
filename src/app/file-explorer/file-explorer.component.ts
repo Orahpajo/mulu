@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { v4 as uuidv4 } from 'uuid';
 import { Store } from '@ngrx/store';
-import { createSongFile } from '../store/song-file.actions';
+import { closeCurrentSongFile, createSongFile } from '../store/song-file.actions';
 import { selectSongFiles } from '../store/song-file.feature';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -21,6 +21,8 @@ export class FileExplorerComponent {
   songs$: Observable<SongFile[]>;
 
   constructor(private store: Store, private router: Router) {
+    // if the user just navigated back, the current song file needs to be closed
+    this.store.dispatch(closeCurrentSongFile());
     this.songs$ = this.store.select(selectSongFiles);
   }
 

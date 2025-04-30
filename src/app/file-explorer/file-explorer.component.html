@@ -1,5 +1,4 @@
 <div class="center-content">
-    <h1> Mulu Songs </h1>
     @for (song of (songs$ | async); track song.name) {
         @if (song){
             <app-song-file [file]="song"></app-song-file>

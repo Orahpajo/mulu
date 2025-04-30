@@ -1,0 +1,23 @@
+<mat-toolbar>
+    @if(currentSongFile) {
+        @let editSongTitleMode = editSongTitleMode$ |async;
+        @if(editSongTitleMode){
+            <form>
+                <mat-form-field>
+                    <input matInput name="fileName" [(ngModel)]="currentSongFile.name"/>
+                </mat-form-field>
+            </form>
+        } @else {
+            <span>{{currentSongFile.name}}</span>
+        }
+        <button (click)="toggleEditSongNameMode(currentSongFile, editSongTitleMode)" mat-mini-fab>
+            @if(editSongTitleMode){
+                <mat-icon>check</mat-icon>
+            } @else {
+                <mat-icon>edit</mat-icon>
+            }
+        </button>
+    } @else {
+        <span>Mulu Songs</span>
+    }
+</mat-toolbar>

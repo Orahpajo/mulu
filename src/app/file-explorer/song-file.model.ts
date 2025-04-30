@@ -10,4 +10,8 @@ export class SongFile {
     isDirectory(): boolean {
         return this.children.length > 0;
     }
+
+    clone(): SongFile {
+        return new SongFile(this.name, this.children.map(child => child.clone()), this.id);
+    }
 }
