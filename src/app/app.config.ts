@@ -6,6 +6,7 @@ import { provideStore, provideState } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideEffects } from '@ngrx/effects';
 import { songFileFeature } from './store/song-file.feature';
+import { SongFileEffects } from './store/song-file.effects';
 
 
 export const appConfig: ApplicationConfig = {
@@ -14,7 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideStore(),
     provideStoreDevtools(),
-    provideEffects(),
+    provideEffects(SongFileEffects),
     provideState(songFileFeature),
 ]
 };

@@ -20,3 +20,16 @@ export const editSongFile = createAction(
   '[Song File] Edit Song File',
   (file: SongFile) => ({ file })
 );
+
+export const loadSongFiles = createAction(
+  '[Song File] Load Song Files',
+);
+
+export const setSongFiles = createAction(
+  '[Song File] Set Songs',
+  (songFiles: SongFile[]) => ({ songFiles })
+);
+
+export const saveSongFiles = createAction(
+  '[Song File] Save Song Files',
+);

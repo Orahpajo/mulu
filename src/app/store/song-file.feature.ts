@@ -5,6 +5,7 @@ import {
   createSongFile,
   editSongFile,
   openSongFile,
+  setSongFiles,
   toggleEditNameMode,
 } from './song-file.actions';
 import { v4 as uuidv4 } from 'uuid';
@@ -53,6 +54,11 @@ export const songFileFeature = createFeature({
         ...state,
         editNameMode: !state.editNameMode,
       };
+    }),
+    on(setSongFiles, (state, { songFiles }) => {
+      return { 
+        ...state, 
+        songFiles };
     }),
     on(editSongFile, (state, { file }) => {
       const songFiles = state.songFiles.map((songFile) => {

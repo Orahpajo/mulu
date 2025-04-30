@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToolbarComponent } from "./toolbar/toolbar.component";
+import { Store } from '@ngrx/store';
+import { loadSongFiles } from './store/song-file.actions';
 
 @Component({
   selector: 'app-root',
@@ -10,4 +12,8 @@ import { ToolbarComponent } from "./toolbar/toolbar.component";
 })
 export class AppComponent {
   title = 'mulu';
+
+  constructor(readonly store: Store){
+    this.store.dispatch(loadSongFiles());
+  }
 }
