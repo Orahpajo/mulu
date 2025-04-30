@@ -3,6 +3,7 @@ import { SongFile } from '../file-explorer/song-file.model';
 import {
   closeCurrentSongFile,
   createSongFile,
+  deleteSongFile,
   editSongFile,
   openSongFile,
   setSongFiles,
@@ -75,7 +76,16 @@ export const songFileFeature = createFeature({
         currentSongFile: currentSongFile ? currentSongFile : null,
         songFiles
       };
-    })
+    }), 
+    on(deleteSongFile, (state, { file }) => {
+      const songFiles = state.songFiles.filter(
+        (songFile) => songFile.id !== file.id
+      );
+      return {
+        ...state,
+        songFiles,
+      };
+    }),
   ),
   extraSelectors: ({ selectSongFiles }) => {
     const selectLatestSongFile = createSelector(

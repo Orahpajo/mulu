@@ -33,3 +33,13 @@ export const setSongFiles = createAction(
 export const saveSongFiles = createAction(
   '[Song File] Save Song Files',
 );
+
+export const deleteSongFileWithQuestion = createAction(
+  '[Song File] Delete Song File With Question',
+  (file: SongFile) => ({ file })
+);
+
+export const deleteSongFile = createAction(
+  '[Song File] Delete Song File',
+  (file: SongFile) => ({ file })
+);

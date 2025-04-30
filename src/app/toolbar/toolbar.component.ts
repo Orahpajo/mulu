@@ -10,7 +10,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { editSongFile, toggleEditNameMode } from '../store/song-file.actions';
+import { deleteSongFileWithQuestion, editSongFile, toggleEditNameMode } from '../store/song-file.actions';
 
 @Component({
   selector: 'app-toolbar',
@@ -37,4 +37,9 @@ export class ToolbarComponent {
     this.store.dispatch(toggleEditNameMode());
   }
 
+  deleteSong(currentSongFile: SongFile) {
+    if (currentSongFile) {
+      this.store.dispatch(deleteSongFileWithQuestion(currentSongFile));
+    }
+  }
 }
