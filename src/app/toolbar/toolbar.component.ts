@@ -11,10 +11,11 @@ import {FormsModule} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { deleteSongFileWithQuestion, editSongFile, toggleEditNameMode } from '../store/song-file.actions';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-toolbar',
-  imports: [MatToolbarModule, CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [MatToolbarModule, CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, RouterModule],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss'
 })
