@@ -8,15 +8,28 @@ import { CommonModule } from '@angular/common';
 import {MatSliderModule} from '@angular/material/slider';
 import { SecondsToMmssPipe } from '../pipes/seconds-to-mmss.pipe';
 import { MatButtonModule } from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import {MatMenuModule} from '@angular/material/menu';
+import { first, single } from 'rxjs';
 
 @Component({
   selector: 'app-song-view',
-  imports: [CommonModule, MatButtonModule ,MatIconModule, MatSliderModule, SecondsToMmssPipe],
+  imports: [
+    CommonModule, 
+    FormsModule,
+    MatButtonModule ,MatIconModule,
+    MatSliderModule,
+    SecondsToMmssPipe,
+    MatFormFieldModule,
+    MatInputModule,
+    MatMenuModule,
+  ],
   templateUrl: './song-view.component.html',
   styleUrl: './song-view.component.scss',
 })
 export class SongViewComponent implements OnInit {
-  
   song: SongFile | null = null; 
 
   textmode: 'edit' | 'mark' | 'view' = 'view';
@@ -29,7 +42,7 @@ export class SongViewComponent implements OnInit {
 
   ngOnInit() {
     this.store.select(selectCurrentSongFile).subscribe((song) => {
-      this.song = song;
+      this.song = song?.clone() || null;
     });
   }
 
@@ -46,6 +59,17 @@ export class SongViewComponent implements OnInit {
         break;
     }
   }
+
+  saveText() {
+    this.store.select(selectCurrentSongFile)
+    .pipe(first())
+    .subscribe((song) => {
+      if (this.song && song && song.text !== this.song?.text) {
+        this.store.dispatch(editSongFile(this.song));
+      }
+    });
+  }
+      
 
   togglePlay(audio: HTMLAudioElement) {
     if (this.isPlaying) {

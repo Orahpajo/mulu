@@ -1,4 +1,6 @@
 <div class="song-view-container">
+
+    <!-- Files -->
     <div class="section-header">
         <h2>Dateien</h2>    
         <button mat-mini-fab (click)="fileInput.click()" aria-label="Add file">
@@ -16,19 +18,45 @@
         } @else {
             <p>Noch keine Lieddateien</p>
         }
-    </ul>
+    </ul>   
+
+    <!-- Text -->
     <div class="section-header">
         <h2>Text</h2>
-        <button mat-mini-fab (click)="toggleTextMode()" aria-label="Toggle Text Mode">
+        <button mat-mini-fab  [matMenuTriggerFor]="menu" aria-label="Toggle Text Mode">
             <mat-icon>
                 {{
-                    (textmode === 'edit') ? 'border_color' : 
-                    (textmode === 'mark') ? 'visibility' :
-                    (textmode === 'view') ? 'edit_note' : 'visibility' 
+                    (textmode === 'edit') ? 'edit_note' : 
+                    (textmode === 'mark') ? 'border_color' :
+                    (textmode === 'view') ? 'visibility' : 'visibility' 
                 }}
             </mat-icon>
         </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="textmode = 'edit'">
+                <mat-icon>edit_note</mat-icon>
+                <span>Text bearbeiten</span>
+            </button>
+            <button mat-menu-item (click)="textmode = 'mark'">
+                <mat-icon>border_color</mat-icon>
+                <span>Text markieren</span>
+            </button>
+            <button mat-menu-item (click)="textmode = 'view'">
+                <mat-icon>visibility</mat-icon>
+                <span>Text ansehen</span>
+            </button>
+        </mat-menu>
     </div>
+    @if (song) {
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 16px;">
+            <textarea matInput
+                    placeholder="Songtext"
+                    [(ngModel)]="song.text"
+                    [readonly]="textmode !== 'edit'"
+                    rows="6"
+                    (blur)="saveText()"></textarea>
+        </mat-form-field>
+    }
 
     @if(song?.audiofiles?.length || 0 > 0) {
         <audio #audioRef [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + song!.audiofiles[0].bytes"
