@@ -56,10 +56,12 @@ export const songFileFeature = createFeature({
         editNameMode: !state.editNameMode,
       };
     }),
-    on(setSongFiles, (state, { songFiles }) => {
+    on(setSongFiles, (state, { songFiles, currentSongFile }) => {
       return { 
         ...state, 
-        songFiles };
+        songFiles,
+        currentSongFile 
+      };
     }),
     on(editSongFile, (state, { file }) => {
       const songFiles = state.songFiles.map((songFile) => {

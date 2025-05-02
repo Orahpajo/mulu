@@ -27,7 +27,7 @@ export const loadSongFiles = createAction(
 
 export const setSongFiles = createAction(
   '[Song File] Set Songs',
-  (songFiles: SongFile[]) => ({ songFiles })
+  (songFiles: SongFile[], currentSongFile: SongFile | null) => ({ songFiles, currentSongFile })
 );
 
 export const saveSongFiles = createAction(

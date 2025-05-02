@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, tap, switchMap } from 'rxjs/operators';
-import { createSongFile, deleteSongFile, deleteSongFileWithQuestion, editSongFile, loadSongFiles, saveSongFiles, setSongFiles } from './song-file.actions';
+import { closeCurrentSongFile, createSongFile, deleteSongFile, deleteSongFileWithQuestion, editSongFile, loadSongFiles, openSongFile, saveSongFiles, setSongFiles } from './song-file.actions';
 import { SongFile } from '../model/song-file.model';
-import { selectSongFiles } from './song-file.feature';
+import { selectCurrentSongFile, selectSongFiles } from './song-file.feature';
 import { Store } from '@ngrx/store';
 import { Dialog } from '@angular/cdk/dialog';
 import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
@@ -22,15 +22,19 @@ export class SongFileEffects {
         this.actions$.pipe(
             ofType(loadSongFiles),
             switchMap(async () => {
+                // load all song files from localforage
                 const data = await localforage.getItem<string>('songFiles');
                 let songFiles: SongFile[] = [];
                 if (data) {
                     const arr = JSON.parse(data);
                     songFiles = arr.map((obj: any) =>
-                        new SongFile(obj.name, obj.children, obj.id)
+                        new SongFile(obj.name, obj.children, obj.id, obj.audiofiles)
                     );
                 }
-                return setSongFiles(songFiles);
+                // load the current song file ID from localforage
+                const currentSongFileId = await localforage.getItem<string>('currentSongFileId');
+                const currentSongFile = songFiles.find((file) => file.id === currentSongFileId) || null;
+                return setSongFiles(songFiles,currentSongFile);
             })
         )
     );
@@ -47,6 +51,9 @@ export class SongFileEffects {
         { dispatch: false }
     );
 
+    /**
+     * Open a dialog when a song file is deleted. If the user confirms, delete the song file.
+     */
     deleteSongFileWithQuestion$ = createEffect(
         () =>   
             this.actions$.pipe(
@@ -77,6 +84,22 @@ export class SongFileEffects {
             ofType(editSongFile, createSongFile, deleteSongFile),
             map(() => saveSongFiles())
         )
+    );
+
+    /** 
+     * When the current song file is opened or closed, save the current song file ID to localforage
+     * so that the page can be reloaded with the same song file
+     */
+    changeCurrentSongFileId$ = createEffect(
+        () =>
+            this.actions$.pipe(
+                ofType(openSongFile, closeCurrentSongFile),
+                withLatestFrom(this.store.select(selectCurrentSongFile)),
+                switchMap( async ([_, currentSongFile]) => {
+                    await localforage.setItem('currentSongFileId', currentSongFile?.id || '');   
+                })
+            ),
+        { dispatch: false }
     );
 }
 
