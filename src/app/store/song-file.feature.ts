@@ -28,7 +28,7 @@ export const songFileFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(createSongFile, (state) => {
-      const newFile = new SongFile('New Song');
+      const newFile = SongFile.create('New Song');
       return {
         ...state,
         songFiles: [...state.songFiles, newFile],
@@ -66,7 +66,7 @@ export const songFileFeature = createFeature({
     on(editSongFile, (state, { file }) => {
       const songFiles = state.songFiles.map((songFile) => {
         if (songFile.id === file.id) {
-          return new SongFile(file.name, file.children, file.id, file.audiofiles);
+          return file;
         }
         return songFile;
       });
