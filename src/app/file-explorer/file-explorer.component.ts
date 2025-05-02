@@ -9,10 +9,11 @@ import { selectSongFiles } from '../store/song-file.feature';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-file-explorer',
-  imports: [SongFileComponent, MatButtonModule, MatIconModule, CommonModule],
+  imports: [SongFileComponent, MatButtonModule, MatIconModule, CommonModule, MatListModule],
   templateUrl: './file-explorer.component.html',
   styleUrl: './file-explorer.component.scss',
 })

@@ -1,12 +1,11 @@
-<div class="file-header">
+<mat-list-item (click)="openSong()">
     @if (file.isDirectory()) {
-        <mat-icon aria-hidden="false" aria-label="folder icon" fontIcon="folder"></mat-icon>
-        <p>{{file.name}}</p>
+        <mat-icon matListItemIcon>folder</mat-icon>
     } @else {
-        <mat-icon aria-hidden="false" aria-label="song icon" fontIcon="lyrics"></mat-icon>
-        <a (click)="openSong()">{{file.name}}</a>
+        <mat-icon matListItemIcon>lyrics</mat-icon>
     }
-</div>
+    <div matListItemTitle>{{file.name}}</div>
+</mat-list-item>
 @for (child of file.children; track child.name) {
     <div class="file-child">
         <app-song-file [file]="child"></app-song-file>

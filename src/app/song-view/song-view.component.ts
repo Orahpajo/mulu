@@ -7,16 +7,19 @@ import { editSongFile } from '../store/song-file.actions';
 import { CommonModule } from '@angular/common';
 import {MatSliderModule} from '@angular/material/slider';
 import { SecondsToMmssPipe } from '../pipes/seconds-to-mmss.pipe';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-song-view',
-  imports: [CommonModule, MatIconModule, MatSliderModule, SecondsToMmssPipe],
+  imports: [CommonModule, MatButtonModule ,MatIconModule, MatSliderModule, SecondsToMmssPipe],
   templateUrl: './song-view.component.html',
   styleUrl: './song-view.component.scss',
 })
 export class SongViewComponent implements OnInit {
   
-  song: SongFile | null = null;
+  song: SongFile | null = null; 
+
+  textmode: 'edit' | 'mark' | 'view' = 'view';
 
   currentTime = 0;
   duration = 0;
@@ -28,6 +31,20 @@ export class SongViewComponent implements OnInit {
     this.store.select(selectCurrentSongFile).subscribe((song) => {
       this.song = song;
     });
+  }
+
+  toggleTextMode() {
+    switch (this.textmode) {
+      case 'edit':
+        this.textmode = 'mark';
+        break;
+      case 'mark':
+        this.textmode = 'view';
+        break;
+      case 'view':
+        this.textmode = 'edit';
+        break;
+    }
   }
 
   togglePlay(audio: HTMLAudioElement) {

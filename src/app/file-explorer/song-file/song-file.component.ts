@@ -4,10 +4,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
 import { openSongFile } from '../../store/song-file.actions';
 import { Router } from '@angular/router';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-song-file',
-  imports: [MatIconModule],
+  imports: [MatIconModule, MatListModule],
   templateUrl: './song-file.component.html',
   styleUrl: './song-file.component.scss',
 })

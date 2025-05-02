@@ -1,39 +1,56 @@
-<h1>Dateien</h1>    
-<button mat-mini-fab (click)="fileInput.click()" aria-label="Add file">
-    <mat-icon>add</mat-icon>
-</button>
-<input #fileInput type="file" accept="audio/*" style="display:none" (change)="onAudioFileSelected($event)">
-<ul>
-    @if(song?.audiofiles?.length || 0 > 0) {
-        @for (file of song?.audiofiles; track $index) {
-            <li>
-               {{file.name}}
-            </li>
-        }
-    } @else {
-        <p>Noch keine Lieddateien</p>
-    }
-</ul>
-<h1>Text</h1>
-
-@if(song?.audiofiles?.length || 0 > 0) {
-    <audio #audioRef [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + song!.audiofiles[0].bytes"
-        (timeupdate)="onTimeUpdate(audioRef)"
-        (loadedmetadata)="onLoadedMetadata(audioRef)">
-    </audio>
-    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-        <span style="min-width: 40px;">{{ currentTime | mmss }}</span>
-        <mat-slider 
-            style="flex: 1;"
-            [min]="0"
-            [max]="duration"
-            (input)="onSeek($event, audioRef)">
-            <input matSliderThumb            
-             [value]="currentTime">
-        </mat-slider>
-        <span style="min-width: 40px;">{{ (duration - currentTime) | mmss }}</span>
+<div class="song-view-container">
+    <div class="section-header">
+        <h2>Dateien</h2>    
+        <button mat-mini-fab (click)="fileInput.click()" aria-label="Add file">
+            <mat-icon>add</mat-icon>
+        </button>
     </div>
-    <button mat-fab color="primary" (click)="togglePlay(audioRef)">
-        <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
-    </button>
-}
+    <input #fileInput type="file" accept="audio/*" style="display:none" (change)="onAudioFileSelected($event)">
+    <ul>
+        @if(song?.audiofiles?.length || 0 > 0) {
+            @for (file of song?.audiofiles; track $index) {
+                <li>
+                {{file.name}}
+                </li>
+            }
+        } @else {
+            <p>Noch keine Lieddateien</p>
+        }
+    </ul>
+    <div class="section-header">
+        <h2>Text</h2>
+        <button mat-mini-fab (click)="toggleTextMode()" aria-label="Toggle Text Mode">
+            <mat-icon>
+                {{
+                    (textmode === 'edit') ? 'border_color' : 
+                    (textmode === 'mark') ? 'visibility' :
+                    (textmode === 'view') ? 'edit_note' : 'visibility' 
+                }}
+            </mat-icon>
+        </button>
+    </div>
+
+    @if(song?.audiofiles?.length || 0 > 0) {
+        <audio #audioRef [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + song!.audiofiles[0].bytes"
+            (timeupdate)="onTimeUpdate(audioRef)"
+            (loadedmetadata)="onLoadedMetadata(audioRef)">
+        </audio>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="min-width: 40px;">{{ currentTime | mmss }}</span>
+            <mat-slider 
+                style="flex: 1;"
+                [min]="0"
+                [max]="duration"
+                (input)="onSeek($event, audioRef)">
+                <input matSliderThumb            
+                [value]="currentTime">
+            </mat-slider>
+            <span style="min-width: 40px;">{{ (duration - currentTime) | mmss }}</span>
+        </div>
+        <div class="song-control-buttons">
+            <button mat-fab color="primary" (click)="togglePlay(audioRef)">
+                <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+            </button>
+        </div>
+    }
+</div>

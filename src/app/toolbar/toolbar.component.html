@@ -4,26 +4,32 @@
         <a mat-icon-button routerLink="/">
             <mat-icon>home</mat-icon>
         </a>
-        @if(editSongTitleMode){
-            <form>
-                <mat-form-field>
-                    <input matInput name="fileName" [(ngModel)]="currentSongFile.name"/>
-                </mat-form-field>
-            </form>
-        } @else {
-            <span>{{currentSongFile.name}}</span>
-        }
-        <button (click)="toggleEditSongNameMode(currentSongFile, editSongTitleMode)" mat-mini-fab>
+        <span class="toolbar-title">
             @if(editSongTitleMode){
-                <mat-icon>check</mat-icon>
+                <form>
+                    <mat-form-field appearance="outline" style="width: 100%;">
+                        <input matInput name="fileName" [(ngModel)]="currentSongFile.name"/>
+                    </mat-form-field>
+                </form>
             } @else {
-                <mat-icon>edit</mat-icon>
+                <h1>{{currentSongFile.name}}</h1>
             }
-        </button>
-        <button (click)="deleteSong(currentSongFile)" mat-mini-fab>
-            <mat-icon>delete</mat-icon>
-        </button>
+        </span>
+        <span class="toolbar-actions">
+            <button (click)="toggleEditSongNameMode(currentSongFile, editSongTitleMode)" mat-mini-fab>
+                @if(editSongTitleMode){
+                    <mat-icon>check</mat-icon>
+                } @else {
+                    <mat-icon>edit</mat-icon>
+                }
+            </button>
+            <button (click)="deleteSong(currentSongFile)" mat-mini-fab>
+                <mat-icon>delete</mat-icon>
+            </button>
+        </span>
     } @else {
-        <span>Mulu Songs</span>
+        <span class="toolbar-title">
+            <h1>Mulu Songs</h1>
+        </span>
     }
 </mat-toolbar>
