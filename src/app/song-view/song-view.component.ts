@@ -4,17 +4,23 @@ import { SongFile } from '../model/song-file.model';
 import { selectCurrentSongFile } from '../store/song-file.feature';
 import { MatIconModule } from '@angular/material/icon';
 import { editSongFile } from '../store/song-file.actions';
+import { CommonModule } from '@angular/common';
+import {MatSliderModule} from '@angular/material/slider';
+import { SecondsToMmssPipe } from '../pipes/seconds-to-mmss.pipe';
 
 @Component({
   selector: 'app-song-view',
-  imports: [MatIconModule],
+  imports: [CommonModule, MatIconModule, MatSliderModule, SecondsToMmssPipe],
   templateUrl: './song-view.component.html',
   styleUrl: './song-view.component.scss',
 })
 export class SongViewComponent implements OnInit {
   
-  isPlaying: any;
   song: SongFile | null = null;
+
+  currentTime = 0;
+  duration = 0;
+  isPlaying: any;
 
   constructor(readonly store: Store) {}
 
@@ -31,6 +37,20 @@ export class SongViewComponent implements OnInit {
       audio.play();
     }
     this.isPlaying = !this.isPlaying;
+  }
+
+  onTimeUpdate(audio: HTMLAudioElement) {
+    this.currentTime = audio.currentTime;
+  }
+  
+  onLoadedMetadata(audio: HTMLAudioElement) {
+    this.duration = audio.duration;
+  }
+  
+  onSeek(event: any, audio: HTMLAudioElement) {
+    const value = event.value ?? event.target.value;
+    audio.currentTime = value;
+    this.currentTime = value;
   }
 
   async onAudioFileSelected(event: Event) {
