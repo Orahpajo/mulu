@@ -15,3 +15,10 @@
     }
 </ul>
 <h1>Text</h1>
+
+@if(song?.audiofiles?.length || 0 > 0) {
+    <audio #audioRef [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + song!.audiofiles[0].bytes"></audio>
+    <button mat-fab color="primary" (click)="togglePlay(audioRef)">
+        <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+    </button>
+}

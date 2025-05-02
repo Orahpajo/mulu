@@ -12,7 +12,8 @@ import { editSongFile } from '../store/song-file.actions';
   styleUrl: './song-view.component.scss',
 })
 export class SongViewComponent implements OnInit {
-
+  
+  isPlaying: any;
   song: SongFile | null = null;
 
   constructor(readonly store: Store) {}
@@ -23,13 +24,23 @@ export class SongViewComponent implements OnInit {
     });
   }
 
+  togglePlay(audio: HTMLAudioElement) {
+    if (this.isPlaying) {
+      audio.pause();
+    } else {
+      audio.play();
+    }
+    this.isPlaying = !this.isPlaying;
+  }
+
   async onAudioFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0 && this.song) {
       const file = input.files[0];
       const bytes = await this.readFileAsBase64(file);
       const updatedSong = this.song.clone();
-      updatedSong.audiofiles.push({ name: file.name, bytes });
+      const mimeType = file.type; 
+      updatedSong.audiofiles.push({ name: file.name, bytes, mimeType });
       this.store.dispatch(editSongFile(updatedSong));
     }
   }
