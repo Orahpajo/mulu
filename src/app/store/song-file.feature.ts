@@ -1,5 +1,5 @@
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
-import { SongFile } from '../file-explorer/song-file.model';
+import { SongFile } from '../model/song-file.model';
 import {
   closeCurrentSongFile,
   createSongFile,
@@ -64,7 +64,7 @@ export const songFileFeature = createFeature({
     on(editSongFile, (state, { file }) => {
       const songFiles = state.songFiles.map((songFile) => {
         if (songFile.id === file.id) {
-          return new SongFile(file.name, file.children, file.id);
+          return new SongFile(file.name, file.children, file.id, file.audiofiles);
         }
         return songFile;
       });

@@ -1,5 +1,5 @@
 import { createAction } from '@ngrx/store';
-import { SongFile } from '../file-explorer/song-file.model';
+import { SongFile } from '../model/song-file.model';
 
 export const createSongFile = createAction('[Song File] Add Song File');
 

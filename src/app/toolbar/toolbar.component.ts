@@ -3,7 +3,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { Store } from '@ngrx/store';
 import { selectCurrentSongFile, selectEditNameMode } from '../store/song-file.feature';
 import { Observable } from 'rxjs';
-import { SongFile } from '../file-explorer/song-file.model';
+import { SongFile } from '../model/song-file.model';
 import { CommonModule } from '@angular/common';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';

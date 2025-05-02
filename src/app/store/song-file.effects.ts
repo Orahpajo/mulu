@@ -2,12 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, tap, switchMap } from 'rxjs/operators';
 import { createSongFile, deleteSongFile, deleteSongFileWithQuestion, editSongFile, loadSongFiles, saveSongFiles, setSongFiles } from './song-file.actions';
-import { SongFile } from '../file-explorer/song-file.model';
+import { SongFile } from '../model/song-file.model';
 import { selectSongFiles } from './song-file.feature';
 import { Store } from '@ngrx/store';
 import { Dialog } from '@angular/cdk/dialog';
 import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 import { Router } from '@angular/router';
+import localforage from 'localforage';
+
 
 @Injectable()
 export class SongFileEffects {
@@ -19,8 +21,8 @@ export class SongFileEffects {
     loadSongFiles$ = createEffect(() =>
         this.actions$.pipe(
             ofType(loadSongFiles),
-            map(() => {
-                const data = localStorage.getItem('songFiles');
+            switchMap(async () => {
+                const data = await localforage.getItem<string>('songFiles');
                 let songFiles: SongFile[] = [];
                 if (data) {
                     const arr = JSON.parse(data);
@@ -38,8 +40,8 @@ export class SongFileEffects {
             this.actions$.pipe(
                 ofType(saveSongFiles),
                 withLatestFrom(this.store.select(selectSongFiles)),
-                tap(([_, songFiles]) => {
-                    localStorage.setItem('songFiles', JSON.stringify(songFiles));
+                switchMap(async ([_, songFiles]) => {
+                    await localforage.setItem('songFiles', JSON.stringify(songFiles));
                 })
             ),
         { dispatch: false }

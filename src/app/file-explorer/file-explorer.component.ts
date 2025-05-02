@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SongFile } from './song-file.model';
+import { SongFile } from '../model/song-file.model';
 import { SongFileComponent } from './song-file/song-file.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';

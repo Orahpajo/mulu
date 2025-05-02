@@ -1,1 +1,17 @@
-<p>{{song?.name}}</p>
+<h1>Dateien</h1>    
+<button mat-mini-fab (click)="fileInput.click()" aria-label="Add file">
+    <mat-icon>add</mat-icon>
+</button>
+<input #fileInput type="file" accept="audio/*" style="display:none" (change)="onAudioFileSelected($event)">
+<ul>
+    @if(song?.audiofiles?.length || 0 > 0) {
+        @for (file of song?.audiofiles; track $index) {
+            <li>
+               {{file.name}}
+            </li>
+        }
+    } @else {
+        <p>Noch keine Lieddateien</p>
+    }
+</ul>
+<h1>Text</h1>
