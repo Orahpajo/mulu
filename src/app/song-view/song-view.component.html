@@ -47,15 +47,31 @@
             </button>
         </mat-menu>
     </div>
-    @if (song) {
-        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 16px;">
-            <textarea matInput
-                    placeholder="Songtext"
-                    [(ngModel)]="song.text"
-                    [readonly]="textmode !== 'edit'"
-                    rows="6"
-                    (blur)="saveText()"></textarea>
-        </mat-form-field>
+    @if (song) {    
+        @if (textmode !== 'edit') {
+            <div class="song-text-scroll-outer">
+                <div class="blur-top" [class.visible]="!atTop"></div>
+                <div class="song-text-scroll-container"
+                     #scrollContainer
+                     (scroll)="onTextScroll(scrollContainer)">
+                  <mat-list>
+                    @for (line of (song.text.split('\n')); track $index) {
+                      <mat-list-item>{{ line }}</mat-list-item>
+                    }
+                  </mat-list>
+                </div>
+                <div class="blur-bottom" [class.visible]="!atBottom"></div>
+            </div>
+        } @else {
+            <mat-form-field class="song-text-area">
+                <textarea matInput
+                        class="song-text-area"
+                        placeholder="Songtext"
+                        [(ngModel)]="song.text"
+                        rows="15"
+                        (blur)="saveText()"></textarea>
+            </mat-form-field>
+        }
     }
 
     @if(song?.audiofiles?.length || 0 > 0) {

@@ -12,7 +12,8 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import {MatMenuModule} from '@angular/material/menu';
-import { first, single } from 'rxjs';
+import { first } from 'rxjs';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-song-view',
@@ -25,6 +26,7 @@ import { first, single } from 'rxjs';
     MatFormFieldModule,
     MatInputModule,
     MatMenuModule,
+    MatListModule,
   ],
   templateUrl: './song-view.component.html',
   styleUrl: './song-view.component.scss',
@@ -37,6 +39,9 @@ export class SongViewComponent implements OnInit {
   currentTime = 0;
   duration = 0;
   isPlaying: any;
+
+  atTop = true;
+  atBottom = false;
 
   constructor(readonly store: Store) {}
 
@@ -70,6 +75,10 @@ export class SongViewComponent implements OnInit {
     });
   }
       
+  onTextScroll(container: HTMLElement) {
+    this.atTop = container.scrollTop === 0;
+    this.atBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
+  }
 
   togglePlay(audio: HTMLAudioElement) {
     if (this.isPlaying) {
