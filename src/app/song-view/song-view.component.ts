@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { SongFile } from '../model/song-file.model';
 import { selectCurrentSongFile } from '../store/song-file.feature';
@@ -13,7 +13,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import {MatMenuModule} from '@angular/material/menu';
 import { first } from 'rxjs';
-import { MatListModule } from '@angular/material/list';
+import { MatListItem, MatListModule } from '@angular/material/list';
 
 const REACTION_TIME = .3;
 
@@ -36,6 +36,8 @@ const REACTION_TIME = .3;
 export class SongViewComponent implements OnInit {
 
   @ViewChild('audioRef') audio?: ElementRef<HTMLAudioElement>;
+  @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
+  @ViewChildren('lineItem') lineItems!: QueryList<MatListItem>;
 
   currentTime = 0;
   currentLine = -1;
@@ -121,9 +123,32 @@ export class SongViewComponent implements OnInit {
       let nextCue = this.nextValidCue(i);
       if (cue <= audio.currentTime && nextCue > audio.currentTime) {
         this.currentLine = i;
+        this.scrollToCurrentLine(); 
         break;
       }
     }
+  }
+
+  scrollToCurrentLine() {
+    if (this.textmode !== 'view') return;
+    if (!this.scrollContainer || !this.lineItems) return;
+    const current = this.lineItems.get(this.currentLine);
+    if (!current) return;
+  
+    const container = this.scrollContainer.nativeElement;
+    // MatListItem statt ElementRef!
+    const item = current._elementRef.nativeElement as HTMLElement;
+  
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = item.getBoundingClientRect();
+    const offset = itemRect.top - containerRect.top;
+    const scroll = offset - container.clientHeight / 2 + item.clientHeight / 2;
+  
+    const targetScroll = Math.max(
+      0,
+      Math.min(container.scrollHeight - container.clientHeight, container.scrollTop + scroll)
+    );
+    container.scrollTo({ top: targetScroll, behavior: 'smooth' });
   }
 
   nextValidCue(lineNumber: number): number {

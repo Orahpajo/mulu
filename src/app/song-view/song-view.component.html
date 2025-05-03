@@ -58,7 +58,10 @@
                      (scroll)="onTextScroll(scrollContainer)">
                   <mat-list>
                     @for (line of (song.text.split('\n')); track $index) {
-                        <mat-list-item class="song-line">
+                        <mat-list-item class="song-line" 
+                                        #lineItem
+                                        [attr.data-index]="$index"
+                                        [class.current]="isCurrentLine($index)">
                             <div class="song-line-inner">
                               <div [ngClass]="isCurrentLine($index)? 'current-line-text' : 'song-line-text'" 
                               (click)="onLineClick($index)">
