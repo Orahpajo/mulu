@@ -8,6 +8,7 @@ export class SongFile {
         public id: string,
         public audiofiles: AudioFile[],
         public text: string,
+        public cues: Map<number, number>,
     ) {}
 
     static create(
@@ -16,8 +17,9 @@ export class SongFile {
         audiofiles: AudioFile[] = [],
         id: string = uuidv4(),
         text: string = '',
+        cues: Map<number, number> = new Map<number, number>(),
     ): SongFile {
-        return new SongFile(name, children, id, audiofiles, text);
+        return new SongFile(name, children, id, audiofiles, text, cues);
     }
 
     isDirectory(): boolean {
@@ -30,7 +32,8 @@ export class SongFile {
             this.children.map(child => child.clone()),
             this.id,
             [...this.audiofiles],
-            this.text
+            this.text,
+            this.cues?.entries()? new Map<number, number>(this.cues.entries()) : new Map<number, number>(),
         );
     }
 }

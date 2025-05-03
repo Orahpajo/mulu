@@ -28,7 +28,7 @@ export class SongFileEffects {
                 if (data) {
                     const arr = JSON.parse(data);
                     songFiles = arr.map((obj: any) =>
-                        new SongFile(obj.name, obj.children, obj.id, obj.audiofiles, obj.text)
+                        new SongFile(obj.name, obj.children, obj.id, obj.audiofiles, obj.text, obj.cues)
                     );
                 }
                 // load the current song file ID from localforage

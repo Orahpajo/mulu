@@ -47,7 +47,9 @@
             </button>
         </mat-menu>
     </div>
+
     @if (song) {    
+        <!-- Song View -->
         @if (textmode !== 'edit') {
             <div class="song-text-scroll-outer">
                 <div class="blur-top" [class.visible]="!atTop"></div>
@@ -56,12 +58,24 @@
                      (scroll)="onTextScroll(scrollContainer)">
                   <mat-list>
                     @for (line of (song.text.split('\n')); track $index) {
-                      <mat-list-item>{{ line }}</mat-list-item>
+                        <mat-list-item class="song-line">
+                            <div class="song-line-inner">
+                              <div class="song-line-text" (click)="onLineClick($index)">
+                                {{ line }}
+                              </div>
+                              <div class="song-line-cue">
+                                @if (song.cues.get($index)) {
+                                    {{ song.cues.get($index) | mmss}}  
+                                }
+                              </div>
+                            </div>
+                          </mat-list-item>
                     }
                   </mat-list>
                 </div>
                 <div class="blur-bottom" [class.visible]="!atBottom"></div>
             </div>
+    <!-- Song Editing -->
         } @else {
             <mat-form-field class="song-text-area">
                 <textarea matInput

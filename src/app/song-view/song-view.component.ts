@@ -32,6 +32,7 @@ import { MatListModule } from '@angular/material/list';
   styleUrl: './song-view.component.scss',
 })
 export class SongViewComponent implements OnInit {
+
   song: SongFile | null = null; 
 
   textmode: 'edit' | 'mark' | 'view' = 'view';
@@ -73,6 +74,10 @@ export class SongViewComponent implements OnInit {
         this.store.dispatch(editSongFile(this.song));
       }
     });
+  }
+
+  onLineClick(lineNumber: number) {
+    this.song?.cues.set(lineNumber, this.currentTime)
   }
       
   onTextScroll(container: HTMLElement) {
