@@ -92,20 +92,21 @@
         } 
     }
 
+    <!-- Song Controll -->
     @if(song?.audiofiles?.length || 0 > 0) {
+    <div class="song-control-fixed">
         <audio #audioRef [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + song!.audiofiles[0].bytes"
             (timeupdate)="onTimeUpdate(audioRef)"
             (loadedmetadata)="onLoadedMetadata(audioRef)">
         </audio>
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <div class="song-control-slider">
             <span style="min-width: 40px;">{{ audioRef.currentTime| mmss }}</span>
             <mat-slider 
                 style="flex: 1;"
                 [min]="0"
                 [max]="duration"
                 (input)="onSeek($event, audioRef)">
-                <input matSliderThumb            
-                [value]="audioRef.currentTime">
+                <input matSliderThumb [value]="audioRef.currentTime">
             </mat-slider>
             <span style="min-width: 40px;">{{ (duration - audioRef.currentTime) | mmss }}</span>
         </div>
@@ -113,6 +114,7 @@
             <button mat-fab color="primary" (click)="togglePlay(audioRef)">
                 <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
             </button>
+        </div>
         </div>
     }
 </div>

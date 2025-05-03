@@ -90,3 +90,31 @@
     font-weight: bold;
     color: var(--mat-sys-primary);
   }
+
+  .song-control-fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 16px 24px 24px 24px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .song-control-slider {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .song-control-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
