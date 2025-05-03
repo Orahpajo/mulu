@@ -38,6 +38,7 @@ export class SongViewComponent implements OnInit {
   @ViewChild('audioRef') audio?: ElementRef<HTMLAudioElement>;
 
   currentTime = 0;
+  currentLine = -1;
 
   song: SongFile | null = null; 
 
@@ -90,9 +91,13 @@ export class SongViewComponent implements OnInit {
     } else if (this.textmode === 'view') {
       const cueTime = this.song?.cues[lineNumber];
       if (cueTime) {
-        this.audio.nativeElement.currentTime = cueTime;
+        this.audio.nativeElement.currentTime = cueTime + 1;
       }
     }
+  }
+
+  isCurrentLine(lineNumber: number): boolean {
+    return lineNumber === this.currentLine;
   }
       
   onTextScroll(container: HTMLElement) {
@@ -111,6 +116,24 @@ export class SongViewComponent implements OnInit {
 
   onTimeUpdate(audio: HTMLAudioElement) {
     this.currentTime = audio.currentTime;
+    for (let i = 0; i < this.song!.cues.length; i++) {
+      const cue = this.song!.cues[i];
+      let nextCue = this.nextValidCue(i);
+      if (cue <= audio.currentTime && nextCue > audio.currentTime) {
+        this.currentLine = i;
+        break;
+      }
+    }
+  }
+
+  nextValidCue(lineNumber: number): number {
+    if (this.song!.cues.length <= lineNumber) {
+      return this.duration;
+    }
+    if (this.song!.cues[lineNumber + 1]) {
+      return this.song!.cues[lineNumber + 1];
+    }
+    return this.nextValidCue(lineNumber + 1);
   }
   
   onLoadedMetadata(audio: HTMLAudioElement) {

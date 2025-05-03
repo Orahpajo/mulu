@@ -60,7 +60,8 @@
                     @for (line of (song.text.split('\n')); track $index) {
                         <mat-list-item class="song-line">
                             <div class="song-line-inner">
-                              <div class="song-line-text" (click)="onLineClick($index)">
+                              <div [ngClass]="isCurrentLine($index)? 'current-line-text' : 'song-line-text'" 
+                              (click)="onLineClick($index)">
                                 {{ line }}
                               </div>
                               <div class="song-line-cue">

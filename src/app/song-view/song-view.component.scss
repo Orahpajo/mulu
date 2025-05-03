@@ -64,7 +64,7 @@
   .blur-bottom.visible {
     opacity: 1;
   }
-  
+
   .song-line-inner {
     display: flex;
     align-items: center;
@@ -82,4 +82,11 @@
   .song-line-text {
     flex: 1 1 auto;
     cursor: pointer;
+  }
+
+  .current-line-text { 
+    flex: 1 1 auto;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--mat-sys-primary);
   }
