@@ -8,7 +8,7 @@ export class SongFile {
         public id: string,
         public audiofiles: AudioFile[],
         public text: string,
-        public cues: Map<number, number>,
+        public cues: number[],
     ) {}
 
     static create(
@@ -17,7 +17,7 @@ export class SongFile {
         audiofiles: AudioFile[] = [],
         id: string = uuidv4(),
         text: string = '',
-        cues: Map<number, number> = new Map<number, number>(),
+        cues: number[] = [],
     ): SongFile {
         return new SongFile(name, children, id, audiofiles, text, cues);
     }
@@ -33,7 +33,14 @@ export class SongFile {
             this.id,
             [...this.audiofiles],
             this.text,
-            this.cues?.entries()? new Map<number, number>(this.cues.entries()) : new Map<number, number>(),
+            [...this.cues],
         );
+    }
+
+    addCue(lineNumber: number, time: number) {
+        if (this.cues.length <= lineNumber) {
+            this.cues.length = lineNumber + 1;
+        }
+        this.cues[lineNumber] = time;
     }
 }

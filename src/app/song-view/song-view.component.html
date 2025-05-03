@@ -49,8 +49,8 @@
     </div>
 
     @if (song) {    
-        <!-- Song View -->
-        @if (textmode !== 'edit') {
+        <!-- Song Marking or Viewing -->
+        @if (textmode === 'mark' || textmode === 'view') {
             <div class="song-text-scroll-outer">
                 <div class="blur-top" [class.visible]="!atTop"></div>
                 <div class="song-text-scroll-container"
@@ -64,8 +64,8 @@
                                 {{ line }}
                               </div>
                               <div class="song-line-cue">
-                                @if (song.cues.get($index)) {
-                                    {{ song.cues.get($index) | mmss}}  
+                                @if (song.cues[$index]) {
+                                    {{ song.cues[$index] | mmss}}  
                                 }
                               </div>
                             </div>
@@ -75,8 +75,8 @@
                 </div>
                 <div class="blur-bottom" [class.visible]="!atBottom"></div>
             </div>
-    <!-- Song Editing -->
-        } @else {
+        <!-- Song Editing -->
+        } @else if (textmode === 'edit') {
             <mat-form-field class="song-text-area">
                 <textarea matInput
                         class="song-text-area"
@@ -85,7 +85,7 @@
                         rows="15"
                         (blur)="saveText()"></textarea>
             </mat-form-field>
-        }
+        } 
     }
 
     @if(song?.audiofiles?.length || 0 > 0) {
@@ -94,16 +94,16 @@
             (loadedmetadata)="onLoadedMetadata(audioRef)">
         </audio>
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <span style="min-width: 40px;">{{ currentTime | mmss }}</span>
+            <span style="min-width: 40px;">{{ audioRef.currentTime| mmss }}</span>
             <mat-slider 
                 style="flex: 1;"
                 [min]="0"
                 [max]="duration"
                 (input)="onSeek($event, audioRef)">
                 <input matSliderThumb            
-                [value]="currentTime">
+                [value]="audioRef.currentTime">
             </mat-slider>
-            <span style="min-width: 40px;">{{ (duration - currentTime) | mmss }}</span>
+            <span style="min-width: 40px;">{{ (duration - audioRef.currentTime) | mmss }}</span>
         </div>
         <div class="song-control-buttons">
             <button mat-fab color="primary" (click)="togglePlay(audioRef)">

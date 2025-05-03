@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { SongFile } from '../model/song-file.model';
 import { selectCurrentSongFile } from '../store/song-file.feature';
@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 import {MatMenuModule} from '@angular/material/menu';
 import { first } from 'rxjs';
 import { MatListModule } from '@angular/material/list';
+
+const REACTION_TIME = .3;
 
 @Component({
   selector: 'app-song-view',
@@ -33,17 +35,20 @@ import { MatListModule } from '@angular/material/list';
 })
 export class SongViewComponent implements OnInit {
 
+  @ViewChild('audioRef') audio?: ElementRef<HTMLAudioElement>;
+
+  currentTime = 0;
+
   song: SongFile | null = null; 
 
   textmode: 'edit' | 'mark' | 'view' = 'view';
 
-  currentTime = 0;
   duration = 0;
   isPlaying: any;
 
   atTop = true;
   atBottom = false;
-
+  
   constructor(readonly store: Store) {}
 
   ngOnInit() {
@@ -77,7 +82,17 @@ export class SongViewComponent implements OnInit {
   }
 
   onLineClick(lineNumber: number) {
-    this.song?.cues.set(lineNumber, this.currentTime)
+    if (!this.audio) return;
+    
+    if (this.textmode === 'mark' && this.song) {
+      this.song.addCue(lineNumber, this.audio.nativeElement.currentTime - REACTION_TIME);
+      this.store.dispatch(editSongFile(this.song));
+    } else if (this.textmode === 'view') {
+      const cueTime = this.song?.cues[lineNumber];
+      if (cueTime) {
+        this.audio.nativeElement.currentTime = cueTime;
+      }
+    }
   }
       
   onTextScroll(container: HTMLElement) {
@@ -105,7 +120,6 @@ export class SongViewComponent implements OnInit {
   onSeek(event: any, audio: HTMLAudioElement) {
     const value = event.value ?? event.target.value;
     audio.currentTime = value;
-    this.currentTime = value;
   }
 
   async onAudioFileSelected(event: Event) {

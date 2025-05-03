@@ -27,9 +27,9 @@ export class SongFileEffects {
                 let songFiles: SongFile[] = [];
                 if (data) {
                     const arr = JSON.parse(data);
-                    songFiles = arr.map((obj: any) =>
-                        new SongFile(obj.name, obj.children, obj.id, obj.audiofiles, obj.text, obj.cues)
-                    );
+                    songFiles = arr.map((obj: any) =>{
+                        return new SongFile(obj.name, obj.children, obj.id, obj.audiofiles, obj.text, obj.cues);
+                    });
                 }
                 // load the current song file ID from localforage
                 const currentSongFileId = await localforage.getItem<string>('currentSongFileId');
