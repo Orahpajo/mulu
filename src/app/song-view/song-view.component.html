@@ -7,7 +7,13 @@
             <mat-icon>add</mat-icon>
         </button>
     </div>
-    <input #fileInput type="file" accept="audio/*" style="display:none" (change)="onAudioFileSelected($event)">
+    <input 
+        #fileInput 
+        type="file" 
+        accept="audio/mpeg,audio/mp3,.mp3"
+        style="display:none" 
+        (change)="onAudioFileSelected($event)"
+    >
     <ul>
         @if(song?.audiofiles?.length || 0 > 0) {
             @for (file of song?.audiofiles; track $index) {
