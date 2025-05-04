@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 import {MatMenuModule} from '@angular/material/menu';
 import { first } from 'rxjs';
 import { MatListItem, MatListModule } from '@angular/material/list';
+import { v4 as uuidv4 } from 'uuid';
+import localforage from 'localforage';
 
 const REACTION_TIME = .3;
 
@@ -51,12 +53,19 @@ export class SongViewComponent implements OnInit {
 
   atTop = true;
   atBottom = false;
+  audioFileBytes?: string;
   
   constructor(readonly store: Store) {}
 
   ngOnInit() {
     this.store.select(selectCurrentSongFile).subscribe((song) => {
       this.song = song?.clone() || null;
+      const fileId = this.song?.audiofiles[0].id;
+      if (fileId) {
+        localforage.getItem(fileId).then((bytes) => {
+          this.audioFileBytes = bytes as string;
+        });
+      }
     });
   }
 
@@ -173,12 +182,17 @@ export class SongViewComponent implements OnInit {
   async onAudioFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0 && this.song) {
+      // Load File
       const file = input.files[0];
-      const bytes = await this.readFileAsBase64(file);
+      // Save File Metadata in song
       const updatedSong = this.song.clone();
       const mimeType = file.type; 
-      updatedSong.audiofiles.push({ name: file.name, bytes, mimeType });
+      const fileId = uuidv4();
+      updatedSong.audiofiles.push({ id: fileId ,name: file.name, mimeType });
       this.store.dispatch(editSongFile(updatedSong));
+      // Save file bytes in indexedDB
+      const bytes = await this.readFileAsBase64(file);
+      localforage.setItem(fileId, bytes);
     }
   }
 

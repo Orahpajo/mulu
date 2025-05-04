@@ -101,7 +101,7 @@
     <!-- Song Controll -->
     @if(song?.audiofiles?.length || 0 > 0) {
     <div class="song-control-fixed">
-        <audio #audioRef [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + song!.audiofiles[0].bytes"
+        <audio #audioRef [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + audioFileBytes"
             (timeupdate)="onTimeUpdate(audioRef)"
             (loadedmetadata)="onLoadedMetadata(audioRef)">
         </audio>
