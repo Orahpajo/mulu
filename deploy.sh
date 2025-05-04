@@ -39,7 +39,7 @@ ng build --configuration production --base-href "https://orahpajo.github.io/mulu
 npx angular-cli-ghpages --dir=dist/mulu/browser
 
 # 7. Commit und Tag
-git add package.json package-lock.json
+git add package.json package-lock.json src/environment/environment.ts
 git commit -m "deploy: v$NEW_VERSION"
 git tag "deploy-v$NEW_VERSION"
 git push
