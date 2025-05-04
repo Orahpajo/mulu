@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stem of the half note -->
+  <line x1="40" y1="8" x2="40" y2="48" stroke="black" stroke-width="6" stroke-linecap="round"/>
+  <!-- Circular arrow note head -->
+  <circle cx="24" cy="48" r="12" stroke="black" stroke-width="6" fill="none"/>
+  <!-- Arrow indicating loop -->
+  <path d="M24 36 A12 12 0 0 1 36 48" fill="none" stroke="black" stroke-width="6" stroke-linecap="round"/>
+  <polyline points="33 39 40 39 40 32" fill="none" stroke="black" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
