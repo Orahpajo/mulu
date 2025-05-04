@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
+import { environment } from '../../environment/environment';
+
 
 @Component({
   selector: 'app-file-explorer',
@@ -18,6 +20,7 @@ import { MatListModule } from '@angular/material/list';
   styleUrl: './file-explorer.component.scss',
 })
 export class FileExplorerComponent {
+  appVersion = environment.version;
   songs$: Observable<SongFile[]>;
 
   constructor(private store: Store, private router: Router) {
