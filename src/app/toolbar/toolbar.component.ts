@@ -94,7 +94,7 @@ export class ToolbarComponent {
   importSong(){
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.mulu,application/json';
+    input.accept = '';
     input.style.display = 'none';
 
     input.onchange = async (event: any) => {
