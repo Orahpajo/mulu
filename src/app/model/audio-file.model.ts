@@ -3,3 +3,7 @@ export interface AudioFile {
     name: string;
     mimeType: string;
 }
+
+export interface AudioFileWithBytes extends AudioFile {
+    bytes: string;
+}

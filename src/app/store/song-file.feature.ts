@@ -5,6 +5,7 @@ import {
   createSongFile,
   deleteSongFile,
   editSongFile,
+  importSongFile,
   openSongFile,
   setSongFiles,
   toggleEditNameMode,
@@ -29,6 +30,14 @@ export const songFileFeature = createFeature({
     initialState,
     on(createSongFile, (state) => {
       const newFile = SongFile.create('New Song');
+      return {
+        ...state,
+        songFiles: [...state.songFiles, newFile],
+        currentSongFile: newFile,
+      };
+    }),
+    on(importSongFile, (state, { file }) => {
+      const newFile = SongFile.create(file.songFile.name, file.songFile.children, file.songFile.audiofiles, file.songFile.id, file.songFile.text, file.songFile.cues);
       return {
         ...state,
         songFiles: [...state.songFiles, newFile],

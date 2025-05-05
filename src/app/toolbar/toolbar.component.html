@@ -26,10 +26,18 @@
             <button (click)="deleteSong(currentSongFile)" mat-mini-fab>
                 <mat-icon>delete</mat-icon>
             </button>
+            <button (click)="shareSong(currentSongFile)" mat-mini-fab>
+                <mat-icon>share</mat-icon>
+            </button>
         </span>
     } @else {
         <span class="toolbar-title">
             <h1>Mulu Songs</h1>
+        </span>
+        <span class="toolbar-actions">
+            <button (click)="importSong()" mat-mini-fab>
+                <mat-icon>upload_file</mat-icon>
+            </button>    
         </span>
     }
 </mat-toolbar>

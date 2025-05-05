@@ -1,7 +1,13 @@
 import { createAction } from '@ngrx/store';
 import { SongFile } from '../model/song-file.model';
+import { MuluFile } from '../model/mulu-file.model';
 
 export const createSongFile = createAction('[Song File] Add Song File');
+
+export const importSongFile = createAction(
+  '[Song File] Import Song File',
+  (file: MuluFile) => ({ file })
+);
 
 export const openSongFile = createAction(
   '[Song File] Open Song File',

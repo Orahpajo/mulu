@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, tap, switchMap } from 'rxjs/operators';
-import { closeCurrentSongFile, createSongFile, deleteSongFile, deleteSongFileWithQuestion, editSongFile, loadSongFiles, openSongFile, saveSongFiles, setSongFiles } from './song-file.actions';
+import { closeCurrentSongFile, createSongFile, deleteSongFile, deleteSongFileWithQuestion, editSongFile, importSongFile, loadSongFiles, openSongFile, saveSongFiles, setSongFiles } from './song-file.actions';
 import { SongFile } from '../model/song-file.model';
 import { selectCurrentSongFile, selectSongFiles } from './song-file.feature';
 import { Store } from '@ngrx/store';
@@ -101,5 +101,17 @@ export class SongFileEffects {
             ),
         { dispatch: false }
     );
+
+    importSongFile$ = createEffect(
+        () =>
+            this.actions$.pipe(
+                ofType(importSongFile),
+                switchMap(async ({ file }) => {
+                    await localforage.setItem(file.audioFiles[0].id, file.audioFiles[0].bytes);
+                }),
+            ),
+        { dispatch: false }
+    );
+
 }
 
