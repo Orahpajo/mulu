@@ -1,9 +1,9 @@
 <mat-toolbar>
+    <a mat-icon-button routerLink="/">
+        <mat-icon>home</mat-icon>
+    </a>
     @if(currentSongFile) {
         @let editSongTitleMode = editSongTitleMode$ |async;
-        <a mat-icon-button routerLink="/">
-            <mat-icon>home</mat-icon>
-        </a>
         <span class="toolbar-title">
             @if(editSongTitleMode){
                 <form>
