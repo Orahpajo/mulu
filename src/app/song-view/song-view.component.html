@@ -10,9 +10,9 @@
     <input 
         #fileInput 
         type="file" 
-        accept="audio/mpeg,audio/mp3,.mp3"
+        accept="audio/mpeg,audio/mp3,.mp3,video/mp4,video/*,.mp4"
         style="display:none" 
-        (change)="onAudioFileSelected($event)"
+        (change)="onFileSelected($event)"
     >
     <ul>
         @if(song?.audiofiles?.length || 0 > 0) {
@@ -99,28 +99,55 @@
     }
 
     <!-- Song Controll -->
-    @if(song?.audiofiles?.length || 0 > 0) {
-    <div class="song-control-fixed">
-        <audio #audioRef [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + audioFileBytes"
-            (timeupdate)="onTimeUpdate(audioRef)"
-            (loadedmetadata)="onLoadedMetadata(audioRef)">
-        </audio>
-        <div class="song-control-slider">
-            <span style="min-width: 40px;">{{ audioRef.currentTime| mmss }}</span>
-            <mat-slider 
+    @if(song && song.audiofiles[0] && audioFileBytes) {
+        <div class="song-control-fixed">
+          @if(song.audiofiles[0].mimeType.startsWith('video/')) {
+            <video #audioRef
+              [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + audioFileBytes"
+              (timeupdate)="onTimeUpdate(audioRef)"
+              (loadedmetadata)="onLoadedMetadata(audioRef)"
+              [attr.controls]="false"
+              style="width: 100%; max-height: 480px; background: #000;">
+            </video>
+            <div class="song-control-slider">
+              <span style="min-width: 40px;">{{ audioRef.currentTime| mmss }}</span>
+              <mat-slider 
                 style="flex: 1;"
                 [min]="0"
                 [max]="duration"
                 (input)="onSeek($event, audioRef)">
                 <input matSliderThumb [value]="audioRef.currentTime">
-            </mat-slider>
-            <span style="min-width: 40px;">{{ (duration - audioRef.currentTime) | mmss }}</span>
-        </div>
-        <div class="song-control-buttons">
-            <button mat-fab color="primary" (click)="togglePlay(audioRef)">
+              </mat-slider>
+              <span style="min-width: 40px;">{{ (duration - audioRef.currentTime) | mmss }}</span>
+            </div>
+            <div class="song-control-buttons">
+              <button mat-fab color="primary" (click)="togglePlay(audioRef)">
                 <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
-            </button>
+              </button>
+            </div>
+          } @else {
+            <audio #audioRef
+              [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + audioFileBytes"
+              (timeupdate)="onTimeUpdate(audioRef)"
+              (loadedmetadata)="onLoadedMetadata(audioRef)">
+            </audio>
+            <div class="song-control-slider">
+              <span style="min-width: 40px;">{{ audioRef.currentTime| mmss }}</span>
+              <mat-slider 
+                style="flex: 1;"
+                [min]="0"
+                [max]="duration"
+                (input)="onSeek($event, audioRef)">
+                <input matSliderThumb [value]="audioRef.currentTime">
+              </mat-slider>
+              <span style="min-width: 40px;">{{ (duration - audioRef.currentTime) | mmss }}</span>
+            </div>
+            <div class="song-control-buttons">
+              <button mat-fab color="primary" (click)="togglePlay(audioRef)">
+                <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+              </button>
+            </div>
+          }
         </div>
-        </div>
-    }
+      }
 </div>

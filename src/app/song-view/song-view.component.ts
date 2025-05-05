@@ -40,7 +40,7 @@ export class SongViewComponent implements OnInit {
   @ViewChild('audioRef') audio?: ElementRef<HTMLAudioElement>;
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
   @ViewChildren('lineItem') lineItems!: QueryList<MatListItem>;
-
+  
   currentTime = 0;
   currentLine = -1;
 
@@ -60,7 +60,7 @@ export class SongViewComponent implements OnInit {
   ngOnInit() {
     this.store.select(selectCurrentSongFile).subscribe((song) => {
       this.song = song?.clone() || null;
-      const fileId = this.song?.audiofiles[0].id;
+      const fileId = this.song?.audiofiles[0]?.id;
       if (fileId) {
         localforage.getItem(fileId).then((bytes) => {
           this.audioFileBytes = bytes as string;
@@ -179,7 +179,7 @@ export class SongViewComponent implements OnInit {
     audio.currentTime = value;
   }
 
-  async onAudioFileSelected(event: Event) {
+  async onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0 && this.song) {
       // Load File
@@ -191,7 +191,9 @@ export class SongViewComponent implements OnInit {
       updatedSong.audiofiles.push({ id: fileId ,name: file.name, mimeType });
       this.store.dispatch(editSongFile(updatedSong));
       // Save file bytes in indexedDB
-      const bytes = await this.readFileAsBase64(file);
+      let bytes: string;
+      bytes = await this.readFileAsBase64(file);
+      
       localforage.setItem(fileId, bytes);
     }
   }
@@ -202,6 +204,21 @@ export class SongViewComponent implements OnInit {
       reader.onload = () => resolve((reader.result as string).split(',')[1]);
       reader.onerror = reject;
       reader.readAsDataURL(file);
+    });
+  }
+
+  private blobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => {
+        reader.abort();
+        reject(new Error('Fehler beim Lesen des Blobs.'));
+      };
+      reader.onload = () => {
+        // reader.result ist dann ein data:URL-String, z.B. "data:video/webm;base64,...."
+        resolve(reader.result as string);
+      };
+      reader.readAsDataURL(blob);
     });
   }
 }
