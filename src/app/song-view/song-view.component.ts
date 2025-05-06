@@ -94,7 +94,7 @@ export class SongViewComponent implements OnInit {
   }
 
   onLineClick(lineNumber: number) {
-    if (!this.audio) return;
+    if (!this.audio?.nativeElement) return;
     
     if (this.textmode === 'mark' && this.song) {
       this.song.addCue(lineNumber, this.audio.nativeElement.currentTime - REACTION_TIME);
