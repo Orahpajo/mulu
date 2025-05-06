@@ -106,8 +106,12 @@ export class SongFileEffects {
         () =>
             this.actions$.pipe(
                 ofType(importSongFile),
-                switchMap(async ({ file }) => {
+                withLatestFrom(this.store.select(selectSongFiles)),
+                switchMap(async ([{ file }, songFiles]) => {
+                    // Save audio bytes to localforage
                     await localforage.setItem(file.audioFiles[0].id, file.audioFiles[0].bytes);
+                    // Save song file to localforage
+                    await localforage.setItem('songFiles', JSON.stringify(songFiles));
                 }),
             ),
         { dispatch: false }
