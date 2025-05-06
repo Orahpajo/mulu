@@ -2,11 +2,16 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 .song-view-container {
     margin: 15px;
     margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .song-control-buttons {
@@ -15,24 +20,38 @@
     gap: 10px;
 }
 
-.song-text-area {
-    width: 100%; 
-    margin-bottom: 16px;
-    height: 400px;
-}
-
 .mat-list .mat-list-item {
     height: 20px; /* default is 72px */
   }
 
 .song-text-scroll-outer {
     position: relative;
-    height: 400px;
     margin-bottom: 16px;
+    padding-bottom: 200px; 
   }
+
+  .song-text-area {
+    width: 100%; 
+    margin-bottom: 16px;
+    height: 400px;
+}
+
+.song-text-scroll-outer,
+.song-text-area {
+  flex: 1 1 auto;
+  min-height: 120px;
+  /* Substract height of Song-Controls */
+  max-height: calc(100vh - 200px);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: max-height 0.2s;
+}
   
   .song-text-scroll-container {
     height: 100%;
+    flex: 1 1 auto;
     overflow-y: auto;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE 10+ */
@@ -57,7 +76,7 @@
     background: linear-gradient(to bottom, var(--mat-sys-surface) 40%, rgba(255,255,255,0) 100%);
   }
   .blur-bottom {
-    bottom: 0;
+    bottom: 200px;
     background: linear-gradient(to top, var(--mat-sys-surface) 40%, rgba(255,255,255,0) 100%);
   }
   .blur-top.visible,
@@ -102,6 +121,8 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    flex-shrink: 0;
+    background: var(--mat-sys-surface, #fff);
   }
   
   .song-control-slider {
