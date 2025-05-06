@@ -102,7 +102,7 @@ export class SongViewComponent implements OnInit {
     } else if (this.textmode === 'view') {
       const cueTime = this.song?.cues[lineNumber];
       if (cueTime) {
-        this.audio.nativeElement.currentTime = cueTime + 1;
+        this.audio.nativeElement.currentTime = cueTime;
       }
     }
   }
