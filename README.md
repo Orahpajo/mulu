@@ -56,3 +56,40 @@ Man kann ein Lied oder Video in den lokalen Browser-Storage laden, den Text dazu
 - **Kompatibilität mit mobilen und Touch-Geräten**.
 - **Undo/Redo**: Für Markierungen.
 - **Lokale Speicherung mit Backup-Möglichkeit**: Z. B. Datei-Export.
+
+---
+
+## 🚀 Deployment & Semantic Versioning
+
+### Voraussetzungen
+
+- Node.js und npm installiert
+- Angular CLI installiert
+- Für Webhost-Deploy: `lftp` installiert 
+
+### Semantic Versioning
+
+Vor jedem Deployment wird automatisch die Version gemäß [Semantic Versioning](https://semver.org/) erhöht und ein Git-Tag gesetzt.  
+Das passiert durch das Skript `deploy/semantic-versioning.sh` und wird von den Deploy-Skripten automatisch ausgeführt.
+
+### Deployment auf GitHub Pages
+
+```sh
+cd deploy
+./git-pages.sh
+```
+- Erstellt einen Production-Build und deployed diesen auf GitHub Pages.
+- Die Seite ist dann unter [https://orahpajo.github.io/mulu/](https://orahpajo.github.io/mulu/) erreichbar.
+
+### Deployment auf eigenen Webhost (FTP)
+
+```sh
+cd deploy
+./webhost.sh
+```
+- Erstellt einen Production-Build und lädt die Dateien per FTP nach `public_html/mulu` auf deinen Server.
+- Die Zugangsdaten stehen in `deploy/credentials.txt` (Format siehe dort).
+- Die Seite ist dann z. B. unter [http://mulu.marvs.net](http://mulu.marvs.net) erreichbar.
+
+
+---
