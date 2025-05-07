@@ -97,7 +97,13 @@ export class SongViewComponent implements OnInit {
     if (!this.audio?.nativeElement) return;
     
     if (this.textmode === 'mark' && this.song) {
-      this.song.addCue(lineNumber, this.audio.nativeElement.currentTime - REACTION_TIME);
+      // add cue if song is playing or paused and has no cue yet
+      if (!this.audio.nativeElement.paused || this.song.cues[lineNumber] === undefined) {
+        this.song.addCue(lineNumber, this.audio.nativeElement.currentTime - REACTION_TIME);
+      } else {
+        // remove cue if song is paused and has a cue
+        this.song.cues[lineNumber] = undefined;
+      }
       this.store.dispatch(editSongFile(this.song));
     } else if (this.textmode === 'view') {
       const cueTime = this.song?.cues[lineNumber];
@@ -130,7 +136,7 @@ export class SongViewComponent implements OnInit {
     for (let i = 0; i < this.song!.cues.length; i++) {
       const cue = this.song!.cues[i];
       let nextCue = this.nextValidCue(i);
-      if (cue <= audio.currentTime && nextCue > audio.currentTime) {
+      if (cue && cue <= audio.currentTime && nextCue > audio.currentTime) {
         this.currentLine = i;
         this.scrollToCurrentLine(); 
         break;
@@ -165,7 +171,7 @@ export class SongViewComponent implements OnInit {
       return this.duration;
     }
     if (this.song!.cues[lineNumber + 1]) {
-      return this.song!.cues[lineNumber + 1];
+      return this.song!.cues[lineNumber + 1]!;
     }
     return this.nextValidCue(lineNumber + 1);
   }

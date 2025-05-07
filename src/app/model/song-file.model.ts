@@ -8,7 +8,7 @@ export class SongFile {
         public id: string,
         public audiofiles: AudioFile[],
         public text: string,
-        public cues: number[],
+        public cues: (number | undefined)[],
     ) {}
 
     static create(
@@ -17,7 +17,7 @@ export class SongFile {
         audiofiles: AudioFile[] = [],
         id: string = uuidv4(),
         text: string = '',
-        cues: number[] = [],
+        cues: (number | undefined)[] = [],
     ): SongFile {
         return new SongFile(name, children, id, audiofiles, text, cues);
     }
