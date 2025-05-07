@@ -34,11 +34,7 @@ npm version $BUMP --no-git-tag-version
 NEW_VERSION=$(node -p "require('./package.json').version")
 sed -i "s/version: '.*'/version: '$NEW_VERSION'/" src/environment/environment.ts
 
-# 6. Build und Deploy
-ng build --configuration production --base-href "https://orahpajo.github.io/mulu/"
-npx angular-cli-ghpages --dir=dist/mulu/browser
-
-# 7. Commit und Tag
+# 6. Commit und Tag
 git add package.json package-lock.json src/environment/environment.ts
 git commit -m "deploy: v$NEW_VERSION"
 git tag "deploy-v$NEW_VERSION"
