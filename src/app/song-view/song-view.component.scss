@@ -33,9 +33,9 @@
   .song-text-scroll-outer,
   .song-text-area {
     flex: 1 1 auto;
-    min-height: calc(100vh - 300px);
+    min-height: calc(100vh - 350px);
     /* Substract height of Song-Controls */
-    max-height: calc(100vh - 300px);
+    max-height: calc(100vh - 350px);
     position: relative;
     display: flex;
     flex-direction: column;
