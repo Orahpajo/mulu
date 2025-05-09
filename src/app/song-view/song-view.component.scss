@@ -30,24 +30,17 @@
     padding-bottom: 200px; 
   }
 
+  .song-text-scroll-outer,
   .song-text-area {
-    width: 100%; 
-    margin-bottom: 16px;
-    height: 400px;
-}
-
-.song-text-scroll-outer,
-.song-text-area {
-  flex: 1 1 auto;
-  min-height: 120px;
-  /* Substract height of Song-Controls */
-  max-height: calc(100vh - 200px);
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  transition: max-height 0.2s;
-}
+    flex: 1 1 auto;
+    min-height: calc(100vh - 300px);
+    /* Substract height of Song-Controls */
+    max-height: calc(100vh - 300px);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: max-height 0.2s;
+  }
   
   .song-text-scroll-container {
     height: 100%;

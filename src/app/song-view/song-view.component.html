@@ -104,13 +104,12 @@
             </div>
         <!-- Song Editing -->
         } @else if (textmode === 'edit') {
-            <mat-form-field class="song-text-area">
-                <textarea matInput
-                        class="song-text-area"
-                        placeholder="Songtext"
-                        [(ngModel)]="song.text"
-                        rows="15"
-                        (blur)="saveText()"></textarea>
+            <mat-form-field>
+              <textarea matInput
+                class="song-text-area"
+                placeholder="Songtext"
+                [(ngModel)]="song.text"
+                (blur)="saveText()"></textarea>
             </mat-form-field>
         } 
     }
