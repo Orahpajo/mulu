@@ -5,6 +5,10 @@ SCRIPT_DIR="$(dirname "$0")"
 
 ng build --configuration production
 
+# move htaccess files to dist
+cp "$SCRIPT_DIR/htaccess/.htaccess" dist/mulu/browser/
+cp "$SCRIPT_DIR/htaccess/.htpasswd" dist/mulu/browser/
+
 # read Credentials from credentials.txt
 CRED_FILE="$SCRIPT_DIR/credentials.txt"
 FTP_HOST=$(grep server "$CRED_FILE" | cut -d'=' -f2)

@@ -43,3 +43,4 @@ Thumbs.db
 
 # Security
 credentials.txt
+.htpasswd

@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Geschützter Bereich"
+AuthUserFile /usr/www/users/marvsv/mulu/.htpasswd
+Require valid-user
