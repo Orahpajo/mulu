@@ -1,31 +1,31 @@
 <div class="song-view-container">
 
     @if ((song?.audiofiles?.length || 0) == 0) {
-      <!-- Files -->
-      <div class="section-header">
-          <h2>Dateien</h2>    
-          <button mat-mini-fab (click)="fileInput.click()" aria-label="Add file">
-              <mat-icon>add</mat-icon>
-          </button>
-      </div>
+      <div 
+      class="file-upload-dropzone"
+      (drop)="onFileDrop($event)"
+      (dragover)="onFileDragOver($event)"
+      (dragleave)="onFileDragLeave($event)"
+      [class.dragover]="isDragOver"
+      (click)="fileInput.click()"
+      tabindex="0"
+      (keydown.enter)="fileInput.click()"
+      (keydown.space)="fileInput.click()"
+    >
       <input 
-          #fileInput 
-          type="file" 
-          accept="audio/mpeg,audio/mp3,adio/m4a,.m4a,.mp3,video/mp4,video/*,.mp4"
-          style="display:none" 
-          (change)="onFileSelected($event)"
+        #fileInput 
+        type="file" 
+        accept="audio/mpeg,audio/mp3,audio/m4a,.m4a,.mp3,video/mp4,video/*,.mp4"
+        style="display:none"
+        (change)="onFileSelected($event)"
       >
-      <ul>
-          @if((song?.audiofiles?.length || 0) > 0) {
-              @for (file of song?.audiofiles; track $index) {
-                  <li>
-                  {{file.name}}
-                  </li>
-              }
-          } @else {
-              <p>Noch keine Lieddateien</p>
-          }
-      </ul>   
+      <div class="file-upload-text">
+        <mat-icon>cloud_upload</mat-icon>
+        <span>
+          Song-Datei hierher ziehen oder klicken, um auszuwählen
+        </span>
+      </div>
+    </div>
     }
     <!-- Text -->
     <div class="section-header">

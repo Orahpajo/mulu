@@ -54,8 +54,28 @@ export class SongViewComponent implements OnInit {
   atTop = true;
   atBottom = false;
   audioFileBytes?: string;
-  
+
+  isDragOver = false;
+    
   constructor(readonly store: Store) {}
+
+  onFileDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOver = true;
+  }
+
+  onFileDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOver = false;
+  }
+
+  onFileDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOver = false;
+    if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
+      this.onFileSelected({ target: { files: event.dataTransfer.files } } as any);
+    }
+  }
 
   ngOnInit() {
     this.store.select(selectCurrentSongFile).subscribe((song) => {
@@ -190,9 +210,15 @@ export class SongViewComponent implements OnInit {
     if (input.files && input.files.length > 0 && this.song) {
       // Load File
       const file = input.files[0];
+      const mimeType = file.type; 
+
+      if (!(mimeType.startsWith('audio/') || mimeType.startsWith('video/'))) {
+        alert('Nur Audio- oder Videodateien werden unterstützt.');
+        return;
+      } 
+     
       // Save File Metadata in song
       const updatedSong = this.song.clone();
-      const mimeType = file.type; 
       const fileId = uuidv4();
       updatedSong.audiofiles.push({ id: fileId ,name: file.name, mimeType });
       this.store.dispatch(editSongFile(updatedSong));

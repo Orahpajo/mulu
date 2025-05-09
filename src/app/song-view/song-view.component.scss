@@ -137,3 +137,37 @@
     justify-content: center;
     gap: 10px;
   }
+
+  .file-upload-dropzone {
+    border: 2px dashed var(--mat-sys-on-secondary-container);
+    border-radius: 12px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    background: var(--mat-sys-secondary-container);
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+    margin-bottom: 24px;
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .file-upload-dropzone.dragover {
+    border-color: #1976d2;
+    background: #e3f2fd;
+  }
+  
+  .file-upload-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .file-upload-text mat-icon {
+    font-size: 24px;
+    color: var(--mat-sys-on-secondary-container);
+    margin-bottom: 0; // entfernt den unteren Abstand
+  }
