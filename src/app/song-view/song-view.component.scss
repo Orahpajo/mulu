@@ -147,7 +147,7 @@
     background: var(--mat-sys-secondary-container);
     transition: border-color 0.2s, background 0.2s;
     outline: none;
-    margin-bottom: 24px;
+    margin-bottom: 12px;
     margin-top: 24px;
     display: flex;
     flex-direction: column;
@@ -158,7 +158,7 @@
     border-color: #1976d2;
     background: #e3f2fd;
   }
-  
+
   .file-upload-text {
     display: flex;
     align-items: center;
@@ -170,4 +170,22 @@
     font-size: 24px;
     color: var(--mat-sys-on-secondary-container);
     margin-bottom: 0; // entfernt den unteren Abstand
+  }
+
+  .textmode-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: 12px;
+  }
+
+  .textmode-buttons button.active {
+    background: var(--mat-sys-primary, #1976d2) !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 3px #1976d233;
+    border: 2px solid var(--mat-sys-primary, #1976d2);
+  }
+
+  .textmode-buttons button.active mat-icon {
+    color: #fff !important;
   }

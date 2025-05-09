@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { SongFile } from '../model/song-file.model';
 import { selectCurrentSongFile } from '../store/song-file.feature';
@@ -35,7 +35,7 @@ const REACTION_TIME = .3;
   templateUrl: './song-view.component.html',
   styleUrl: './song-view.component.scss',
 })
-export class SongViewComponent implements OnInit {
+export class SongViewComponent implements OnInit, OnDestroy {
 
   @ViewChild('audioRef') audio?: ElementRef<HTMLAudioElement>;
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
@@ -56,6 +56,8 @@ export class SongViewComponent implements OnInit {
   audioFileBytes?: string;
 
   isDragOver = false;
+
+  showTextModeMenu = false;
     
   constructor(readonly store: Store) {}
 
@@ -78,8 +80,12 @@ export class SongViewComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.updateTextModeMenu();
+    window.addEventListener('resize', this.updateTextModeMenu.bind(this));
+  
     this.store.select(selectCurrentSongFile).subscribe((song) => {
       this.song = song?.clone() || null;
+      this.textmode = this.song?.text? 'view' : 'edit';
       const fileId = this.song?.audiofiles[0]?.id;
       if (fileId) {
         localforage.getItem(fileId).then((bytes) => {
@@ -87,6 +93,15 @@ export class SongViewComponent implements OnInit {
         });
       }
     });
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('resize', this.updateTextModeMenu.bind(this));
+  }
+  
+  updateTextModeMenu() {
+    // Passe den Wert (z.B. 340) ggf. an die Breite deiner Buttons an
+    this.showTextModeMenu = window.innerWidth < 340;
   }
 
   toggleTextMode() {
