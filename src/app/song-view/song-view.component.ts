@@ -86,13 +86,13 @@ export class SongViewComponent implements OnInit, OnDestroy {
     window.addEventListener('resize', this.updateTextModeMenu.bind(this));
   
     this.store.select(selectCurrentSongFile)
-      .pipe(first())
+      .pipe(first(song => !!song))
       .subscribe((song) => {
-        this.textmode = song?.text? 'view' : 'edit';
+        this.textmode = song?.text ? 'view' : 'edit';
         const fileId = song?.audiofiles[0]?.id;
         if (fileId) {
           localforage.getItem(fileId).then((bytes) => {
-            this.audioFileBytes = bytes as string;
+          this.audioFileBytes = bytes as string;
           });
         }
       });

@@ -4,7 +4,9 @@
       {{ line }}
       <!-- Optional: <img *ngIf="notenUrl" [src]="notenUrl" alt="Noten"> -->
     </div>
-    <div class="song-bar-cue" *ngIf="cue !== undefined">
-      {{ cue | mmss }}
-    </div>
+    @if (cue !== null) {
+      <div class="song-bar-cue">
+        {{ cue | mmss }}
+      </div>
+    }
 </div>
