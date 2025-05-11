@@ -182,3 +182,9 @@
   .textmode-buttons button.active mat-icon {
     color: #fff !important;
   }
+
+  .song-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }

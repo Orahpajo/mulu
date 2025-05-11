@@ -1,0 +1,22 @@
+.song-bar {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+    border-radius: 4px;
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  .song-bar.current {
+    background: var(--mat-sys-secondary-container, #e3f2fd);
+  }
+  .song-bar-content {
+    flex: 1 1 auto;
+    /* weitere Formatierungen */
+  }
+  .song-bar-cue {
+    min-width: 32px;
+    text-align: right;
+    color: gray;
+    font-size: 0.95em;
+    margin-left: 8px;
+  }

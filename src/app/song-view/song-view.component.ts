@@ -16,6 +16,7 @@ import { first } from 'rxjs';
 import { MatListItem, MatListModule } from '@angular/material/list';
 import { v4 as uuidv4 } from 'uuid';
 import localforage from 'localforage';
+import { SongBarComponent } from './song-bar/song-bar.component';
 
 const REACTION_TIME = .3;
 
@@ -31,6 +32,7 @@ const REACTION_TIME = .3;
     MatInputModule,
     MatMenuModule,
     MatListModule,
+    SongBarComponent
   ],
   templateUrl: './song-view.component.html',
   styleUrl: './song-view.component.scss',
@@ -39,7 +41,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   @ViewChild('audioRef') audio?: ElementRef<HTMLAudioElement>;
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
-  @ViewChildren('lineItem') lineItems!: QueryList<MatListItem>;
+  @ViewChildren('lineItem', { read: ElementRef }) lineItems!: QueryList<ElementRef>;
   
   currentTime = 0;
   currentLine = -1;
@@ -83,15 +85,20 @@ export class SongViewComponent implements OnInit, OnDestroy {
     this.updateTextModeMenu();
     window.addEventListener('resize', this.updateTextModeMenu.bind(this));
   
+    this.store.select(selectCurrentSongFile)
+      .pipe(first())
+      .subscribe((song) => {
+        this.textmode = song?.text? 'view' : 'edit';
+        const fileId = song?.audiofiles[0]?.id;
+        if (fileId) {
+          localforage.getItem(fileId).then((bytes) => {
+            this.audioFileBytes = bytes as string;
+          });
+        }
+      });
+
     this.store.select(selectCurrentSongFile).subscribe((song) => {
       this.song = song?.clone() || null;
-      this.textmode = this.song?.text? 'view' : 'edit';
-      const fileId = this.song?.audiofiles[0]?.id;
-      if (fileId) {
-        localforage.getItem(fileId).then((bytes) => {
-          this.audioFileBytes = bytes as string;
-        });
-      }
     });
   }
 
@@ -184,10 +191,9 @@ export class SongViewComponent implements OnInit, OnDestroy {
     if (!this.scrollContainer || !this.lineItems) return;
     const current = this.lineItems.get(this.currentLine);
     if (!current) return;
-  
+
     const container = this.scrollContainer.nativeElement;
-    // MatListItem statt ElementRef!
-    const item = current._elementRef.nativeElement as HTMLElement;
+    const item = current.nativeElement as HTMLElement;
   
     const containerRect = container.getBoundingClientRect();
     const itemRect = item.getBoundingClientRect();
