@@ -80,21 +80,19 @@
                      #scrollContainer
                      (scroll)="onTextScroll(scrollContainer)">
                   <mat-list>
-                    @for (line of (song.text.split('\n')); track $index) {
-                      <div class="song-bars">
-                        @for (line of (song.text.split('\n')); track $index) {
-                          <app-song-bar
-                            #lineItem
-                            [line]="line"
-                            [isCurrent]="isCurrentLine($index)"
-                            [cue]="song.cues[$index]"
-                            [index]="$index"
-                            [textmode]="textmode"
-                            (click)="onLineClick($index)">
-                          </app-song-bar>
-                        }
-                      </div>
-                    }
+                    <div class="song-bars">
+                      @for (line of songBars; track $index) {
+                        <app-song-bar
+                          #lineItem
+                          [line]="line"
+                          [isCurrent]="isCurrentLine($index)"
+                          [cue]="song.cues[$index]"
+                          [index]="$index"
+                          [textmode]="textmode"
+                          (click)="onLineClick($index)">
+                        </app-song-bar>
+                      }
+                    </div>
                   </mat-list>
                 </div>
                 <div class="blur-bottom" [class.visible]="!atBottom"></div>

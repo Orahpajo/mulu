@@ -1,9 +1,8 @@
 <div class="song-bar" [class.current]="isCurrent">
-    <div class="song-bar-content" [ngClass]="isCurrent ? 'current-line-text' : 'song-line-text'">
-      <!-- Beispiel: Markdown-Rendering, Bilder, Noten, etc. -->
-      {{ line }}
-      <!-- Optional: <img *ngIf="notenUrl" [src]="notenUrl" alt="Noten"> -->
-    </div>
+  <div class="song-bar-content" 
+      [ngClass]="isCurrent ? 'current-line-text' : 'song-line-text'" 
+      [innerHTML]="line | linebreaks">
+  </div>
     @if (cue !== null) {
       <div class="song-bar-cue">
         {{ cue | mmss }}

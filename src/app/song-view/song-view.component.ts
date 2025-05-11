@@ -60,6 +60,8 @@ export class SongViewComponent implements OnInit, OnDestroy {
   isDragOver = false;
 
   showTextModeMenu = false;
+
+  songBars: string[] = [];
     
   constructor(readonly store: Store) {}
 
@@ -99,6 +101,8 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
     this.store.select(selectCurrentSongFile).subscribe((song) => {
       this.song = song?.clone() || null;
+      if (song?.text)
+        this.songBars = song.text.split('\n\n');
     });
   }
 
