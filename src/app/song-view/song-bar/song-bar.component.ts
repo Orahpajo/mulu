@@ -17,4 +17,15 @@ export class SongBarComponent {
   @Input() index!: number;
   @Input() textmode!: 'view' | 'mark' | 'edit';
 
+  get lines(): string[] {
+    return this.line.split('\n');
+  }
+  
+  getVoiceClass(line: string): string {
+    if (line.toLowerCase().startsWith('s:')) return 'voice-s';
+    if (line.toLowerCase().startsWith('a:')) return 'voice-a';
+    if (line.toLowerCase().startsWith('t:')) return 'voice-t';
+    if (line.toLowerCase().startsWith('b:')) return 'voice-b';
+    return '';
+  }
 }

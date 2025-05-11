@@ -8,19 +8,24 @@
     margin-bottom: 6px;
     border-left: 4px solid var(--mat-sys-primary, #1976d2);
     box-sizing: border-box;
-  }
-  .song-bar.current {
-    background: var(--mat-sys-secondary-container, #e3f2fd);
-    border-left-color: var(--mat-sys-secondary, #90caf9);
-  }
-  .song-bar-content {
-    flex: 1 1 auto;
-    padding-left: 12px; 
-  }
-  .song-bar-cue {
-    min-width: 32px;
-    text-align: right;
-    color: gray;
-    font-size: 0.95em;
-    margin-left: 8px;
-  }
+}
+.song-bar.current {
+  background: var(--mat-sys-secondary-container, #e3f2fd);
+  border-left-color: var(--mat-sys-secondary, #90caf9);
+}
+.song-bar-content {
+  flex: 1 1 auto;
+  padding-left: 12px; 
+}
+.song-bar-cue {
+  min-width: 32px;
+  text-align: right;
+  color: gray;
+  font-size: 0.95em;
+  margin-left: 8px;
+}
+
+.voice-s { color: #e53935; }   // Sopran
+.voice-a { color: #fbc02d; }   // Alt
+.voice-t { color: #43a047; }   // Tenor
+.voice-b { color: #8e24aa; }   // Bass
