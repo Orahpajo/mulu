@@ -5,13 +5,17 @@
     border-radius: 4px;
     transition: background 0.2s;
     cursor: pointer;
+    margin-bottom: 6px;
+    border-left: 4px solid var(--mat-sys-primary, #1976d2);
+    box-sizing: border-box;
   }
   .song-bar.current {
     background: var(--mat-sys-secondary-container, #e3f2fd);
+    border-left-color: var(--mat-sys-secondary, #90caf9);
   }
   .song-bar-content {
     flex: 1 1 auto;
-    /* weitere Formatierungen */
+    padding-left: 12px; 
   }
   .song-bar-cue {
     min-width: 32px;
