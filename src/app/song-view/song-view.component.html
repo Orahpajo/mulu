@@ -80,7 +80,7 @@
                      #scrollContainer
                      (scroll)="onTextScroll(scrollContainer)">
                   <mat-list>
-                    <div class="song-bars">
+                    <div class="song-bars monospace-text">
                       @for (line of songBars; track $index) {
                         <app-song-bar
                           #lineItem
@@ -101,7 +101,7 @@
         } @else if (textmode === 'edit') {
             <mat-form-field>
               <textarea matInput
-                class="song-text-area"
+                class="song-text-area monospace-text"
                 placeholder="Songtext"
                 [(ngModel)]="song.text"
                 (blur)="saveText()"></textarea>

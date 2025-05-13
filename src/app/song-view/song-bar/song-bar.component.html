@@ -1,8 +1,8 @@
 <div class="song-bar" [class.current]="isCurrent">
   <div class="song-bar-content" 
       [ngClass]="isCurrent ? 'current-line-text' : 'song-line-text'">
-      @for (l of lines; track $index) {
-        <div [ngClass]="getVoiceClass(l)" [innerHTML]="l | linebreaks"></div>
+      @for (line of lines; track $index) {
+        <div [ngClass]="getVoiceClass(line)" >{{ line }}</div>
       }
   </div>
     @if (cue !== null) {

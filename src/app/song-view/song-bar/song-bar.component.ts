@@ -1,11 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { SecondsToMmssPipe } from '../../pipes/seconds-to-mmss.pipe';
 import { CommonModule } from '@angular/common';
-import { LinebreaksPipe } from '../../pipes/linebreaks.pipe';
 
 @Component({
   selector: 'app-song-bar',
-  imports: [CommonModule, SecondsToMmssPipe, LinebreaksPipe],
+  imports: [CommonModule, SecondsToMmssPipe],
   templateUrl: './song-bar.component.html',
   styleUrl: './song-bar.component.scss'
 })
