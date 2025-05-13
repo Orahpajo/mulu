@@ -1,6 +1,19 @@
 import { v4 as uuidv4 } from 'uuid';
 import { AudioFile } from './audio-file.model';
 
+export const defaultText = 
+    'voices:\n' + 
+    '  s: red\n' +
+    '  a: gold\n' +
+    '  t: lime\n' +
+    '  b: fuchsia\n' +
+    '\n' +
+    'Erste Songzeile\n' +
+    's: Sopran\n' +
+    'a: Alt\n' +
+    't: Tenor\n' +
+    'b: Bass\n';
+
 export class SongFile {
     constructor(
         public name: string,
@@ -16,7 +29,7 @@ export class SongFile {
         children: SongFile[] = [],
         audiofiles: AudioFile[] = [],
         id: string = uuidv4(),
-        text: string = '',
+        text: string = defaultText,
         cues: (number | undefined)[] = [],
     ): SongFile {
         return new SongFile(name, children, id, audiofiles, text, cues);

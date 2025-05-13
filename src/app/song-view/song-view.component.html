@@ -87,8 +87,7 @@
                           [line]="line"
                           [isCurrent]="isCurrentLine($index)"
                           [cue]="song.cues[$index]"
-                          [index]="$index"
-                          [textmode]="textmode"
+                          [voices]="voices"
                           (click)="onLineClick($index)">
                         </app-song-bar>
                       }

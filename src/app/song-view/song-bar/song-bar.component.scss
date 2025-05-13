@@ -25,7 +25,20 @@
   margin-left: 8px;
 }
 
-.voice-s { color: #e53935; }   // Sopran
-.voice-a { color: #fbc02d; }   // Alt
-.voice-t { color: #43a047; }   // Tenor
-.voice-b { color: #8e24aa; }   // Bass
+.song-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.song-line-voice {
+  min-width: 24px;
+  text-align: right;
+  font-weight: bold;
+  color: inherit;
+}
+
+.song-line-text {
+  flex: 1;
+  white-space: pre-wrap; 
+}

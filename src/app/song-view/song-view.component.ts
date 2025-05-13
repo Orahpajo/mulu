@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { SongFile } from '../model/song-file.model';
+import { defaultText, SongFile } from '../model/song-file.model';
 import { selectCurrentSongFile } from '../store/song-file.feature';
 import { MatIconModule } from '@angular/material/icon';
 import { editSongFile } from '../store/song-file.actions';
@@ -62,6 +62,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
   showTextModeMenu = false;
 
   songBars: string[] = [];
+  voices: Map<string, string> = new Map();
     
   constructor(readonly store: Store) {}
 
@@ -90,7 +91,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
     this.store.select(selectCurrentSongFile)
       .pipe(first(song => !!song))
       .subscribe((song) => {
-        this.textmode = song?.text ? 'view' : 'edit';
+        this.textmode = song?.text === defaultText ? 'edit' : 'view';
         const fileId = song?.audiofiles[0]?.id;
         if (fileId) {
           localforage.getItem(fileId).then((bytes) => {
@@ -101,9 +102,33 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
     this.store.select(selectCurrentSongFile).subscribe((song) => {
       this.song = song?.clone() || null;
-      if (song?.text)
+      if (song?.text) {
         this.songBars = song.text.split('\n\n');
+        this.createVoices();
+      }
     });
+  }
+
+  createVoices() {
+    this.voices.clear();
+    // find voicebar
+    const voiceBar = this.songBars.find(bar => bar.toLowerCase().startsWith('voices:'));
+    if(!voiceBar) return;
+
+    // Split the voiceBar into lines and process each line
+    const lines = voiceBar.split('\n');
+    for (const line of lines) {
+        // Match lines with the format "key: value"
+        const match = line.match(/^\s*([a-z]*):\s*(.+)$/i);
+        if (match) {
+            const key = match[1].trim(); // Extract the key (e.g., "s", "a", "t", "b")
+            const value = match[2].trim(); // Extract the value (e.g., "firebrick", "gold")
+            this.voices.set(key, value); // Add the key-value pair to the map
+        }
+    }
+
+    // Remove the "voices:" line from songBars
+    this.songBars = this.songBars.filter(bar => !bar.toLowerCase().startsWith('voices:'));
   }
 
   ngOnDestroy() {
