@@ -121,15 +121,15 @@
               style="width: 100%; max-height: 480px; background: #000;">
             </video>
             <div class="song-control-slider">
-              <span style="min-width: 40px;">{{ audioRef.currentTime| mmss }}</span>
+              <span style="min-width: 40px;">{{ currentTime| mmss }}</span>
               <mat-slider 
                 style="flex: 1;"
                 [min]="0"
                 [max]="duration"
                 (input)="onSeek($event, audioRef)">
-                <input matSliderThumb [value]="audioRef.currentTime">
+                <input matSliderThumb [value]="currentTime">
               </mat-slider>
-              <span style="min-width: 40px;">{{ (duration - audioRef.currentTime) | mmss }}</span>
+              <span style="min-width: 40px;">{{ (duration - currentTime) | mmss }}</span>
             </div>
             <div class="song-control-buttons">
               <button mat-fab color="primary" (click)="togglePlay(audioRef)">
@@ -143,15 +143,15 @@
               (loadedmetadata)="onLoadedMetadata(audioRef)">
             </audio>
             <div class="song-control-slider">
-              <span style="min-width: 40px;">{{ audioRef.currentTime| mmss }}</span>
+              <span style="min-width: 40px;">{{ currentTime| mmss }}</span>
               <mat-slider 
                 style="flex: 1;"
                 [min]="0"
                 [max]="duration"
                 (input)="onSeek($event, audioRef)">
-                <input matSliderThumb [value]="audioRef.currentTime">
+                <input matSliderThumb [value]="currentTime">
               </mat-slider>
-              <span style="min-width: 40px;">{{ (duration - audioRef.currentTime) | mmss }}</span>
+              <span style="min-width: 40px;">{{ (duration - currentTime) | mmss }}</span>
             </div>
             <div class="song-control-buttons">
               <button mat-fab color="primary" (click)="togglePlay(audioRef)">

@@ -13,7 +13,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import {MatMenuModule} from '@angular/material/menu';
 import { first } from 'rxjs';
-import { MatListItem, MatListModule } from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
 import { v4 as uuidv4 } from 'uuid';
 import localforage from 'localforage';
 import { SongBarComponent } from './song-bar/song-bar.component';
@@ -182,7 +182,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.song!.cues.length; i++) {
       const cue = this.song!.cues[i];
       let nextCue = this.nextValidCue(i);
-      if (cue && cue <= audio.currentTime && nextCue > audio.currentTime) {
+      if (cue && cue <= this.currentTime && nextCue > this.currentTime) {
         this.currentLine = i;
         this.scrollToCurrentLine(); 
         break;
@@ -226,7 +226,8 @@ export class SongViewComponent implements OnInit, OnDestroy {
   }
   
   onSeek(event: any, audio: HTMLAudioElement) {
-    const value = event.value ?? event.target.value;
+    const value = event.value ?? event.target.value; 
+    this.currentTime = value;
     audio.currentTime = value;
   }
 
