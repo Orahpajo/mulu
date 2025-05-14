@@ -29,7 +29,8 @@ export const songFileFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(createSongFile, (state) => {
-      const newFile = SongFile.create('New Song');
+      let songName = generateSongName(state);
+      const newFile = SongFile.create(songName);
       return {
         ...state,
         songFiles: [...state.songFiles, newFile],
@@ -120,3 +121,17 @@ export const {
   selectSongFile,
   selectLatestSongFile,
 } = songFileFeature;
+function generateSongName(state: State) {
+  let songName = 'New Song';
+  while (state.songFiles.find(song => song.name === songName)) {
+    const match = songName.match(/\((\d+)\)$/);
+    if (match) {
+      const number = parseInt(match[1], 10);
+      songName = songName.replace(/\(\d+\)$/, `(${number + 1})`);
+    } else {
+      songName = songName + ' (2)';
+    }
+  }
+  return songName;
+}
+
