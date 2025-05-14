@@ -63,6 +63,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   songBars: string[] = [];
   voices: Map<string, string> = new Map();
+  maxVoiceWidth: string = '0px';
     
   constructor(readonly store: Store) {}
 
@@ -111,24 +112,32 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   createVoices() {
     this.voices.clear();
-    // find voicebar
     const voiceBar = this.songBars.find(bar => bar.toLowerCase().startsWith('voices:'));
-    if(!voiceBar) return;
+    if (!voiceBar) return;
 
-    // Split the voiceBar into lines and process each line
     const lines = voiceBar.split('\n');
     for (const line of lines) {
-        // Match lines with the format "key: value"
-        const match = line.match(/^\s*([a-z]*):\s*(.+)$/i);
-        if (match) {
-            const key = match[1].trim(); // Extract the key (e.g., "s", "a", "t", "b")
-            const value = match[2].trim(); // Extract the value (e.g., "firebrick", "gold")
-            this.voices.set(key, value); // Add the key-value pair to the map
-        }
+      const match = line.match(/^\s*([a-z]*):\s*(.+)$/i);
+      if (match) {
+        const key = match[1].trim();
+        const value = match[2].trim();
+        this.voices.set(key, value);
+      }
     }
 
-    // Remove the "voices:" line from songBars
+    this.calculateMaxVoiceWidth();
+
     this.songBars = this.songBars.filter(bar => !bar.toLowerCase().startsWith('voices:'));
+  }
+
+  calculateMaxVoiceWidth() {
+    const longestVoice = Array.from(this.voices.keys()).reduce((a, b) => (a.length > b.length ? a : b), '');
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (context) {
+      context.font = 'bold 14px monospace';
+      this.maxVoiceWidth = `${context.measureText(longestVoice).width }px`;
+    }
   }
 
   ngOnDestroy() {

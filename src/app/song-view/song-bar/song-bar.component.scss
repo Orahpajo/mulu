@@ -32,10 +32,11 @@
 }
 
 .song-line-voice {
-  min-width: 24px;
+  display: inline-block;
   text-align: right;
   font-weight: bold;
   color: inherit;
+  width: var(--voice-width, auto); 
 }
 
 .song-line-text {

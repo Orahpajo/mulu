@@ -9,26 +9,27 @@ import { CommonModule, NgStyle } from '@angular/common';
   styleUrl: './song-bar.component.scss'
 })
 export class SongBarComponent {
-
   @Input() line: string = '';
   @Input() isCurrent: boolean = false;
   @Input() cue?: number;
-  @Input() voices?: Map<string, string>
+  @Input() voices?: Map<string, string>;
+  @Input() maxVoiceWidth: string = '0px';
 
   get lines(): string[] {
     return this.line.split('\n');
   }
-  
+
   getVoiceStyle(line: string) {
     const voice = line.split(':')[0];
-    if (this.voices?.has(voice))
-      return {color: this.voices?.get(voice)};
-    else 
-      return {};
+    if (this.voices?.has(voice)) {
+      return { color: this.voices.get(voice), width: this.maxVoiceWidth };
+    } else {
+      return { width: this.maxVoiceWidth };
+    }
   }
 
   getVoice(line: string): string | null {
-    const match = line.match(/^([a-z]*):/i);
+    const match = line.match(/^([a-z]+):/i);
     return match ? match[1] : null;
   }
 

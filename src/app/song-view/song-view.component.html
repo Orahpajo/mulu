@@ -88,6 +88,7 @@
                           [isCurrent]="isCurrentLine($index)"
                           [cue]="song.cues[$index]"
                           [voices]="voices"
+                          [maxVoiceWidth]="maxVoiceWidth"
                           (click)="onLineClick($index)">
                         </app-song-bar>
                       }

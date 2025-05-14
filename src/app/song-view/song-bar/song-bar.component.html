@@ -4,10 +4,11 @@
       @for (line of lines; track $index) {
         <div class="song-line">
           <!-- Voice Label -->
-          @if(getVoice(line)){
-            <span class="song-line-voice" [ngStyle]="getVoiceStyle(line)">
-              {{ getVoice(line) }}
-            </span>
+          @if(getVoice(line)) {
+            <span
+              class="song-line-voice"
+              [ngStyle]="{ width: maxVoiceWidth }"
+              [ngStyle]="getVoiceStyle(line)">{{getVoice(line)}}</span>
           }
           <!-- Line Text -->
           <span class="song-line-text">{{ getLineText(line) }}</span>
