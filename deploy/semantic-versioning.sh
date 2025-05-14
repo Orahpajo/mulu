@@ -32,7 +32,7 @@ npm version $BUMP --no-git-tag-version
 
 # 5. Version in Environmenten setzen
 NEW_VERSION=$(node -p "require('./package.json').version")
-sed -i "s/export const version = '.*';/export const version = '$NEW_VERSION';/" src/environment/version.ts
+sed -i '' "s/export const version = '.*';/export const version = '$NEW_VERSION';/" src/environment/version.ts
 
 # 6. Commit und Tag
 git add package.json package-lock.json src/environment/version.ts
