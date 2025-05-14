@@ -38,7 +38,7 @@ export const songFileFeature = createFeature({
       };
     }),
     on(importSongFile, (state, { file }) => {
-      const newFile = SongFile.create(file.songFile.name, file.songFile.children, file.songFile.audiofiles, file.songFile.id, file.songFile.text, file.songFile.cues);
+      const newFile = SongFile.create(file.songFile.name, file.songFile.children, file.songFile.audiofiles, uuidv4(), file.songFile.text, file.songFile.cues);
       return {
         ...state,
         songFiles: [...state.songFiles, newFile],
