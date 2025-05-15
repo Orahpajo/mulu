@@ -29,7 +29,7 @@ export const songFileFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(createSongFile, (state) => {
-      let songName = generateSongName(state);
+      let songName = guardDuplicateSongName('New Song',state);
       const newFile = SongFile.create(songName);
       return {
         ...state,
@@ -38,11 +38,11 @@ export const songFileFeature = createFeature({
       };
     }),
     on(importSongFile, (state, { file }) => {
-      const newFile = SongFile.create(file.songFile.name, file.songFile.children, file.songFile.audiofiles, uuidv4(), file.songFile.text, file.songFile.cues);
+      const songName = guardDuplicateSongName(file.songFile.name,state);
+      const newFile = SongFile.create(songName, file.songFile.children, file.songFile.audiofiles, uuidv4(), file.songFile.text, file.songFile.cues);
       return {
         ...state,
         songFiles: [...state.songFiles, newFile],
-        currentSongFile: newFile,
       };
     }),
     on(openSongFile, (state, { id }) => {
@@ -121,8 +121,8 @@ export const {
   selectSongFile,
   selectLatestSongFile,
 } = songFileFeature;
-function generateSongName(state: State) {
-  let songName = 'New Song';
+
+function guardDuplicateSongName(songName: string, state: State) {
   while (state.songFiles.find(song => song.name === songName)) {
     const match = songName.match(/\((\d+)\)$/);
     if (match) {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToolbarComponent } from "./toolbar/toolbar.component";
 import { Store } from '@ngrx/store';
@@ -10,10 +10,13 @@ import { loadSongFiles } from './store/song-file.actions';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'mulu';
 
-  constructor(readonly store: Store){
-    this.store.dispatch(loadSongFiles());
+  constructor(readonly store: Store) {
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(loadSongFiles())
   }
 }

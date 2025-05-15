@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, withLatestFrom, tap, switchMap } from 'rxjs/operators';
+import { map, withLatestFrom, switchMap } from 'rxjs/operators';
 import { closeCurrentSongFile, createSongFile, deleteSongFile, deleteSongFileWithQuestion, editSongFile, importSongFile, loadSongFiles, openSongFile, saveSongFiles, setSongFiles } from './song-file.actions';
 import { SongFile } from '../model/song-file.model';
 import { selectCurrentSongFile, selectSongFiles } from './song-file.feature';
@@ -9,6 +9,8 @@ import { Dialog } from '@angular/cdk/dialog';
 import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 import { Router } from '@angular/router';
 import localforage from 'localforage';
+import { CommonSongService } from '../../services/common-song.service';
+import { from } from 'rxjs';
 
 
 @Injectable()
@@ -17,25 +19,35 @@ export class SongFileEffects {
     private store = inject(Store);
     private dialog = inject(Dialog);
     private router = inject(Router);
+    private commonSongService = inject(CommonSongService);
 
     loadSongFiles$ = createEffect(() =>
         this.actions$.pipe(
             ofType(loadSongFiles),
-            switchMap(async () => {
-                // load all song files from localforage
-                const data = await localforage.getItem<string>('songFiles');
-                let songFiles: SongFile[] = [];
-                if (data) {
-                    const arr = JSON.parse(data);
-                    songFiles = arr.map((obj: any) =>{
-                        return new SongFile(obj.name, obj.children, obj.id, obj.audiofiles, obj.text, obj.cues);
-                    });
-                }
-                // load the current song file ID from localforage
-                const currentSongFileId = await localforage.getItem<string>('currentSongFileId');
-                const currentSongFile = songFiles.find((file) => file.id === currentSongFileId) || null;
-                return setSongFiles(songFiles,currentSongFile);
-            })
+            switchMap(() =>
+            from(localforage.getItem<string>('songFiles')).pipe(
+                switchMap((data) => {
+                    let songFiles: SongFile[] = [];
+                    if (data) {
+                        const arr = JSON.parse(data);
+                        songFiles = arr.map((obj: any) =>
+                        new SongFile(obj.name, obj.children, obj.id, obj.audiofiles, obj.text, obj.cues, obj.isCommonSong));
+                    }
+
+                    return from(localforage.getItem<string>('currentSongFileId')).pipe(
+                        switchMap((currentSongFileId) => {
+                        const currentSongFile = songFiles.find((file) => file.id === currentSongFileId) || null;
+
+                        return this.commonSongService.loadCommonSongs().pipe(
+                            map((loadedSongFiles) => {
+                                return setSongFiles([...loadedSongFiles, ...songFiles], currentSongFile)
+                            })
+                        );
+                        })
+                    );
+                })
+            )
+            )
         )
     );
 

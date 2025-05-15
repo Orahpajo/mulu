@@ -44,3 +44,7 @@ Thumbs.db
 # Security
 credentials.txt
 .htpasswd
+
+# songfiles
+deploy/commonSongs/*
+public/commonSongs/

@@ -7,6 +7,7 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideEffects } from '@ngrx/effects';
 import { songFileFeature } from './store/song-file.feature';
 import { SongFileEffects } from './store/song-file.effects';
+import { provideHttpClient } from '@angular/common/http';
 
 
 export const appConfig: ApplicationConfig = {
@@ -17,5 +18,6 @@ export const appConfig: ApplicationConfig = {
     provideStoreDevtools(),
     provideEffects(SongFileEffects),
     provideState(songFileFeature),
+    provideHttpClient(),
 ]
 };

@@ -22,6 +22,8 @@ export class SongFile {
         public audiofiles: AudioFile[],
         public text: string,
         public cues: (number | undefined)[],
+        /** Is it a song, that is shared via the server */
+        public isCommonSong: boolean,
     ) {}
 
     static create(
@@ -31,8 +33,9 @@ export class SongFile {
         id: string = uuidv4(),
         text: string = defaultText,
         cues: (number | undefined)[] = [],
+        isCommonSong = false,
     ): SongFile {
-        return new SongFile(name, children, id, audiofiles, text, cues);
+        return new SongFile(name, children, id, audiofiles, text, cues, isCommonSong);
     }
 
     isDirectory(): boolean {
@@ -47,6 +50,7 @@ export class SongFile {
             [...this.audiofiles],
             this.text,
             [...this.cues],
+            this.isCommonSong,
         );
     }
 

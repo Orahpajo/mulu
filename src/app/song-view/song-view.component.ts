@@ -17,6 +17,7 @@ import { MatListModule } from '@angular/material/list';
 import { v4 as uuidv4 } from 'uuid';
 import localforage from 'localforage';
 import { SongBarComponent } from './song-bar/song-bar.component';
+import { CommonSongService } from '../../services/common-song.service';
 
 const REACTION_TIME = .3;
 
@@ -65,7 +66,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
   voices: Map<string, string> = new Map();
   maxVoiceWidth: string = '0px';
     
-  constructor(readonly store: Store) {}
+  constructor(readonly store: Store, readonly commonSongService: CommonSongService) {}
 
   onFileDragOver(event: DragEvent) {
     event.preventDefault();
@@ -96,9 +97,16 @@ export class SongViewComponent implements OnInit, OnDestroy {
         const fileId = song?.audiofiles[0]?.id;
         if (fileId) {
           localforage.getItem(fileId).then((bytes) => {
-          this.audioFileBytes = bytes as string;
+            if (bytes)
+              this.audioFileBytes = bytes as string;
+            else 
+              this.commonSongService.loadSongBytes(fileId)
+                .subscribe(audioFile => {
+                  this.audioFileBytes = audioFile.bytes as string; 
+                })
+            
           });
-        }
+        } 
       });
 
     this.store.select(selectCurrentSongFile).subscribe((song) => {
