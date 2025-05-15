@@ -17,6 +17,7 @@ import { MatListModule } from '@angular/material/list';
 import { v4 as uuidv4 } from 'uuid';
 import localforage from 'localforage';
 import { SongBarComponent } from './song-bar/song-bar.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonSongService } from '../../services/common-song.service';
 
 const REACTION_TIME = .3;
@@ -33,7 +34,8 @@ const REACTION_TIME = .3;
     MatInputModule,
     MatMenuModule,
     MatListModule,
-    SongBarComponent
+    SongBarComponent,
+    MatTooltipModule
   ],
   templateUrl: './song-view.component.html',
   styleUrl: './song-view.component.scss',
@@ -65,6 +67,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
   songBars: string[] = [];
   voices: Map<string, string> = new Map();
   maxVoiceWidth: string = '0px';
+  buttonDisabledTooltip = 'Die vorgeladenen Lieder können nicht bearbeitet werden. Bitte kopiere das Lied.';
     
   constructor(readonly store: Store, readonly commonSongService: CommonSongService) {}
 

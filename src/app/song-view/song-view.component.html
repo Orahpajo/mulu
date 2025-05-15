@@ -31,13 +31,34 @@
     <div class="section-header">
       <ng-container *ngIf="!showTextModeMenu; else menuTemplate">
         <div class="textmode-buttons">
-          <button mat-mini-fab [class.active]="textmode === 'edit'" (click)="textmode = 'edit'" aria-label="Text bearbeiten">
-            <mat-icon>edit_note</mat-icon>
-          </button>
-          <button mat-mini-fab [class.active]="textmode === 'mark'" (click)="textmode = 'mark'" aria-label="Text markieren">
-            <mat-icon>border_color</mat-icon>
-          </button>
-          <button mat-mini-fab  [class.active]="textmode === 'view'" (click)="textmode = 'view'" aria-label="Text ansehen">
+          <span
+            [matTooltip]="buttonDisabledTooltip"
+            [matTooltipDisabled]="!song?.isCommonSong"
+          >
+            <button mat-mini-fab 
+              [disabled]="song?.isCommonSong" 
+              [class.active]="textmode === 'edit'" 
+              (click)="textmode = 'edit'" 
+              aria-label="Text bearbeiten">
+              <mat-icon>edit_note</mat-icon>
+            </button>
+          </span>
+          <span
+            [matTooltip]="buttonDisabledTooltip"
+            [matTooltipDisabled]="!song?.isCommonSong"
+          >
+            <button mat-mini-fab 
+              [disabled]="song?.isCommonSong" 
+              [class.active]="textmode === 'mark'" 
+              (click)="textmode = 'mark'" 
+              aria-label="Text markieren">
+              <mat-icon>border_color</mat-icon>
+            </button>
+          </span>
+          <button mat-mini-fab  
+            [class.active]="textmode === 'view'" 
+            (click)="textmode = 'view'" 
+            aria-label="Text ansehen">
             <mat-icon>visibility</mat-icon>
           </button>
         </div>
@@ -54,14 +75,24 @@
             </mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="textmode = 'edit'">
-              <mat-icon>edit_note</mat-icon>
-              <span>Text bearbeiten</span>
-            </button>
-            <button mat-menu-item (click)="textmode = 'mark'">
-              <mat-icon>border_color</mat-icon>
-              <span>Text markieren</span>
-            </button>
+            <span
+              [matTooltip]="buttonDisabledTooltip"
+              [matTooltipDisabled]="!song?.isCommonSong"
+            >
+              <button mat-menu-item [disabled]="song?.isCommonSong" (click)="textmode = 'edit'">
+                <mat-icon>edit_note</mat-icon>
+                <span>Text bearbeiten</span>
+              </button>
+            </span>
+            <span
+              [matTooltip]="buttonDisabledTooltip"
+              [matTooltipDisabled]="!song?.isCommonSong"
+            >
+              <button mat-menu-item [disabled]="song?.isCommonSong" (click)="textmode = 'mark'">
+                <mat-icon>border_color</mat-icon>
+                <span>Text markieren</span>
+              </button>
+            </span>
             <button mat-menu-item (click)="textmode = 'view'">
               <mat-icon>visibility</mat-icon>
               <span>Text ansehen</span>
