@@ -40,7 +40,11 @@ export class SongFileEffects {
 
                         return this.commonSongService.loadCommonSongs().pipe(
                             map((loadedSongFiles) => {
-                                return setSongFiles([...loadedSongFiles, ...songFiles], currentSongFile)
+                                // Dont save songfiles that are already in the store.
+                                const filteredSongfiles = loadedSongFiles.filter(loadedFile => 
+                                    !songFiles.map(sf=> sf.id).includes(loadedFile.id)
+                                );
+                                return setSongFiles([...filteredSongfiles, ...songFiles], currentSongFile)
                             })
                         );
                         })
