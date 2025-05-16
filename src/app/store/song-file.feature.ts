@@ -4,6 +4,7 @@ import {
   closeCurrentSongFile,
   createSongFile,
   deleteSongFile,
+  duplicateSongFile,
   editSongFile,
   importSongFile,
   openSongFile,
@@ -29,13 +30,28 @@ export const songFileFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(createSongFile, (state) => {
-      let songName = guardDuplicateSongName('New Song',state);
+      const songName = guardDuplicateSongName('New Song',state);
       const newFile = SongFile.create(songName);
       return {
         ...state,
         songFiles: [...state.songFiles, newFile],
         currentSongFile: newFile,
       };
+    }),
+    on(duplicateSongFile, (state, { file }) => {
+      const songName = guardDuplicateSongName(file.name, state);
+      const duplicate = SongFile.create(
+        songName,file.children, 
+        file.audiofiles,
+        uuidv4(),
+        file.text,
+        file.cues,
+        false
+      );
+      return {
+        ...state,
+        songFiles: [...state.songFiles, duplicate],
+      }
     }),
     on(importSongFile, (state, { file }) => {
       const songName = guardDuplicateSongName(file.songFile.name,state);

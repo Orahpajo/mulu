@@ -10,8 +10,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { deleteSongFileWithQuestion, editSongFile, importSongFile, toggleEditNameMode } from '../store/song-file.actions';
-import { RouterModule } from '@angular/router';
+import { deleteSongFileWithQuestion, duplicateSongFile, editSongFile, importSongFile, toggleEditNameMode } from '../store/song-file.actions';
+import { Router, RouterModule } from '@angular/router';
 import { MuluFile } from '../model/mulu-file.model';
 import localforage from 'localforage';
 
@@ -26,7 +26,7 @@ export class ToolbarComponent {
   currentSongFile: SongFile | null = null;
   editSongTitleMode$: Observable<boolean>;
 
-  constructor(readonly store: Store) {
+  constructor(readonly store: Store, readonly router: Router) {
     this.store.select(selectCurrentSongFile).subscribe((currentSongFile) => {
       this.currentSongFile = currentSongFile?.clone() || null;
     });
@@ -44,6 +44,11 @@ export class ToolbarComponent {
     if (currentSongFile) {
       this.store.dispatch(deleteSongFileWithQuestion(currentSongFile));
     }
+  }
+
+  duplicateSong(currentSongFile: SongFile) {
+    this.store.dispatch(duplicateSongFile(currentSongFile));
+    this.router.navigate(['/']);
   }
 
   shareSong(currentSongFile: SongFile) {

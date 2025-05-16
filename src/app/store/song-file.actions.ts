@@ -4,6 +4,11 @@ import { MuluFile } from '../model/mulu-file.model';
 
 export const createSongFile = createAction('[Song File] Add Song File');
 
+export const duplicateSongFile = createAction(
+  '[Song File] Duplicate Song File',
+  (file: SongFile) => ({ file })
+)
+
 export const importSongFile = createAction(
   '[Song File] Import Song File',
   (file: MuluFile) => ({ file })
