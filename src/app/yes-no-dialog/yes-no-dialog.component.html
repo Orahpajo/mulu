@@ -1,5 +1,8 @@
-<p>{{data.question}}</p>
-<div>
-    <button mat-button (click)="dialogRef.close('false')">Nein</button>
-    <button mat-button (click)="dialogRef.close('true')">Ja</button>
-</div>
+<h2 mat-dialog-title>Bestätigung</h2>
+<mat-dialog-content>
+  <p>{{data.question}}</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onNoClick()">Nein</button>
+  <button mat-raised-button color="primary" (click)="onYesClick()">Ja</button>
+</mat-dialog-actions>

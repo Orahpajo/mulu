@@ -5,8 +5,8 @@ import { closeCurrentSongFile, createSongFile, deleteSongFile, deleteSongFileWit
 import { SongFile } from '../model/song-file.model';
 import { selectCurrentSongFile, selectSongFiles } from './song-file.feature';
 import { Store } from '@ngrx/store';
-import { Dialog } from '@angular/cdk/dialog';
-import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogData, YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 import { Router } from '@angular/router';
 import localforage from 'localforage';
 import { CommonSongService } from '../../services/common-song.service';
@@ -17,7 +17,7 @@ import { from } from 'rxjs';
 export class SongFileEffects {
     private actions$ = inject(Actions);
     private store = inject(Store);
-    private dialog = inject(Dialog);
+    private dialog = inject(MatDialog); 
     private router = inject(Router);
     private commonSongService = inject(CommonSongService);
 
@@ -75,21 +75,21 @@ export class SongFileEffects {
             this.actions$.pipe(
                 ofType(deleteSongFileWithQuestion),
                 switchMap(({ file }) => {
-                   return this.dialog.open(YesNoDialogComponent, {
+                    const dialogRef = this.dialog.open<YesNoDialogComponent, DialogData, boolean>(YesNoDialogComponent, {
                         width: '300px',
                         data: {
                             question: 'Song wirklich löschen?',
                         }
-                        }).closed.pipe(
-                            map((result) => {
-                                if (result === 'true') {
-                                    this.router.navigate(['/']);
-                                    return deleteSongFile(file);
-                                } else {
-                                    return { type: 'NO_ACTION' };
-                                }
+                        });
+                    return dialogRef.afterClosed().pipe(
+                        map((result) => { 
+                            if (result === true) {
+                                this.router.navigate(['/']);
+                                return deleteSongFile(file);
+                            } else {
+                                return { type: 'NO_ACTION' }; 
                             }
-                        )
+                        })
                     );
                 })
             )

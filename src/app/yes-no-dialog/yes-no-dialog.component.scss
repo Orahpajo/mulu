@@ -1,0 +1,7 @@
+mat-dialog-actions {
+  padding-top: 16px; /* Add some space above actions */
+}
+
+button[mat-raised-button] {
+  margin-left: 8px; /* Add some space between buttons if align="end" is not enough or for other alignments */
+}
