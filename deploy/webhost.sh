@@ -8,6 +8,8 @@ ng build --configuration production
 # move htaccess files to dist
 cp "$SCRIPT_DIR/htaccess/.htaccess" dist/mulu/browser/
 cp "$SCRIPT_DIR/htaccess/.htpasswd" dist/mulu/browser/
+mkdir -p dist/mulu/browser/commonSongs
+cp -r "public/commonSongs/" dist/mulu/browser/commonSongs/
 
 # read Credentials from credentials.txt
 CRED_FILE="$SCRIPT_DIR/credentials.txt"
