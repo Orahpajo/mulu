@@ -12,7 +12,8 @@ import { AudioFile, AudioFileWithBytes } from '../app/model/audio-file.model';
 export class CommonSongService {
   
   songFileNames: string[] = [
-    'I_5 Tratsch.mulu'
+    'I_5 Tratsch.mulu',
+    'I_12 Schaff die Männer ran.mulu',
   ];
   
   constructor(private http: HttpClient,private store: Store) { }
