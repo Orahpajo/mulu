@@ -5,13 +5,13 @@ import { selectCurrentSongFile } from '../store/song-file.feature';
 import { MatIconModule } from '@angular/material/icon';
 import { editSongFile } from '../store/song-file.actions';
 import { CommonModule } from '@angular/common';
-import {MatSliderModule} from '@angular/material/slider';
+import { MatSliderModule } from '@angular/material/slider';
 import { SecondsToMmssPipe } from '../pipes/seconds-to-mmss.pipe';
 import { MatButtonModule } from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { first } from 'rxjs';
 import { MatListModule } from '@angular/material/list';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,15 +19,16 @@ import localforage from 'localforage';
 import { SongBarComponent } from './song-bar/song-bar.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonSongService } from '../../services/common-song.service';
+import { AudibleMetronome } from '../utils/audible-metronome';
 
 const REACTION_TIME = .3;
 
 @Component({
   selector: 'app-song-view',
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
-    MatButtonModule ,MatIconModule,
+    MatButtonModule, MatIconModule,
     MatSliderModule,
     SecondsToMmssPipe,
     MatFormFieldModule,
@@ -45,16 +46,21 @@ export class SongViewComponent implements OnInit, OnDestroy {
   @ViewChild('audioRef') audio?: ElementRef<HTMLAudioElement>;
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
   @ViewChildren('lineItem', { read: ElementRef }) lineItems!: QueryList<ElementRef>;
-  
+
+  private audibleMetronome = new AudibleMetronome();
+
   currentTime = 0;
   currentLine = -1;
 
-  song: SongFile | null = null; 
+  song: SongFile | null = null;
 
-  textmode: 'edit' | 'mark' | 'view' = 'view';
+  textmode: 'edit' | 'mark' | 'view' | 'loop' = 'view';
 
   duration = 0;
   isPlaying: any;
+
+  loopStart = -1;
+  loopEnd = -1;
 
   atTop = true;
   atBottom = false;
@@ -68,8 +74,8 @@ export class SongViewComponent implements OnInit, OnDestroy {
   voices: Map<string, string> = new Map();
   maxVoiceWidth: string = '0px';
   buttonDisabledTooltip = 'Die vorgeladenen Lieder können nicht bearbeitet werden. Bitte kopiere das Lied.';
-    
-  constructor(readonly store: Store, readonly commonSongService: CommonSongService) {}
+
+  constructor(readonly store: Store, readonly commonSongService: CommonSongService) { }
 
   onFileDragOver(event: DragEvent) {
     event.preventDefault();
@@ -92,7 +98,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.updateTextModeMenu();
     window.addEventListener('resize', this.updateTextModeMenu.bind(this));
-  
+
     this.store.select(selectCurrentSongFile)
       .pipe(first(song => !!song))
       .subscribe((song) => {
@@ -102,14 +108,14 @@ export class SongViewComponent implements OnInit, OnDestroy {
           localforage.getItem(fileId).then((bytes) => {
             if (bytes)
               this.audioFileBytes = bytes as string;
-            else 
+            else
               this.commonSongService.loadSongBytes(fileId)
                 .subscribe(audioFile => {
-                  this.audioFileBytes = audioFile.bytes as string; 
+                  this.audioFileBytes = audioFile.bytes as string;
                 })
-            
+
           });
-        } 
+        }
       });
 
     this.store.select(selectCurrentSongFile).subscribe((song) => {
@@ -147,46 +153,32 @@ export class SongViewComponent implements OnInit, OnDestroy {
     const context = canvas.getContext('2d');
     if (context) {
       context.font = 'bold 14px monospace';
-      this.maxVoiceWidth = `${context.measureText(longestVoice).width }px`;
+      this.maxVoiceWidth = `${context.measureText(longestVoice).width}px`;
     }
   }
 
   ngOnDestroy() {
     window.removeEventListener('resize', this.updateTextModeMenu.bind(this));
   }
-  
+
   updateTextModeMenu() {
     // Passe den Wert (z.B. 340) ggf. an die Breite deiner Buttons an
     this.showTextModeMenu = window.innerWidth < 340;
   }
 
-  toggleTextMode() {
-    switch (this.textmode) {
-      case 'edit':
-        this.textmode = 'mark';
-        break;
-      case 'mark':
-        this.textmode = 'view';
-        break;
-      case 'view':
-        this.textmode = 'edit';
-        break;
-    }
-  }
-
   saveText() {
     this.store.select(selectCurrentSongFile)
-    .pipe(first())
-    .subscribe((song) => {
-      if (this.song && song && song.text !== this.song?.text) {
-        this.store.dispatch(editSongFile(this.song));
-      }
-    });
+      .pipe(first())
+      .subscribe((song) => {
+        if (this.song && song && song.text !== this.song?.text) {
+          this.store.dispatch(editSongFile(this.song));
+        }
+      });
   }
 
   onLineClick(lineNumber: number) {
     if (!this.audio?.nativeElement) return;
-    
+
     if (this.textmode === 'mark' && this.song) {
       // add cue if song is playing or paused and has no cue yet
       if (!this.audio.nativeElement.paused || this.song.cues[lineNumber] === undefined) {
@@ -197,17 +189,50 @@ export class SongViewComponent implements OnInit, OnDestroy {
       }
       this.store.dispatch(editSongFile(this.song));
     } else if (this.textmode === 'view') {
-      const cueTime = this.song?.cues[lineNumber];
-      if (cueTime) {
-        this.audio.nativeElement.currentTime = cueTime;
+      this.setCurrentLine(lineNumber);
+    } else if (this.textmode === 'loop') {
+      // mark loop start if not marked
+      if (this.loopStart < 0) {
+        this.loopStart = lineNumber;
+        // set current line if smaller than start
+        if (this.currentLine < this.loopStart){
+          this.setCurrentLine(this.loopStart);
+        }
+      // if loop start is marked mark loop end
+      } else if (this.loopEnd < 0) {
+        this.loopEnd = lineNumber;
+        // set current line if larger than end
+        if (this.currentLine > this.loopEnd){
+          this.setCurrentLine(this.loopEnd);
+        }
+      // if start and end are marked start marking again
+      } else {
+        this.loopStart = lineNumber;
+        this.loopEnd = -1;
       }
     }
+  }
+
+  private setCurrentLine(lineNumber: number) {
+    const cueTime = this.song?.cues[lineNumber];
+    if (cueTime) {
+      this.audio!.nativeElement.currentTime = cueTime;
+    }
+  }
+
+  /** Is the line between loop start and loop and, and thus should be marked? */
+  isLineInLoop(lineNumber: number): boolean {
+    // only in loop mode
+    if (this.textmode !== 'loop') return false;
+
+    return lineNumber >= this.loopStart && lineNumber <= this.loopEnd // line is within the loop
+      || lineNumber === this.loopStart && this.loopEnd < 0 // no loop end yet and line is start of loop
   }
 
   isCurrentLine(lineNumber: number): boolean {
     return lineNumber === this.currentLine;
   }
-      
+
   onTextScroll(container: HTMLElement) {
     this.atTop = container.scrollTop === 0;
     this.atBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
@@ -224,15 +249,47 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   onTimeUpdate(audio: HTMLAudioElement) {
     this.currentTime = audio.currentTime;
+
+    // get current line
     for (let i = 0; i < this.song!.cues.length; i++) {
       const cue = this.song!.cues[i];
       let nextCue = this.nextValidCue(i);
       if (cue && cue <= this.currentTime && nextCue > this.currentTime) {
         this.currentLine = i;
-        this.scrollToCurrentLine(); 
         break;
       }
     }
+
+    // need to loop?
+    if (this.textmode === 'loop' && this.isPlaying && this.loopStart >= 0) { // able to loop?
+      if (this.currentTime > audio.duration - .1 // song ended?
+        || this.currentTime > (this.song!.cues[this.loopEnd + 1] || 0)
+      ) {
+        audio.pause();
+        this.isPlaying = false;
+
+        if (!this.audibleMetronome.isRunning()) {
+          console.log("Starte hörbares Metronom:");
+          this.audibleMetronome.start(90, 4,
+            (currentTick: number) => {
+              console.log(`Hörbarer Tick ${currentTick}/4 (90 BPM)`);
+            },
+            // after ticks finished
+            () => {
+              this.currentLine = this.loopStart;
+              this.currentTime = this.song?.cues[this.currentLine]!;
+              audio.currentTime = this.currentTime;
+              audio.play();
+              this.isPlaying = true;
+            }
+          );
+        } else {
+          this.audibleMetronome.stop();
+        }
+      }
+    }
+
+    this.scrollToCurrentLine();
   }
 
   scrollToCurrentLine() {
@@ -243,12 +300,12 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
     const container = this.scrollContainer.nativeElement;
     const item = current.nativeElement as HTMLElement;
-  
+
     const containerRect = container.getBoundingClientRect();
     const itemRect = item.getBoundingClientRect();
     const offset = itemRect.top - containerRect.top;
     const scroll = offset - container.clientHeight / 2 + item.clientHeight / 2;
-  
+
     const targetScroll = Math.max(
       0,
       Math.min(container.scrollHeight - container.clientHeight, container.scrollTop + scroll)
@@ -265,13 +322,13 @@ export class SongViewComponent implements OnInit, OnDestroy {
     }
     return this.nextValidCue(lineNumber + 1);
   }
-  
+
   onLoadedMetadata(audio: HTMLAudioElement) {
     this.duration = audio.duration;
   }
-  
+
   onSeek(event: any, audio: HTMLAudioElement) {
-    const value = event.value ?? event.target.value; 
+    const value = event.value ?? event.target.value;
     this.currentTime = value;
     audio.currentTime = value;
   }
@@ -281,22 +338,22 @@ export class SongViewComponent implements OnInit, OnDestroy {
     if (input.files && input.files.length > 0 && this.song) {
       // Load File
       const file = input.files[0];
-      const mimeType = file.type; 
+      const mimeType = file.type;
 
       if (!(mimeType.startsWith('audio/') || mimeType.startsWith('video/'))) {
         alert('Nur Audio- oder Videodateien werden unterstützt.');
         return;
-      } 
-     
+      }
+
       // Save File Metadata in song
       const updatedSong = this.song.clone();
       const fileId = uuidv4();
-      updatedSong.audiofiles.push({ id: fileId ,name: file.name, mimeType });
+      updatedSong.audiofiles.push({ id: fileId, name: file.name, mimeType });
       this.store.dispatch(editSongFile(updatedSong));
       // Save file bytes in indexedDB
       let bytes: string;
       bytes = await this.readFileAsBase64(file);
-      
+
       localforage.setItem(fileId, bytes);
     }
   }

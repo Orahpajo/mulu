@@ -1,4 +1,7 @@
-<div class="song-bar" [class.current]="isCurrent">
+<div class="song-bar" 
+      [class.current]="isCurrent" 
+      [class.in-loop]="isInLoop"
+      [class.current-in-loop]="isCurrent && isInLoop">
   <div class="song-bar-content" 
       [ngClass]="isCurrent ? 'current-line-text' : 'song-line-text'">
       @for (line of lines; track $index) {

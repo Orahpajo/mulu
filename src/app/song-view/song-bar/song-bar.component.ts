@@ -11,6 +11,7 @@ import { CommonModule, NgStyle } from '@angular/common';
 export class SongBarComponent {
   @Input() line: string = '';
   @Input() isCurrent: boolean = false;
+  @Input() isInLoop: boolean = false;
   @Input() cue?: number;
   @Input() voices?: Map<string, string>;
   @Input() maxVoiceWidth: string = '0px';

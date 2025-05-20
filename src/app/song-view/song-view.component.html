@@ -61,6 +61,12 @@
             aria-label="Text ansehen">
             <mat-icon>visibility</mat-icon>
           </button>
+          <button mat-mini-fab  
+            [class.active]="textmode === 'loop'" 
+            (click)="textmode = 'loop'" 
+            aria-label="Music Loop">
+            <mat-icon>restart_alt</mat-icon>
+          </button>
         </div>
       </ng-container>
       <ng-template #menuTemplate>
@@ -103,8 +109,8 @@
     </div>
 
     @if (song) {    
-        <!-- Song Marking or Viewing -->
-        @if (textmode === 'mark' || textmode === 'view') {
+        <!-- Song Marking, looping or Viewing -->
+        @if (textmode !== 'edit') {
             <div class="song-text-scroll-outer">
                 <div class="blur-top" [class.visible]="!atTop"></div>
                 <div class="song-text-scroll-container"
@@ -117,6 +123,7 @@
                           #lineItem
                           [line]="line"
                           [isCurrent]="isCurrentLine($index)"
+                          [isInLoop]="isLineInLoop($index)"
                           [cue]="song.cues[$index]"
                           [voices]="voices"
                           [maxVoiceWidth]="maxVoiceWidth"
