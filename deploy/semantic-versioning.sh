@@ -35,7 +35,7 @@ NEW_VERSION=$(node -p "require('./package.json').version")
 sed -i '' "s/export const version = '.*';/export const version = '$NEW_VERSION';/" src/environments/version.ts
 
 # 6. Commit und Tag
-git add package.json package-lock.json
+git add package.json package-lock.json src/environments/version.ts
 git commit -m "deploy: v$NEW_VERSION"
 git tag "deploy-v$NEW_VERSION"
 git push
