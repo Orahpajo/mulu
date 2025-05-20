@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
-import { version } from '../../environment/version'
+import { version } from '../../environments/version'
 
 
 @Component({

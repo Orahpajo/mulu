@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { ToolbarComponent } from "./toolbar/toolbar.component";
 import { Store } from '@ngrx/store';
 import { loadSongFiles } from './store/song-file.actions';
-import { environment } from '../environment/environment';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
