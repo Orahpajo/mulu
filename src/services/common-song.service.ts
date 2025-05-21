@@ -14,6 +14,7 @@ export class CommonSongService {
   songFileNames: string[] = [
     'I_5 Tratsch.mulu',
     'I_12 Schaff die Männer ran.mulu',
+    'II_24_Mörder_Mörder.mulu',
   ];
   
   constructor(private http: HttpClient,private store: Store) { }
