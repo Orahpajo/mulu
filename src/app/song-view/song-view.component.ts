@@ -134,7 +134,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
     const lines = voiceBar.split('\n');
     for (const line of lines) {
-      const match = line.match(/^\s*([a-z]*):\s*(.+)$/i);
+      const match = line.match(/^\s*(.*):\s*(.+)$/i);
       if (match) {
         const key = match[1].trim();
         const value = match[2].trim();
