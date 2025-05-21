@@ -143,7 +143,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
     }
 
     this.calculateMaxVoiceWidth();
-
+    console.log('Voices:', this.voices);
     this.songBars = this.songBars.filter(bar => !bar.toLowerCase().startsWith('voices:'));
   }
 

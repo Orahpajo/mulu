@@ -21,7 +21,7 @@ export class SongBarComponent {
   }
 
   getVoiceStyle(line: string) {
-    const voice = line.split(':')[0];
+    const voice = line.split(':')[0].trim();
     if (this.voices?.has(voice)) {
       return { color: this.voices.get(voice), width: this.maxVoiceWidth };
     } else {
@@ -30,11 +30,11 @@ export class SongBarComponent {
   }
 
   getVoice(line: string): string | null {
-    const match = line.match(/^([a-z]+):/i);
+    const match = line.match(/^(.+):/i);
     return match ? match[1] : null;
   }
 
   getLineText(line: string): string {
-    return line.replace(/^([a-z]*):\s*/i, '');
+    return line.replace(/^(.*):\s*/i, '');
   }
 }
