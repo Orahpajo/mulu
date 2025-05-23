@@ -24,3 +24,14 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  .toolbar-actions button.active {
+    background: var(--mat-sys-primary, #1976d2) !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 3px #1976d233;
+    border: 2px solid var(--mat-sys-primary, #1976d2);
+  }
+
+  .toolbar-actions button.active mat-icon {
+    color: #fff !important;
+  }

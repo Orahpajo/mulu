@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { Store } from '@ngrx/store';
-import { selectCurrentSongFile, selectEditNameMode } from '../store/song-file.feature';
+import { selectCurrentSongFile, selectEditNameMode, selectShowAudioFiles } from '../store/song-file.feature';
 import { Observable } from 'rxjs';
 import { SongFile } from '../model/song-file.model';
 import { CommonModule } from '@angular/common';
@@ -10,14 +10,15 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { deleteSongFileWithQuestion, duplicateSongFile, editSongFile, importSongFile, toggleEditNameMode } from '../store/song-file.actions';
+import { deleteSongFileWithQuestion, duplicateSongFile, editSongFile, importSongFile, toggleEditNameMode, toggleShowAudioFiles } from '../store/song-file.actions';
 import { Router, RouterModule } from '@angular/router';
 import { MuluFile } from '../model/mulu-file.model';
 import localforage from 'localforage';
+import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-toolbar',
-  imports: [MatToolbarModule, CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, RouterModule],
+  imports: [MatToolbarModule, CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, RouterModule, MatTooltipModule],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss'
 })
@@ -25,12 +26,14 @@ export class ToolbarComponent {
 
   currentSongFile: SongFile | null = null;
   editSongTitleMode$: Observable<boolean>;
+  showAudioFiles$: Observable<boolean>;
 
   constructor(readonly store: Store, readonly router: Router) {
     this.store.select(selectCurrentSongFile).subscribe((currentSongFile) => {
       this.currentSongFile = currentSongFile?.clone() || null;
     });
     this.editSongTitleMode$ = this.store.select(selectEditNameMode);
+    this.showAudioFiles$ = this.store.select(selectShowAudioFiles);
   }
 
   toggleEditSongNameMode(currentSongFile: SongFile ,editSongTitleMode: boolean | null) {
@@ -49,6 +52,10 @@ export class ToolbarComponent {
   duplicateSong(currentSongFile: SongFile) {
     this.store.dispatch(duplicateSongFile(currentSongFile));
     this.router.navigate(['/']);
+  }
+
+  toggleShowAudioFiles() {
+    this.store.dispatch(toggleShowAudioFiles());
   }
 
   shareSong(currentSongFile: SongFile) {

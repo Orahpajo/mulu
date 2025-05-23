@@ -23,6 +23,10 @@ export const closeCurrentSongFile = createAction(
   '[Song File] Close Current Song File'
 );
 
+export const toggleShowAudioFiles = createAction(
+  '[Song File] Toggle Show Audio Files'
+);
+
 export const toggleEditNameMode = createAction(
   '[Song File] Toggle Edit Name Mode'
 );

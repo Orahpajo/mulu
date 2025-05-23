@@ -10,6 +10,7 @@ import {
   openSongFile,
   setSongFiles,
   toggleEditNameMode,
+  toggleShowAudioFiles,
 } from './song-file.actions';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,12 +18,14 @@ interface State {
   songFiles: SongFile[];
   currentSongFile: SongFile | null;
   editNameMode: boolean;
+  showAudioFiles: boolean;
 }
 
 const initialState: State = {
   songFiles: [],
   currentSongFile: null,
   editNameMode: false,
+  showAudioFiles: false,
 };
 
 export const songFileFeature = createFeature({
@@ -90,12 +93,15 @@ export const songFileFeature = createFeature({
       };
     }),
     on(editSongFile, (state, { file }) => {
+      // insert file into list of songFiles
+      // if file already exists, replace it
       const songFiles = state.songFiles.map((songFile) => {
         if (songFile.id === file.id) {
           return file;
         }
         return songFile;
       });
+      // update current song File. It could have been changed
       const currentSongFile = songFiles.find(
         (songFile) => songFile.id === state.currentSongFile?.id
       );
@@ -112,6 +118,12 @@ export const songFileFeature = createFeature({
       return {
         ...state,
         songFiles,
+      };
+    }),
+    on(toggleShowAudioFiles, (state) => {
+      return {
+        ...state,
+        showAudioFiles: !state.showAudioFiles,
       };
     }),
   ),
@@ -136,6 +148,7 @@ export const {
   selectEditNameMode,
   selectSongFile,
   selectLatestSongFile,
+  selectShowAudioFiles,
 } = songFileFeature;
 
 function guardDuplicateSongName(songName: string, state: State) {

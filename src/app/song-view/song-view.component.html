@@ -1,32 +1,46 @@
 <div class="song-view-container">
 
-    @if ((song?.audiofiles?.length || 0) == 0) {
+    <!-- Audio Files -->
+    @if ((song?.audiofiles?.length || 0) === 0 || showAudioFiles) {
+      <!-- File List -->
+       <mat-selection-list #audioFileList [multiple]="false">
+        @for (fileItem of song?.audiofiles; track fileItem) {
+          <mat-list-option>
+                <button (click)="deleteAudioFile(fileItem)" mat-mini-fab>
+                <mat-icon>delete</mat-icon>
+            </button>
+            {{fileItem.name}}
+          </mat-list-option>
+        }
+       </mat-selection-list>
+      <!-- File upload -->
       <div 
-      class="file-upload-dropzone"
-      (drop)="onFileDrop($event)"
-      (dragover)="onFileDragOver($event)"
-      (dragleave)="onFileDragLeave($event)"
-      [class.dragover]="isDragOver"
-      (click)="fileInput.click()"
-      tabindex="0"
-      (keydown.enter)="fileInput.click()"
-      (keydown.space)="fileInput.click()"
-    >
-      <input 
-        #fileInput 
-        type="file" 
-        accept="audio/mpeg,audio/mp3,audio/m4a,.m4a,.mp3,video/mp4,video/*,.mp4"
-        style="display:none"
-        (change)="onFileSelected($event)"
+        class="file-upload-dropzone"
+        (drop)="onFileDrop($event)"
+        (dragover)="onFileDragOver($event)"
+        (dragleave)="onFileDragLeave($event)"
+        [class.dragover]="isDragOver"
+        (click)="fileInput.click()"
+        tabindex="0"
+        (keydown.enter)="fileInput.click()"
+        (keydown.space)="fileInput.click()"
       >
-      <div class="file-upload-text">
-        <mat-icon>cloud_upload</mat-icon>
-        <span>
-          Song-Datei hierher ziehen oder klicken, um auszuwählen
-        </span>
+        <input 
+          #fileInput 
+          type="file" 
+          accept="audio/mpeg,audio/mp3,audio/m4a,.m4a,.mp3,video/mp4,video/*,.mp4"
+          style="display:none"
+          (change)="onFileSelected($event)"
+        >
+        <div class="file-upload-text">
+          <mat-icon>cloud_upload</mat-icon>
+          <span>
+            Song-Datei hierher ziehen oder klicken, um auszuwählen
+          </span>
+        </div>
       </div>
-    </div>
     }
+
     <!-- Text -->
     <div class="section-header">
       <ng-container *ngIf="!showTextModeMenu; else menuTemplate">

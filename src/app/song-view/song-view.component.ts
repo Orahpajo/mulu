@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { defaultText, SongFile } from '../model/song-file.model';
-import { selectCurrentSongFile } from '../store/song-file.feature';
+import { selectCurrentSongFile, selectShowAudioFiles } from '../store/song-file.feature';
 import { MatIconModule } from '@angular/material/icon';
 import { editSongFile } from '../store/song-file.actions';
 import { CommonModule } from '@angular/common';
@@ -13,13 +13,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { first } from 'rxjs';
-import { MatListModule } from '@angular/material/list';
+import { MatListModule, MatSelectionList } from '@angular/material/list';
 import { v4 as uuidv4 } from 'uuid';
 import localforage from 'localforage';
 import { SongBarComponent } from './song-bar/song-bar.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonSongService } from '../../services/common-song.service';
 import { AudibleMetronome } from '../utils/audible-metronome';
+import { AudioFile } from '../model/audio-file.model';
 
 const REACTION_TIME = .3;
 
@@ -36,7 +37,8 @@ const REACTION_TIME = .3;
     MatMenuModule,
     MatListModule,
     SongBarComponent,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSelectionList,
   ],
   templateUrl: './song-view.component.html',
   styleUrl: './song-view.component.scss',
@@ -55,6 +57,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
   song: SongFile | null = null;
 
   textmode: 'edit' | 'mark' | 'view' | 'loop' = 'view';
+  showAudioFiles = false;
 
   duration = 0;
   isPlaying: any;
@@ -95,6 +98,16 @@ export class SongViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  deleteAudioFile(file: AudioFile) {
+    // delete file from indexed db
+    localforage.setItem(file.id,null);
+
+    // Remove audiofile from song
+    const updatedSong = this.song!.clone();
+    updatedSong.audiofiles = updatedSong.audiofiles.filter(af => af.id !== file.id);
+    this.store.dispatch(editSongFile(updatedSong));
+  }
+
   ngOnInit() {
     this.updateTextModeMenu();
     window.addEventListener('resize', this.updateTextModeMenu.bind(this));
@@ -118,6 +131,12 @@ export class SongViewComponent implements OnInit, OnDestroy {
         }
       });
 
+    // Show Audio Files
+    this.store.select(selectShowAudioFiles).subscribe((showAudioFiles) => {
+      this.showAudioFiles = showAudioFiles;
+    });
+
+    // Current Song
     this.store.select(selectCurrentSongFile).subscribe((song) => {
       this.song = song?.clone() || null;
       if (song?.text) {
@@ -143,7 +162,6 @@ export class SongViewComponent implements OnInit, OnDestroy {
     }
 
     this.calculateMaxVoiceWidth();
-    console.log('Voices:', this.voices);
     this.songBars = this.songBars.filter(bar => !bar.toLowerCase().startsWith('voices:'));
   }
 

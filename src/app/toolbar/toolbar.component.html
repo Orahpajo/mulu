@@ -16,20 +16,38 @@
             }
         </span>
         <span class="toolbar-actions">
-            <button (click)="toggleEditSongNameMode(currentSongFile, editSongTitleMode)" mat-mini-fab>
+            <button 
+                (click)="toggleEditSongNameMode(currentSongFile, editSongTitleMode)" 
+                mat-mini-fab
+                matTooltip="Namen bearbeiten"
+            >
                 @if(editSongTitleMode){
                     <mat-icon>check</mat-icon>
                 } @else {
                     <mat-icon>edit</mat-icon>
                 }
             </button>
-            <button (click)="duplicateSong(currentSongFile)" mat-mini-fab>
+            <button 
+                (click)="toggleShowAudioFiles()" 
+                mat-mini-fab 
+                [class.active]="showAudioFiles$ | async"
+                matTooltip="Lied-Dateien anzeigen"
+            >
+                <mat-icon>audio_file</mat-icon>
+            </button>
+            <button (click)="duplicateSong(currentSongFile)" mat-mini-fab 
+                matTooltip="Lied dublizieren"
+            >
                 <mat-icon>file_copy</mat-icon>
             </button>
-            <button (click)="deleteSong(currentSongFile)" mat-mini-fab>
+            <button (click)="deleteSong(currentSongFile)" mat-mini-fab
+                matTooltip="Lied löschen"
+            >
                 <mat-icon>delete</mat-icon>
             </button>
-            <button (click)="shareSong(currentSongFile)" mat-mini-fab>
+            <button (click)="shareSong(currentSongFile)" mat-mini-fab
+                matTooltip="Lied teilen oder herunterladen"
+            >
                 <mat-icon>share</mat-icon>
             </button>
         </span>
