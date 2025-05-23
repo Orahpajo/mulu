@@ -9,6 +9,7 @@ import {
   importSongFile,
   openSongFile,
   setSongFiles,
+  showAudioFiles,
   toggleEditNameMode,
   toggleShowAudioFiles,
 } from './song-file.actions';
@@ -49,7 +50,8 @@ export const songFileFeature = createFeature({
         uuidv4(),
         file.text,
         file.cues,
-        false
+        false,
+        file.selectedAudioFile?.id
       );
       return {
         ...state,
@@ -125,6 +127,12 @@ export const songFileFeature = createFeature({
         ...state,
         showAudioFiles: !state.showAudioFiles,
       };
+    }),
+    on(showAudioFiles, (state) => {
+      return {
+        ...state,
+        showAudioFiles: true
+      }
     }),
   ),
   extraSelectors: ({ selectSongFiles }) => {

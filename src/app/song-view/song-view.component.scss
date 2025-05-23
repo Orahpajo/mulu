@@ -188,3 +188,16 @@
     flex-direction: column;
     gap: 0;
   }
+
+  .audiofile-list-row {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+  }
+
+  .audiofile-list-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }

@@ -15,6 +15,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MuluFile } from '../model/mulu-file.model';
 import localforage from 'localforage';
 import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
+import { AudioFile, AudioFileWithBytes } from '../model/audio-file.model';
 
 @Component({
   selector: 'app-toolbar',
@@ -58,44 +59,44 @@ export class ToolbarComponent {
     this.store.dispatch(toggleShowAudioFiles());
   }
 
-  shareSong(currentSongFile: SongFile) {
-    if (!currentSongFile?.audiofiles[0]) return;
-
+  async shareSong(currentSongFile: SongFile) {
     // Load Audio Files
-    localforage.getItem(currentSongFile.audiofiles[0].id).then((bytes) => {
-      const fileName = this.sanitizeFileName(currentSongFile.name) + '.mulu';
-      const muluFile: MuluFile = {
-        songFile: currentSongFile,
-        audioFiles: [
-          {
-            ...currentSongFile.audiofiles[0],
-            bytes: bytes as string,
-          }
-        ],
-      };
-      const fileContent = JSON.stringify(muluFile, null, 2);
-      const file = new File([fileContent], fileName, { type: 'application/json' });
-    
-      // Check if the browser supports the Web Share API
-      navigator.share({
-        files: [file],
-        title: currentSongFile.name,
-        text: 'Mulu Song File',
-      }).catch(() => {
-        console.log('Web Share API not supported, falling back to download');
-        // Fallback: Download
-        const url = URL.createObjectURL(file);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 100);
-      })
-    });
+    const audioFiles: AudioFileWithBytes[] = [];
+    for (const audioFile of currentSongFile.audiofiles){
+      const bytes = await localforage.getItem(audioFile.id)
+      const audioFileWithBytes = {
+          ...audioFile,
+          bytes: bytes as string,
+        };
+      audioFiles.push(audioFileWithBytes);
+    }
+    const fileName = this.sanitizeFileName(currentSongFile.name) + '.mulu';
+    const muluFile: MuluFile = {
+      songFile: currentSongFile,
+      audioFiles,
+    };
+    const fileContent = JSON.stringify(muluFile, null, 2);
+    const file = new File([fileContent], fileName, { type: 'application/json' });
+  
+    // Check if the browser supports the Web Share API
+    navigator.share({
+      files: [file],
+      title: currentSongFile.name,
+      text: 'Mulu Song File',
+    }).catch(() => {
+      console.log('Web Share API not supported, falling back to download');
+      // Fallback: Download
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+    })
   }
 
   private sanitizeFileName(name: string): string {

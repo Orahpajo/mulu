@@ -27,6 +27,10 @@ export const toggleShowAudioFiles = createAction(
   '[Song File] Toggle Show Audio Files'
 );
 
+export const showAudioFiles = createAction(
+  '[Song File] Show Audio Files'
+);
+
 export const toggleEditNameMode = createAction(
   '[Song File] Toggle Edit Name Mode'
 );

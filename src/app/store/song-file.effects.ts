@@ -31,7 +31,7 @@ export class SongFileEffects {
                     if (data) {
                         const arr = JSON.parse(data);
                         songFiles = arr.map((obj: any) =>
-                        new SongFile(obj.name, obj.children, obj.id, obj.audiofiles, obj.text, obj.cues, obj.isCommonSong));
+                        new SongFile(obj.name, obj.children, obj.id, obj.audiofiles, obj.text, obj.cues, obj.isCommonSong, obj.selectedAudioFileId));
                     }
 
                     return from(localforage.getItem<string>('currentSongFileId')).pipe(
@@ -125,7 +125,9 @@ export class SongFileEffects {
                 withLatestFrom(this.store.select(selectSongFiles)),
                 switchMap(async ([{ file }, songFiles]) => {
                     // Save audio bytes to localforage
-                    await localforage.setItem(file.audioFiles[0].id, file.audioFiles[0].bytes);
+                    for (const audioFile of file.audioFiles){
+                        await localforage.setItem(audioFile.id, audioFile.bytes);
+                    }
                     // Save song file to localforage
                     await localforage.setItem('songFiles', JSON.stringify(songFiles));
                 }),

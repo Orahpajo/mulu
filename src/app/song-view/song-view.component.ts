@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { defaultText, SongFile } from '../model/song-file.model';
 import { selectCurrentSongFile, selectShowAudioFiles } from '../store/song-file.feature';
 import { MatIconModule } from '@angular/material/icon';
-import { editSongFile } from '../store/song-file.actions';
+import { editSongFile, showAudioFiles } from '../store/song-file.actions';
 import { CommonModule } from '@angular/common';
 import { MatSliderModule } from '@angular/material/slider';
 import { SecondsToMmssPipe } from '../pipes/seconds-to-mmss.pipe';
@@ -21,6 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonSongService } from '../../services/common-song.service';
 import { AudibleMetronome } from '../utils/audible-metronome';
 import { AudioFile } from '../model/audio-file.model';
+import {ProgressSpinnerMode, MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 const REACTION_TIME = .3;
 
@@ -39,6 +40,7 @@ const REACTION_TIME = .3;
     SongBarComponent,
     MatTooltipModule,
     MatSelectionList,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './song-view.component.html',
   styleUrl: './song-view.component.scss',
@@ -58,6 +60,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   textmode: 'edit' | 'mark' | 'view' | 'loop' = 'view';
   showAudioFiles = false;
+  audioFileLoading = false;
 
   duration = 0;
   isPlaying: any;
@@ -106,6 +109,11 @@ export class SongViewComponent implements OnInit, OnDestroy {
     const updatedSong = this.song!.clone();
     updatedSong.audiofiles = updatedSong.audiofiles.filter(af => af.id !== file.id);
     this.store.dispatch(editSongFile(updatedSong));
+
+    // select another file if the selected is deleted
+    if (this.song?.selectedAudioFile?.id === file.id){
+      this.song.selectedAudioFile = this.song.audiofiles[0] || null;
+    }
   }
 
   ngOnInit() {
@@ -116,18 +124,14 @@ export class SongViewComponent implements OnInit, OnDestroy {
       .pipe(first(song => !!song))
       .subscribe((song) => {
         this.textmode = song?.text === defaultText ? 'edit' : 'view';
-        const fileId = song?.audiofiles[0]?.id;
+        // get audioFile from indexed DB or server
+        const fileId = song?.selectedAudioFile?.id;
         if (fileId) {
-          localforage.getItem(fileId).then((bytes) => {
-            if (bytes)
-              this.audioFileBytes = bytes as string;
-            else
-              this.commonSongService.loadSongBytes(fileId)
-                .subscribe(audioFile => {
-                  this.audioFileBytes = audioFile.bytes as string;
-                })
-
-          });
+          this.loadAudioFile(fileId);
+        }
+        // show audiofiles upload field, if there are no audiofiles
+        if(song.audiofiles.length === 0){
+          this.store.dispatch(showAudioFiles());
         }
       });
 
@@ -138,10 +142,32 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
     // Current Song
     this.store.select(selectCurrentSongFile).subscribe((song) => {
+      // did the selected audiofile change?
+      if (song?.selectedAudioFile?.id && song.selectedAudioFile.id !== this.song?.selectedAudioFile?.id){
+        this.loadAudioFile(song.selectedAudioFile.id);
+      }
+
       this.song = song?.clone() || null;
+      // set the song text
       if (song?.text) {
         this.songBars = song.text.split('\n\n');
         this.createVoices();
+      }
+    });
+  }
+
+  private loadAudioFile(fileId: string) {
+    this.audioFileLoading = true;
+    localforage.getItem(fileId).then((bytes) => {
+      if (bytes){
+        this.audioFileBytes = bytes as string;
+        this.audioFileLoading = false;
+      } else {
+        this.commonSongService.loadSongBytes(fileId)
+          .subscribe(audioFile => {
+            this.audioFileBytes = audioFile.bytes as string;
+            this.audioFileLoading = false;
+          });
       }
     });
   }
@@ -366,13 +392,18 @@ export class SongViewComponent implements OnInit, OnDestroy {
       // Save File Metadata in song
       const updatedSong = this.song.clone();
       const fileId = uuidv4();
-      updatedSong.audiofiles.push({ id: fileId, name: file.name, mimeType });
-      this.store.dispatch(editSongFile(updatedSong));
+
       // Save file bytes in indexedDB
       let bytes: string;
       bytes = await this.readFileAsBase64(file);
 
-      localforage.setItem(fileId, bytes);
+      await localforage.setItem(fileId, bytes);
+
+      // Set file in Store
+      const audioFile = { id: fileId, name: file.name, mimeType };
+      updatedSong.audiofiles.push(audioFile);
+      updatedSong.selectedAudioFile = audioFile;
+      this.store.dispatch(editSongFile(updatedSong));
     }
   }
 
@@ -398,5 +429,14 @@ export class SongViewComponent implements OnInit, OnDestroy {
       };
       reader.readAsDataURL(blob);
     });
+  }
+
+  onAudioFileSelected(event: any) {
+    const selectedFile = event.options[0].value as AudioFile;
+    if (this.song && selectedFile && this.song.selectedAudioFile?.id !== selectedFile.id) {
+      const updatedSong = this.song.clone();
+      updatedSong.selectedAudioFile = selectedFile;
+      this.store.dispatch(editSongFile(updatedSong));
+    }
   }
 }

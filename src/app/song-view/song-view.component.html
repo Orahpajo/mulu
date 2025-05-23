@@ -3,13 +3,15 @@
     <!-- Audio Files -->
     @if ((song?.audiofiles?.length || 0) === 0 || showAudioFiles) {
       <!-- File List -->
-       <mat-selection-list #audioFileList [multiple]="false">
+       <mat-selection-list class="audio-file-list" #audioFileList [multiple]="false" (selectionChange)="onAudioFileSelected($event)">
         @for (fileItem of song?.audiofiles; track fileItem) {
-          <mat-list-option>
-                <button (click)="deleteAudioFile(fileItem)" mat-mini-fab>
+          <mat-list-option [value]="fileItem" [selected]="song?.selectedAudioFile?.id === fileItem.id">
+            <div class="audiofile-list-row">
+              <button (click)="deleteAudioFile(fileItem)" mat-mini-fab>
                 <mat-icon>delete</mat-icon>
-            </button>
-            {{fileItem.name}}
+              </button>
+              <span class="audiofile-list-name">{{fileItem.name}}</span>
+            </div>
           </mat-list-option>
         }
        </mat-selection-list>
@@ -130,7 +132,7 @@
                 <div class="song-text-scroll-container"
                      #scrollContainer
                      (scroll)="onTextScroll(scrollContainer)">
-                  <mat-list>
+                  <mat-list class="text-line-list">
                     <div class="song-bars monospace-text">
                       @for (line of songBars; track $index) {
                         <app-song-bar
@@ -162,11 +164,11 @@
     }
 
     <!-- Song Controll -->
-    @if(song && song.audiofiles[0] && audioFileBytes) {
+    @if(song && song.selectedAudioFile) {
         <div class="song-control-fixed">
-          @if(song.audiofiles[0].mimeType.startsWith('video/')) {
+          @if(song.selectedAudioFile.mimeType.startsWith('video/')) {
             <video #audioRef
-              [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + audioFileBytes"
+              [src]="'data:' + song.selectedAudioFile.mimeType + ';base64,' + audioFileBytes"
               (timeupdate)="onTimeUpdate(audioRef)"
               (loadedmetadata)="onLoadedMetadata(audioRef)"
               [attr.controls]="false"
@@ -178,19 +180,25 @@
                 style="flex: 1;"
                 [min]="0"
                 [max]="duration"
-                (input)="onSeek($event, audioRef)">
+                (input)="onSeek($event, audioRef)"
+                [disabled]="audioFileLoading">
                 <input matSliderThumb [value]="currentTime">
               </mat-slider>
               <span style="min-width: 40px;">{{ (duration - currentTime) | mmss }}</span>
             </div>
             <div class="song-control-buttons">
               <button mat-fab color="primary" (click)="togglePlay(audioRef)">
-                <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+                @if (audioFileLoading){
+                  <mat-spinner></mat-spinner>
+                }
+                @else {
+                  <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+                }
               </button>
             </div>
           } @else {
             <audio #audioRef
-              [src]="'data:' + song!.audiofiles[0].mimeType + ';base64,' + audioFileBytes"
+              [src]="'data:' + song.selectedAudioFile.mimeType + ';base64,' + audioFileBytes"
               (timeupdate)="onTimeUpdate(audioRef)"
               (loadedmetadata)="onLoadedMetadata(audioRef)">
             </audio>
@@ -200,14 +208,20 @@
                 style="flex: 1;"
                 [min]="0"
                 [max]="duration"
-                (input)="onSeek($event, audioRef)">
+                (input)="onSeek($event, audioRef)"
+                [disabled]="audioFileLoading">
                 <input matSliderThumb [value]="currentTime">
               </mat-slider>
               <span style="min-width: 40px;">{{ (duration - currentTime) | mmss }}</span>
             </div>
             <div class="song-control-buttons">
               <button mat-fab color="primary" (click)="togglePlay(audioRef)">
-                <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+                @if (audioFileLoading){
+                  <mat-spinner></mat-spinner>
+                }
+                @else {
+                  <mat-icon>{{ isPlaying ? 'pause' : 'play_arrow' }}</mat-icon>
+                }              
               </button>
             </div>
           }

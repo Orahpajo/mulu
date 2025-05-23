@@ -1,9 +1,16 @@
 @use '@angular/material' as mat;
 
 app-song-view {
-  @include mat.list-overrides((
-    list-item-one-line-container-height: 32px,
-  ));
+  .audio-file-list {
+    @include mat.list-overrides((
+      list-item-one-line-container-height: 48px,
+    ));
+  }
+  .text-line-list {
+    @include mat.list-overrides((
+      list-item-one-line-container-height: 32px,
+    ));
+  }
 }
 
 html, body { height: 100%; }

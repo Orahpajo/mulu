@@ -24,6 +24,7 @@ export class SongFile {
         public cues: (number | undefined)[],
         /** Is it a song, that is shared via the server */
         public isCommonSong: boolean,
+        private selectedAudioFileId: string | null
     ) {}
 
     static create(
@@ -34,8 +35,9 @@ export class SongFile {
         text: string = defaultText,
         cues: (number | undefined)[] = [],
         isCommonSong = false,
+        selectedAudioFileId: string | null = null,
     ): SongFile {
-        return new SongFile(name, children, id, audiofiles, text, cues, isCommonSong);
+        return new SongFile(name, children, id, audiofiles, text, cues, isCommonSong, selectedAudioFileId);
     }
 
     isDirectory(): boolean {
@@ -51,6 +53,7 @@ export class SongFile {
             this.text,
             [...this.cues],
             this.isCommonSong,
+            this.selectedAudioFileId,
         );
     }
 
@@ -59,5 +62,16 @@ export class SongFile {
             this.cues.length = lineNumber + 1;
         }
         this.cues[lineNumber] = time;
+    }
+
+    get selectedAudioFile(){
+        return this.audiofiles.find(af => af.id === this.selectedAudioFileId) || null;
+    }
+
+    set selectedAudioFile(audioFile: AudioFile | null){
+        if (audioFile && !this.audiofiles.find(af => af.id === audioFile?.id)){
+            this.audiofiles.push(audioFile);
+        }
+        this.selectedAudioFileId = audioFile?.id || null;
     }
 }
