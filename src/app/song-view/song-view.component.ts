@@ -124,11 +124,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
       .pipe(first(song => !!song))
       .subscribe((song) => {
         this.textmode = song?.text === defaultText ? 'edit' : 'view';
-        // get audioFile from indexed DB or server
-        const fileId = song?.selectedAudioFile?.id;
-        if (fileId) {
-          this.loadAudioFile(fileId);
-        }
+        
         // show audiofiles upload field, if there are no audiofiles
         if(song.audiofiles.length === 0){
           this.store.dispatch(showAudioFiles());
@@ -142,12 +138,20 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
     // Current Song
     this.store.select(selectCurrentSongFile).subscribe((song) => {
+      const selectedFileChanged = song?.selectedAudioFile?.id 
+                && song.selectedAudioFile.id !== this.song?.selectedAudioFile?.id;
+      this.song = song?.clone() || null;
+      if (!this.song) return;
+
+      // select an audiofile if not selected
+      if (this.song && !this.song.selectedAudioFile){
+        this.song.selectedAudioFile = this.song.audiofiles[0];
+      }
       // did the selected audiofile change?
-      if (song?.selectedAudioFile?.id && song.selectedAudioFile.id !== this.song?.selectedAudioFile?.id){
-        this.loadAudioFile(song.selectedAudioFile.id);
+      if (selectedFileChanged && this.song.selectedAudioFile){
+        this.loadAudioFile(this.song.selectedAudioFile.id);
       }
 
-      this.song = song?.clone() || null;
       // set the song text
       if (song?.text) {
         this.songBars = song.text.split('\n\n');
