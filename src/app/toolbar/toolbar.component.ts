@@ -16,10 +16,23 @@ import { MuluFile } from '../model/mulu-file.model';
 import localforage from 'localforage';
 import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 import { AudioFile, AudioFileWithBytes } from '../model/audio-file.model';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-toolbar',
-  imports: [MatToolbarModule, CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, RouterModule, MatTooltipModule],
+  imports: [
+    MatToolbarModule,
+     CommonModule,
+     FormsModule,
+     MatFormFieldModule,
+     MatInputModule,
+     MatButtonModule,
+     MatIconModule,
+     RouterModule,
+     MatTooltipModule,
+     MatMenuModule
+    ],
+
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss'
 })

@@ -36,6 +36,24 @@
     white-space: nowrap;
   }
 
+  .toolbar-action-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .toolbar-burger {
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    .toolbar-action-buttons {
+      display: none;
+    }
+    .toolbar-burger {
+      display: inline-flex;
+    }
+  }
+
   .toolbar-actions button.active {
     background: var(--mat-sys-primary, #1976d2) !important;
     color: #fff !important;
