@@ -1,8 +1,0 @@
-<mat-list-item (click)="openSong()">
-    @if (file.isDirectory()) {
-        <mat-icon matListItemIcon>folder</mat-icon>
-    } @else {
-        <mat-icon matListItemIcon>lyrics</mat-icon>
-    }
-    <div matListItemTitle>{{file.name}}</div>
-</mat-list-item>

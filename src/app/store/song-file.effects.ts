@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, withLatestFrom, switchMap } from 'rxjs/operators';
+import { map, withLatestFrom, switchMap, tap } from 'rxjs/operators';
 import { closeCurrentSongFile, createSongFile, deleteSongFile, deleteSongFileWithQuestion, duplicateSongFile, editSongFile, importSongFile, loadSongFiles, openSongFile, saveSongFiles, setSongFiles } from './song-file.actions';
 import { SongFile } from '../model/song-file.model';
 import { selectCurrentSongFile, selectSongFiles, selectSongTreeNodes } from './song-file.feature';
@@ -142,6 +142,21 @@ export class SongFileEffects {
             ofType(editSongFile, createSongFile, deleteSongFile, duplicateSongFile),
             map(() => saveSongFiles())
         )
+    );
+
+    closeSongFileAfterDelete$ = createEffect(() => 
+        this.actions$.pipe(
+            ofType(deleteSongFile),
+            map(() => closeCurrentSongFile())
+        )
+    );
+
+    openDuplicateFile$ = createEffect(() => 
+        this.actions$.pipe(
+            ofType(duplicateSongFile),
+            tap(() => this.router.navigate(['/song']))
+        ),
+        {dispatch: false}
     );
 
     /** 

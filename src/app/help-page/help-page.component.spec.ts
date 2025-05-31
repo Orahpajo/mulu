@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SongFileComponent } from './song-file.component';
+import { HelpPageComponent } from './help-page.component';
 
-describe('SongFileComponent', () => {
-  let component: SongFileComponent;
-  let fixture: ComponentFixture<SongFileComponent>;
+describe('HelpPageComponent', () => {
+  let component: HelpPageComponent;
+  let fixture: ComponentFixture<HelpPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SongFileComponent]
+      imports: [HelpPageComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SongFileComponent);
+    fixture = TestBed.createComponent(HelpPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -75,7 +75,6 @@ export class ToolbarComponent {
 
   duplicateSong(currentSongFile: SongFile) {
     this.store.dispatch(duplicateSongFile(currentSongFile));
-    this.router.navigate(['/']);
   }
 
   toggleShowAudioFiles() {

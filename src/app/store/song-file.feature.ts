@@ -61,6 +61,7 @@ export const songFileFeature = createFeature({
       return {
         ...state,
         songFiles: [...state.songFiles, duplicate],
+        currentSongFile: duplicate,
         songTreeNodes: [...state.songTreeNodes, {songId: duplicate.id}],
       }
     }),
