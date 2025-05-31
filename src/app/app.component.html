@@ -1,2 +1,13 @@
-<app-toolbar></app-toolbar>
-<router-outlet />
+<app-toolbar [(sidenavOpen)]="sidenavOpen"></app-toolbar>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav class="sidenav" mode="over" [(opened)]="sidenavOpen">
+    <app-file-explorer [(sidenavOpen)]="sidenavOpen"></app-file-explorer>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<div class="npm-version">
+    v{{ appVersion }}
+</div>

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { Store } from '@ngrx/store';
 import { selectCurrentSongFile, selectEditNameMode, selectShowAudioFiles } from '../store/song-file.feature';
@@ -38,6 +38,12 @@ import { MatMenuModule } from '@angular/material/menu';
 })
 export class ToolbarComponent {
 
+  @Input()
+  sidenavOpen: boolean;
+  @Output()
+  sidenavOpenChange = new EventEmitter<boolean>();
+
+
   currentSongFile: SongFile | null = null;
   editSongTitleMode$: Observable<boolean>;
   showAudioFiles$: Observable<boolean>;
@@ -55,6 +61,10 @@ export class ToolbarComponent {
       this.store.dispatch(editSongFile(currentSongFile))
     }
     this.store.dispatch(toggleEditNameMode());
+  }
+
+  toggleSidenav() {
+    this.sidenavOpenChange.emit(!this.sidenavOpen);
   }
 
   deleteSong(currentSongFile: SongFile) {

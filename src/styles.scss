@@ -13,6 +13,21 @@ app-song-view {
   }
 }
 
+// style the nav-drawer
+:root {
+  @include mat.sidenav-overrides((
+    container-background-color: var(--mat-sys-surface-bright),
+    container-text-color: var(--mat-sys-on-surface),
+  ));
+}
+
+// Style the song file tree
+:root {
+  @include mat.tree-overrides((
+    container-background-color: transparent,
+  ));
+}
+
 html, body { height: 100%; }
 body {
     margin: 0; 

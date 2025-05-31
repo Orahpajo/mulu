@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { combineLatest, find, map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
-import { version } from '../../environments/version'
 import {MatTreeModule} from '@angular/material/tree';
 import { SongTreeNode } from '../model/song-tree-node';
 
@@ -26,7 +25,12 @@ import { SongTreeNode } from '../model/song-tree-node';
   styleUrl: './file-explorer.component.scss',
 })
 export class FileExplorerComponent {
-  appVersion = version;
+
+  @Input()
+  sidenavOpen: boolean;
+  @Output()
+  sidenavOpenChange = new EventEmitter<boolean>();
+
   songs$= this.store.select(selectSongFiles);
   treeNodes$ = this.store.select(selectSongTreeNodes);
 
@@ -34,19 +38,18 @@ export class FileExplorerComponent {
   hasChild = (_: number, node: SongTreeNode) => !!node.children && node.children.length > 0;
 
 
-  constructor(private store: Store, private router: Router) {
-    // if the user just navigated back, the current song file needs to be closed
-    this.store.dispatch(closeCurrentSongFile());
-  }
+  constructor(private store: Store, private router: Router) {}
 
   newSong() {
     this.store.dispatch(createSongFile());
     this.router.navigate(['/song']);
+    this.sidenavOpenChange.emit(false);
   }
 
    openSong(songId: string) {
     this.store.dispatch(openSongFile(songId));
     this.router.navigate(['/song']);
+    this.sidenavOpenChange.emit(false);
   }
 
   songNameById(songId: string) {

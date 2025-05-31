@@ -1,6 +1,6 @@
 <mat-toolbar>
-    <a mat-icon-button routerLink="/">
-        <mat-icon>home</mat-icon>
+    <a mat-icon-button (click)="toggleSidenav()">
+        <mat-icon>lyrics</mat-icon>
     </a>
     @if(currentSongFile) {
         @let editSongTitleMode = editSongTitleMode$ |async;
