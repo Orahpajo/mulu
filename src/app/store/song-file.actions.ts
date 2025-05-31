@@ -1,6 +1,7 @@
 import { createAction } from '@ngrx/store';
 import { SongFile } from '../model/song-file.model';
 import { MuluFile } from '../model/mulu-file.model';
+import { SongTreeNode } from '../model/song-tree-node';
 
 export const createSongFile = createAction('[Song File] Add Song File');
 
@@ -46,7 +47,8 @@ export const loadSongFiles = createAction(
 
 export const setSongFiles = createAction(
   '[Song File] Set Songs',
-  (songFiles: SongFile[], currentSongFile: SongFile | null) => ({ songFiles, currentSongFile })
+  (songFiles: SongFile[],songTreeNodes: SongTreeNode[], currentSongFile: SongFile | null) => 
+    ({ songFiles, songTreeNodes: songTreeNodes, currentSongFile })
 );
 
 export const saveSongFiles = createAction(

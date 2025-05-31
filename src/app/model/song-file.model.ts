@@ -17,7 +17,6 @@ export const defaultText =
 export class SongFile {
     constructor(
         public name: string,
-        public children: SongFile[],
         public id: string,
         public audiofiles: AudioFile[],
         public text: string,
@@ -29,7 +28,6 @@ export class SongFile {
 
     static create(
         name: string,
-        children: SongFile[] = [],
         audiofiles: AudioFile[] = [],
         id: string = uuidv4(),
         text: string = defaultText,
@@ -37,17 +35,12 @@ export class SongFile {
         isCommonSong = false,
         selectedAudioFileId: string | null = null,
     ): SongFile {
-        return new SongFile(name, children, id, audiofiles, text, cues, isCommonSong, selectedAudioFileId);
-    }
-
-    isDirectory(): boolean {
-        return this.children.length > 0;
+        return new SongFile(name, id, audiofiles, text, cues, isCommonSong, selectedAudioFileId);
     }
 
     clone(): SongFile {
         return new SongFile(
             this.name,
-            this.children.map(child => child.clone()),
             this.id,
             [...this.audiofiles],
             this.text,
@@ -62,6 +55,10 @@ export class SongFile {
             this.cues.length = lineNumber + 1;
         }
         this.cues[lineNumber] = time;
+    }
+
+    isDirectory() {
+        return false;
     }
 
     get selectedAudioFile(){

@@ -14,12 +14,15 @@ import {
   toggleShowAudioFiles,
 } from './song-file.actions';
 import { v4 as uuidv4 } from 'uuid';
+import { SongTreeNode } from '../model/song-tree-node';
+
 
 interface State {
   songFiles: SongFile[];
   currentSongFile: SongFile | null;
   editNameMode: boolean;
   showAudioFiles: boolean;
+  songTreeNodes: SongTreeNode[];
 }
 
 const initialState: State = {
@@ -27,6 +30,7 @@ const initialState: State = {
   currentSongFile: null,
   editNameMode: false,
   showAudioFiles: false,
+  songTreeNodes: [],
 };
 
 export const songFileFeature = createFeature({
@@ -39,13 +43,14 @@ export const songFileFeature = createFeature({
       return {
         ...state,
         songFiles: [...state.songFiles, newFile],
+        songTreeNodes: [...state.songTreeNodes, {songId: newFile.id}],
         currentSongFile: newFile,
       };
     }),
     on(duplicateSongFile, (state, { file }) => {
       const songName = guardDuplicateSongName(file.name, state);
       const duplicate = SongFile.create(
-        songName,file.children, 
+        songName,
         file.audiofiles,
         uuidv4(),
         file.text,
@@ -56,13 +61,35 @@ export const songFileFeature = createFeature({
       return {
         ...state,
         songFiles: [...state.songFiles, duplicate],
+        songTreeNodes: [...state.songTreeNodes, {songId: duplicate.id}],
       }
     }),
     on(importSongFile, (state, { file }) => {
       const songName = guardDuplicateSongName(file.songFile.name,state);
-      const newFile = SongFile.create(songName, file.songFile.children, file.songFile.audiofiles, uuidv4(), file.songFile.text, file.songFile.cues);
+      const newFile = SongFile.create(songName, file.songFile.audiofiles, uuidv4(), file.songFile.text, file.songFile.cues);
+      
+      // put importet songfile in download folder
+      let downloadFolder = state.songTreeNodes.find(stn => stn.isDownloadFolder)!;
+      if (!downloadFolder || !downloadFolder.children){
+        downloadFolder = {
+          name: 'Heruntergeladen',
+          children: [],
+          isDownloadFolder: true,
+          expanded: true,
+        }
+      }
+      // -- copy download folder before editing
+      downloadFolder = {...downloadFolder, children: [... downloadFolder.children]}
+      downloadFolder.children.push(
+        {songId: file.songFile.id}
+      )
+
       return {
         ...state,
+        songTreeNodes: [
+          downloadFolder,
+          ...state.songTreeNodes.filter(stn => !stn.isDownloadFolder)
+        ],        
         songFiles: [...state.songFiles, newFile],
       };
     }),
@@ -87,10 +114,11 @@ export const songFileFeature = createFeature({
         editNameMode: !state.editNameMode,
       };
     }),
-    on(setSongFiles, (state, { songFiles, currentSongFile }) => {
+    on(setSongFiles, (state, { songFiles, songTreeNodes, currentSongFile }) => {
       return { 
         ...state, 
         songFiles,
+        songTreeNodes: songTreeNodes,
         currentSongFile 
       };
     }),
@@ -117,9 +145,11 @@ export const songFileFeature = createFeature({
       const songFiles = state.songFiles.filter(
         (songFile) => songFile.id !== file.id
       );
+      const songTreeNodes = [...state.songTreeNodes.filter(treeNode => treeNode.songId !== file.id)]
       return {
         ...state,
         songFiles,
+        songTreeNodes: songTreeNodes,
       };
     }),
     on(toggleShowAudioFiles, (state) => {
@@ -155,6 +185,7 @@ export const {
   selectCurrentSongFile,
   selectEditNameMode,
   selectSongFile,
+  selectSongTreeNodes,
   selectLatestSongFile,
   selectShowAudioFiles,
 } = songFileFeature;

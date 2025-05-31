@@ -6,8 +6,3 @@
     }
     <div matListItemTitle>{{file.name}}</div>
 </mat-list-item>
-@for (child of file.children; track child.name) {
-    <div class="file-child">
-        <app-song-file [file]="child"></app-song-file>
-    </div>
-}

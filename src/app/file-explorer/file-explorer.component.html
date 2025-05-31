@@ -1,11 +1,26 @@
 <div class="center-content">
-    <mat-nav-list>
-        @for (song of (songs$ | async); track song.name) {
-            @if (song){
-                <app-song-file [file]="song"></app-song-file>
-            }
-        }
-    </mat-nav-list>
+    <mat-tree #tree [dataSource]="treeNodes$ | async" [childrenAccessor]="childrenAccessor">
+        <!-- Leaf nodes (Songs) -->
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <!-- use a disabled button to provide padding for tree leaf -->
+            <button class="song-link-button" mat-icon-button disabled>
+                <mat-icon>lyrics</mat-icon>
+            </button>
+            <span class="song-link" (click)="openSong(node.songId)">{{songNameById(node.songId) | async}}</span>
+        </mat-tree-node>
+
+        <!-- Folder Nodes -->
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding
+            isExpandable [isExpanded]="node.expanded"
+            matTreeNodeToggle [cdkTreeNodeTypeaheadLabel]="node.name">
+            <button mat-icon-button matTreeNodeToggle [attr.aria-label] = "node.name + ' umschalten'">
+                <mat-icon>
+                    {{tree.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+            </button>
+            {{node.name}}
+        </mat-tree-node>
+    </mat-tree>
     <a (click)="newSong()" mat-fab><mat-icon>add</mat-icon></a>
     <div class="npm-version">
         v{{ appVersion }}

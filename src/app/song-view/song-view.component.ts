@@ -138,8 +138,13 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
     // Current Song
     this.store.select(selectCurrentSongFile).subscribe((song) => {
-      const selectedFileChanged = song?.selectedAudioFile?.id 
-                && song.selectedAudioFile.id !== this.song?.selectedAudioFile?.id;
+      const selectedFileChanged = 
+        // if there was no audio selected we will select it later so it changed
+        !this.song?.selectedAudioFile ||
+        // The new selected id exists and is different from the old one
+        song?.selectedAudioFile?.id 
+        && song.selectedAudioFile.id !== this.song?.selectedAudioFile?.id;
+      
       this.song = song?.clone() || null;
       if (!this.song) return;
 

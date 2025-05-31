@@ -25,7 +25,7 @@ export class CommonSongService {
         map(song => {
           const songFile = song.songFile;
           
-          return new SongFile(songFile.name, songFile.children, songFile.id, songFile.audiofiles, songFile.text, songFile.cues, true, songFile.selectedAudioFile?.id || null);
+          return new SongFile(songFile.name, songFile.id, songFile.audiofiles, songFile.text, songFile.cues, true, songFile.selectedAudioFile?.id || null);
         })
       )
     );

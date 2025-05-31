@@ -3,14 +3,15 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { map, withLatestFrom, switchMap } from 'rxjs/operators';
 import { closeCurrentSongFile, createSongFile, deleteSongFile, deleteSongFileWithQuestion, duplicateSongFile, editSongFile, importSongFile, loadSongFiles, openSongFile, saveSongFiles, setSongFiles } from './song-file.actions';
 import { SongFile } from '../model/song-file.model';
-import { selectCurrentSongFile, selectSongFiles } from './song-file.feature';
+import { selectCurrentSongFile, selectSongFiles, selectSongTreeNodes } from './song-file.feature';
 import { Store } from '@ngrx/store';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogData, YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 import { Router } from '@angular/router';
 import localforage from 'localforage';
 import { CommonSongService } from '../../services/common-song.service';
-import { from } from 'rxjs';
+import { firstValueFrom, from } from 'rxjs';
+import { SongTreeNode } from '../model/song-tree-node';
 
 
 @Injectable()
@@ -21,37 +22,76 @@ export class SongFileEffects {
     private router = inject(Router);
     private commonSongService = inject(CommonSongService);
 
-    loadSongFiles$ = createEffect(() =>
+    loadSongFiles$ = createEffect(() => 
         this.actions$.pipe(
             ofType(loadSongFiles),
-            switchMap(() =>
-            from(localforage.getItem<string>('songFiles')).pipe(
-                switchMap((data) => {
-                    let songFiles: SongFile[] = [];
-                    if (data) {
-                        const arr = JSON.parse(data);
-                        songFiles = arr.map((obj: any) =>
-                        new SongFile(obj.name, obj.children, obj.id, obj.audiofiles, obj.text, obj.cues, obj.isCommonSong, obj.selectedAudioFileId));
+            switchMap(async () => {
+                const containsSongFile = (treeNodes: SongTreeNode[], songFile: SongFile) => {
+                    if (!treeNodes || treeNodes.length <= 0){
+                        return false;
                     }
-
-                    return from(localforage.getItem<string>('currentSongFileId')).pipe(
-                        switchMap((currentSongFileId) => {
-                        const currentSongFile = songFiles.find((file) => file.id === currentSongFileId) || null;
-
-                        return this.commonSongService.loadCommonSongs().pipe(
-                            map((loadedSongFiles) => {
-                                // Dont save songfiles that are already in the store.
-                                const filteredSongfiles = loadedSongFiles.filter(loadedFile => 
-                                    !songFiles.map(sf=> sf.id).includes(loadedFile.id)
-                                );
-                                return setSongFiles([...filteredSongfiles, ...songFiles], currentSongFile)
-                            })
+                    return treeNodes.some(treeNode => !!treeNode && treeNode.songId === songFile.id) 
+                        || containsSongFile(
+                            treeNodes
+                                .filter(treeNode => treeNode.children && treeNode.children.length > 0)
+                                .flatMap(treeNode => treeNode.children), 
+                            songFile
                         );
-                        })
-                    );
-                })
-            )
-            )
+                }
+
+                // Load the songfiles
+                const rawFiles = await localforage.getItem<string>('songFiles');
+                let songFiles: SongFile[] = [];
+                if (rawFiles) {
+                    const arr = JSON.parse(rawFiles);
+                    songFiles = arr.map((obj: any) =>
+                    new SongFile(obj.name, obj.id, obj.audiofiles, obj.text, obj.cues, obj.isCommonSong, obj.selectedAudioFileId));
+                }      
+                
+                // Load the current File ID
+                const currentSongFileId = await localforage.getItem<string>('currentSongFileId');
+                const currentSongFile = songFiles.find((file) => file.id === currentSongFileId) || null;
+
+                // Download common Songs
+                const loadedSongFiles = await firstValueFrom(this.commonSongService.loadCommonSongs());
+                loadedSongFiles.forEach(lsf => {
+                    if(!songFiles.find(sf => sf.id === lsf.id)){
+                        songFiles.push(lsf);
+                    }
+                });
+
+                // Load Song treeNodes
+                const rawtreeNodes = await localforage.getItem<string>('songtreeNodes');
+                let treeNodes: SongTreeNode[] = [];
+                if (rawtreeNodes){
+                    const arr = JSON.parse(rawtreeNodes);
+                    treeNodes = arr.map((o: SongTreeNode) => ({
+                        name: o.name,
+                        songId: o.songId,
+                        children: o.children,
+                        isDownloadFolder: o.isDownloadFolder
+                        } satisfies SongTreeNode))
+                }
+
+                // Put downloaded songs in the download folder
+                let downloadFolder = treeNodes.find(f => f.isDownloadFolder);
+                if (!downloadFolder || !downloadFolder.children) {
+                    downloadFolder = { name: 'Heruntergeladen', children: [], isDownloadFolder: true, expanded: true };
+                    treeNodes.unshift(downloadFolder);
+                }
+                loadedSongFiles
+                    .filter(cs => !downloadFolder!.children.map(child => child.songId).includes(cs.id))
+                    .forEach(cs => downloadFolder!.children.push({songId: cs.id}));
+
+                // create Tree Nodes for songs that dont have one
+                songFiles.forEach(songFile => {
+                    if(songFile.id && !containsSongFile(treeNodes, songFile)){
+                        treeNodes.push({songId: songFile.id} satisfies SongTreeNode)
+                    }
+                });
+
+                return setSongFiles(songFiles, treeNodes, currentSongFile);
+            })
         )
     );
 
@@ -59,9 +99,11 @@ export class SongFileEffects {
         () =>
             this.actions$.pipe(
                 ofType(saveSongFiles),
-                withLatestFrom(this.store.select(selectSongFiles)),
-                switchMap(async ([_, songFiles]) => {
+                withLatestFrom(this.store.select(selectSongFiles), this.store.select(selectSongTreeNodes)),
+                switchMap(async ([_, songFiles, songTreeNodes]) => {
                     await localforage.setItem('songFiles', JSON.stringify(songFiles));
+                    await localforage.setItem('songTreeNodes', JSON.stringify(songTreeNodes));
+
                 })
             ),
         { dispatch: false }
@@ -122,14 +164,16 @@ export class SongFileEffects {
         () =>
             this.actions$.pipe(
                 ofType(importSongFile),
-                withLatestFrom(this.store.select(selectSongFiles)),
-                switchMap(async ([{ file }, songFiles]) => {
+                withLatestFrom(this.store.select(selectSongFiles), this.store.select(selectSongTreeNodes)),
+                switchMap(async ([{ file }, songFiles, songTreeNodes]) => {
                     // Save audio bytes to localforage
                     for (const audioFile of file.audioFiles){
                         await localforage.setItem(audioFile.id, audioFile.bytes);
                     }
                     // Save song file to localforage
                     await localforage.setItem('songFiles', JSON.stringify(songFiles));
+                    // song file is imported into downloads folder so safe that aswell
+                    await localforage.setItem('songTreeNodes', JSON.stringify(songTreeNodes));
                 }),
             ),
         { dispatch: false }
