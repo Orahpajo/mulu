@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    title: 'Mulu',
+    title: 'Mulu Test',
 };
