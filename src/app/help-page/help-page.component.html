@@ -1,85 +1,264 @@
 <div class="help-page">
-  <h1>Hilfe &amp; Anleitung zu Mulu</h1>
+    <h1>Hilfe &amp; Anleitung zu Mulu</h1>
 
-  <h2>Überblick</h2>
-  <p>
-    <strong>Mulu</strong> ist eine App zur Verwaltung, Bearbeitung und Wiedergabe von Songtexten und zugehörigen Audio- oder Videodateien. Sie eignet sich besonders für Musikproben, Chöre, Bands oder das individuelle Üben.
-  </p>
+    <!-- Überblick -->
+    <h2>Überblick</h2>
+    <p>
+        <strong>Mulu</strong> dient dazu, Musikstücke zu üben – sei es für Tanz oder Gesang.
+        Du kannst ein Lied oder Video in den lokalen Browser-Storage laden, den Text dazu in
+        Markdown erfassen und bei laufendem Lied auf den Text tippen, um zu markieren, welche
+        Textstelle zu welchem Teil des Lieds gehört. Danach kannst du einfach auf Textstellen
+        tippen, um im Lied dorthin zu springen. Außerdem kannst du einen Loop-Bereich festlegen,
+        der dann immer wieder wiederholt wird – wahlweise mit Einzählen vor jeder Wiederholung.
+    </p>
 
-  <h2>Navigation &amp; Aufbau</h2>
-  <ul>
-    <li>
-      <strong>Toolbar (oben):</strong> Hier findest du den aktuellen Songtitel, kannst Songs umbenennen, Dateien importieren/exportieren, Songs duplizieren oder löschen und die Songdateien anzeigen.
-    </li>
-    <li>
-      <strong>Seitenmenü (links, Burger-Menü):</strong> Öffnet den <em>File-Explorer</em>, in dem du Songs und Ordner verwalten kannst.
-    </li>
-    <li>
-      <strong>Hauptbereich:</strong> Zeigt entweder die Hilfe-Seite oder den aktuell ausgewählten Song an.
-    </li>
-  </ul>
+    <!-- Sofort Loslegen -->
+    <h2>Sofort Loslegen</h2>
+    <p>
+        Die ersten Lieder sind schon da – du kannst sie direkt im
+        <span class="inline-button-container">
+            <strong>File-Explorer</strong>&nbsp;(
+            <button mat-icon-button class="button-image">
+                <mat-icon>lyrics</mat-icon>
+            </button>
+        </span>) oben links öffnen,
+        anhören und ausprobieren. Klicke einfach auf einen Songtitel, um loszulegen!
+    </p>
 
-  <h2>File-Explorer</h2>
-  <ul>
-    <li>Zeigt deine Songs und Ordner als Baumstruktur.</li>
-    <li>Du kannst neue Ordner anlegen, Songs zwischen Ordnern verschieben und Songs durch Klick öffnen.</li>
-    <li>Der Ordner <strong>Heruntergeladen</strong> enthält importierte Songs und kann nicht gelöscht werden.</li>
-    <li>Mit dem <strong>Plus-Button</strong> unten kannst du einen neuen Song anlegen.</li>
-  </ul>
+    <!-- Songs abspielen -->
+    <h2>
+        <span class="inline-button-container">
+            Songs abspielen
+            <button mat-mini-fab class="button-image">
+                <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-mini-fab class="button-image">
+                <mat-icon>restart_alt</mat-icon>
+            </button>
+        </span>
+    </h2>
+    <ul>
+        <li>
+            <span class="inline-button-container">
+                <strong>Ansichtsmodus</strong>&nbsp;(
+                <button mat-mini-fab class="button-image">
+                    <mat-icon>visibility</mat-icon>
+                </button>
+            </span>): Hier kannst du das Lied einfach laufen lassen und per Klick auf die Songzeilen
+            direkt dorthin springen. <br>
+        </li>
+        <li>
+            <span class="inline-button-container">
+                <strong>Loopmodus</strong>&nbsp;(
+                <button mat-mini-fab class="button-image">
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+            </span>): Hier kannst du per Klick nicht mehr zu den Songzeilen springen. Stattdessen setzt du
+            einen Anfangs- und einen Endpunkt für den Loop. Wenn das Lied den Endpunkt des Loops erreicht,
+            werden vier Takte gezählt und es wird wieder am Anfang des Loops gestartet. So können schwierige
+            Songteile schnell und häufig wiederholt werden.
+        </li>
+    </ul>
 
-  <h2>Song-Ansicht</h2>
-  <ul>
-    <li>
-      <strong>Songtitel:</strong> Klicke auf das Stift-Symbol, um den Namen zu bearbeiten. Mit Enter oder dem Haken bestätigst du die Änderung.
-    </li>
-    <li>
-      <strong>Audio-/Videodateien:</strong> Lade Dateien per Drag &amp; Drop oder Klick hoch. Du kannst mehrere Dateien verwalten, eine als aktiv auswählen oder löschen.
-    </li>
-    <li>
-      <strong>Songtext:</strong> Bearbeite den Text direkt im Editor. Du kannst verschiedene Textmodi nutzen:
-      <ul>
-        <li><strong>Bearbeiten:</strong> Songtext ändern.</li>
-        <li><strong>Markieren:</strong> Bereiche im Text markieren (z.B. für Proben).</li>
-        <li><strong>Loop:</strong> Wiederhole bestimmte Textstellen beim Abspielen.</li>
-        <li><strong>Ansicht:</strong> Nur lesen und abspielen.</li>
-      </ul>
-    </li>
-    <li>
-      <strong>Abspielen:</strong> Steuere die Wiedergabe mit Play/Pause, Springen zu bestimmten Stellen, Loops und Cues.
-    </li>
-    <li>
-      <strong>Aktionen:</strong> Du kannst Songs duplizieren, löschen, teilen (Web Share API oder Download) und importieren.
-    </li>
-  </ul>
+    <!-- Liedtrack hochladen und auswählen -->
+    <h2>
+        <span class="inline-button-container">
+            Liedtrack auswählen
+            <button mat-mini-fab class="button-image">
+                <mat-icon>audio_file</mat-icon>
+            </button>
+        </span>
+    </h2>
+    <p>
+        Auf kleinen Bildschirmen kann sich der Button oben rechts hinter einem
+        <span class="inline-button-container">
+            <strong>Burger-Menü</strong>&nbsp;(
+            <button mat-icon-button class="button-image">
+                <mat-icon>menu</mat-icon>
+            </button>
+        </span>) verstecken. Damit kannst du die Song-Dateien ein- und ausblenden.
+        Im <strong>Song-Dateien</strong>-Bereich kannst du dann die Audio- oder Videodateien für den Song
+        auswählen, die du abspielen möchtest. Du kannst mehrere Dateien hochladen und eine davon als
+        <strong>aktiv</strong> markieren. Diese wird dann beim Abspielen des Songs verwendet.
+        Du kannst auch Dateien löschen, die du nicht mehr benötigst. Beachte, dass beim Löschen eines Songs
+        auch alle zugehörigen Dateien entfernt werden.
+    </p>
 
-  <h2>Import &amp; Export</h2>
-  <ul>
-    <li>
-      <strong>Import:</strong> Über das Upload-Symbol in der Toolbar kannst du Songs im <code>.mulu</code>-Format importieren.
-    </li>
-    <li>
-      <strong>Export/Teilen:</strong> Über das Teilen-Symbol kannst du Songs exportieren oder direkt teilen (sofern vom Browser unterstützt).
-    </li>
-  </ul>
+    <!-- Songs duplizieren -->
+    <h2>
+        <span class="inline-button-container">
+            Songs duplizieren
+            <button mat-mini-fab class="button-image">
+                <mat-icon>file_copy</mat-icon>
+            </button>
+        </span>
+    </h2>
+    <p>
+        Die heruntergeladenen Dateien kannst du nicht bearbeiten. Du kannst Songs aber duplizieren, um sie
+        als Vorlage für neue Songs zu verwenden. Klicke dazu auf das
+        <strong>Duplizieren-Symbol</strong> in der Toolbar. Der duplizierte Song erhält den gleichen Text
+        und die gleichen Dateien, aber einen neuen Titel, den du direkt bearbeiten kannst.
+    </p>
 
-  <h2>Besonderheiten &amp; Tipps</h2>
-  <ul>
-    <li>
-      <strong>Vorgeladene Songs (Common Songs):</strong> Diese können nicht direkt bearbeitet werden. Du kannst sie aber duplizieren und dann bearbeiten.
-    </li>
-    <li>
-      <strong>Shortcuts:</strong> Viele Aktionen sind auch per Tastatur erreichbar, z.B. Enter zum Bestätigen von Eingaben.
-    </li>
-    <li>
-      <strong>Responsive Design:</strong> Die App funktioniert auf Desktop und Mobilgeräten. Bei kleinen Bildschirmen werden Aktionen in ein Burger-Menü verschoben.
-    </li>
-    <li>
-      <strong>Datenspeicherung:</strong> Deine Songs und Einstellungen werden lokal im Browser gespeichert. Beim Löschen eines Songs werden auch die zugehörigen Dateien entfernt.
-    </li>
-  </ul>
+    <!-- Text bearbeiten -->
+    <h2>
+        <span class="inline-button-container">
+            Text bearbeiten
+            <button mat-mini-fab class="button-image">
+                <mat-icon>edit_note</mat-icon>
+            </button>
+            <button mat-mini-fab class="button-image">
+                <mat-icon>border_color</mat-icon>
+            </button>
+        </span>
+    </h2>
+    <ul>
+        <li>
+            <span class="inline-button-container">
+                <strong>Text bearbeiten</strong>&nbsp;(
+                <button mat-mini-fab class="button-image">
+                    <mat-icon>edit_note</mat-icon>
+                </button>
+            </span>): Hier kannst du den Songtext direkt im Editor ändern. Liedzeilen werden durch eine leere
+            Zeile getrennt.
+            <!-- TODO hier die echten Textkomponenten verwenden -->
+            <div class="song-text-editor-preview">
+                <textarea
+                    readonly
+                    rows="5"
+                    style="width:100%;resize:vertical;background:#f5f5f5;border-radius:4px;border:1px solid #ccc;padding:8px;font-family:inherit;font-size:1em;"
+                >Dies ist die erste Songzeile
 
-  <h2>Fragen &amp; Feedback</h2>
-  <p>
-    Bei Fragen, Problemen oder Verbesserungsvorschlägen wende dich bitte an das Entwicklerteam oder öffne ein Issue im Repository.
-  </p>
+Dies ist die zweite Songzeile.
+Dies gehört noch zur zweiten Songzeile.</textarea>
+            </div>
+            Wenn du pro Zeile immer die gleiche Anzahl an Takten verwendest, macht das Setzen
+            der Cues nachher einfacher. <br>
+            Du kannst auch verschiedene Farben für die einzelnen Stimmen oder Register verwenden.
+            <div class="song-text-editor-preview">
+                <textarea
+                    readonly
+                    rows="12"
+                    style="width:100%;resize:vertical;background:#f5f5f5;border-radius:4px;border:1px solid #ccc;padding:8px;font-family:inherit;font-size:1em;"
+                >voices:
+  s: red
+  a: gold
+  t: lime
+  b: fuchsia
+
+Erste Songzeile
+s: Sopran singt etwas
+a: Alt singt etwas
+t: Tenor singt etwas
+b: Bass singt etwas</textarea>
+            </div>
+            Die Songzeile <strong>voices:</strong> definiert die Farben für die einzelnen Stimmen.
+            Sie wird im Abspielmodus nicht angezeigt, sondern nur im Bearbeitungsmodus. Es können
+            beliebig viele Stimmen definiert werden. Die Farben können entweder als Name (z. B. <code>red</code>)
+            oder als Hex-Code (z. B. <code>#ff0000</code>) angegeben werden. Die Farben werden dann im Abspielmodus
+            für die einzelnen Stimmen verwendet. So kannst du z. B. die Sopran-Stimme rot und die Alt-Stimme gold
+            anzeigen lassen. Die Namen der Farben findest du hier:<br>
+            <a mat-stroked-button color="primary" href="https://www.w3schools.com/tags/ref_colornames.asp" target="_blank" rel="noopener"
+               style="margin: 8px;">
+                <mat-icon>palette</mat-icon>
+                Liste der Farbnamen (w3schools)
+            </a>
+            <br>
+            <strong>Tipp:</strong> Die Stimmen kannst du nennen, wie du willst. So kannst du z. B. auch Notizen zu den
+            einzelnen Songzeilen machen, die dann im Abspielmodus angezeigt werden.
+        </li>
+        <li>
+            <span class="inline-button-container">
+                <strong>Cues erstellen</strong>&nbsp;(
+                <button mat-mini-fab class="button-image">
+                    <mat-icon>border_color</mat-icon>
+                </button>
+            </span>): 
+            In diesem Modus kannst du während des Abspielens auf die Songzeilen klicken, um Cues zu setzen.
+            Ein Cue ist ein Sprungpunkt im Lied, zu dem du springen kannst, wenn du auf die
+            entsprechende Songzeile klickst. Neben der Songzeile wird dann die Zeit des Cues angezeigt.
+            Wenn du während des Abspielens erneut auf eine Songzeile klickst, wird der Cue überschrieben.
+            Wenn du erneut auf eine Songzeile klickst, während das Lied nicht läuft, wird der Cue gelöscht.
+        </li>
+    </ul>
+
+    <!-- Eigene Songs erstellen -->
+    <h2>
+        <span class="inline-button-container">
+            Eigene Songs erstellen
+            <button mat-mini-fab class="button-image">
+                <mat-icon>add</mat-icon>
+            </button>
+        </span>
+    </h2>
+    <p>
+        Du kannst eigene Songs erstellen, indem du im <strong>File-Explorer</strong> auf den
+        <strong>Plus-Button</strong> klickst. Dadurch wird ein neuer Song mit dem Titel "Neuer Song" erstellt.
+        Du kannst den Titel direkt bearbeiten und dann Audiodateien hochladen, um den Song zu vervollständigen.
+    </p>
+
+    <!-- Song umbenennen -->
+    <h2>
+        <span class="inline-button-container">
+            Song umbenennen
+            <button mat-mini-fab class="button-image">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </span>
+    </h2>
+    <p>
+        Um den Songtitel zu ändern, klicke auf das Stift-Symbol neben dem Songtitel in der Toolbar.
+        Du kannst den Titel dann bearbeiten und mit Enter oder dem Haken-Symbol bestätigen.
+    </p>
+
+    <!-- Songs teilen und importieren -->
+    <h2>
+        <span class="inline-button-container">
+            Songs teilen und importieren
+            <button mat-mini-fab class="button-image">
+                <mat-icon>share</mat-icon>
+            </button>
+            <button mat-mini-fab class="button-image">
+                <mat-icon>upload_file</mat-icon>
+            </button>
+        </span>
+    </h2>
+    <ul>
+        <li>
+            <strong>Teilen:</strong> Du kannst Songs teilen oder herunterladen.
+            Klicke dazu auf das Teilen-Symbol in der Toolbar. Der Song wird im <code>.mulu</code>-Format
+            gespeichert.
+        </li>
+        <li>
+            <strong>Importieren:</strong> Du kannst Songs im <code>.mulu</code>-Format importieren, indem du auf das
+            Upload-Symbol in der Toolbar klickst. Dadurch öffnet sich ein Dateiauswahl-Dialog, in dem du die
+            gewünschte Datei auswählen kannst. Der Song wird dann im <strong>Heruntergeladen</strong>-Ordner gespeichert.
+        </li>
+    </ul>
+
+    <!-- Der Name Mulu -->
+    <h2>
+        Der Name <strong>Mulu</strong>
+    </h2>
+    <p>
+        … ist eine phonetische Abkürzung für Music Loop, weil mir die Idee zu der App kam, während ich ein Lied in einem Loop üben wollte.
+    </p>
+
+    <!-- Feedback -->
+    <h2>
+        Feedback
+        <button mat-mini-fab class="button-image">
+            <mat-icon>feedback</mat-icon>
+        </button>
+    </h2>
+    <p>
+        Ich freue mich über Feedback, Anregungen und Verbesserungsvorschläge.
+        Du kannst mir eine E-Mail schreiben:
+        <a mat-stroked-button color="primary" href="mailto:marvin.schoen89@gmail.com"
+           style="margin: 8px;">
+            <mat-icon>mail</mat-icon> →
+        </a>
+        marvin.schoen89&#64;gmail.com
+    </p>
+    <hr>
 </div>

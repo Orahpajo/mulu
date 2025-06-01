@@ -74,3 +74,13 @@
     font-size: 1.1rem;
   }
 }
+
+.button-image {
+    margin-left: 4px; 
+    pointer-events: none;
+}
+
+.inline-button-container {
+    display: inline-flex; 
+    align-items: center;
+}
