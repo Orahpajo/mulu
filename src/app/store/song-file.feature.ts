@@ -82,7 +82,7 @@ export const songFileFeature = createFeature({
       // -- copy download folder before editing
       downloadFolder = {...downloadFolder, children: [... downloadFolder.children]}
       downloadFolder.children.push(
-        {songId: file.songFile.id}
+        {songId: newFile.id}
       )
 
       return {
@@ -146,11 +146,12 @@ export const songFileFeature = createFeature({
       const songFiles = state.songFiles.filter(
         (songFile) => songFile.id !== file.id
       );
-      const songTreeNodes = [...state.songTreeNodes.filter(treeNode => treeNode.songId !== file.id)]
+      
+      const songTreeNodes = removeSongId(state.songTreeNodes, file.id);
       return {
         ...state,
         songFiles,
-        songTreeNodes: songTreeNodes,
+        songTreeNodes,
       };
     }),
     on(toggleShowAudioFiles, (state) => {
@@ -202,5 +203,20 @@ function guardDuplicateSongName(songName: string, state: State) {
     }
   }
   return songName;
+}
+
+function removeSongId(treeNodes: SongTreeNode[], songId: string): SongTreeNode[] {
+  return [...treeNodes
+    .map(node => {
+      // set the node to null if it is the song to remove. It should be a leaf and not have children
+      if (node.songId === songId) {
+        return null;
+      }
+      // if it is not the node to remove, we go through the children recursively
+      const filteredChildren = node.children ? removeSongId(node.children, songId) : [];
+      return { ...node, children: filteredChildren };
+    })
+    // now remove the null values
+    .filter(node => node !== null)];
 }
 

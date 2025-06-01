@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Store } from '@ngrx/store';
 import { closeCurrentSongFile, createSongFile, openSongFile } from '../store/song-file.actions';
 import { selectSongFiles, selectSongTreeNodes } from '../store/song-file.feature';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { combineLatest, find, map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
@@ -20,6 +20,7 @@ import { SongTreeNode } from '../model/song-tree-node';
     CommonModule,
     MatListModule,
     MatTreeModule,
+    RouterModule,
   ],
   templateUrl: './file-explorer.component.html',
   styleUrl: './file-explorer.component.scss',
@@ -50,6 +51,12 @@ export class FileExplorerComponent {
     this.store.dispatch(openSongFile(songId));
     this.router.navigate(['/song']);
     this.sidenavOpenChange.emit(false);
+  }
+
+  openHelpPage() {
+    this.router.navigate(['/']);
+    this.sidenavOpenChange.emit(false);  
+    this.store.dispatch(closeCurrentSongFile());
   }
 
   songNameById(songId: string) {

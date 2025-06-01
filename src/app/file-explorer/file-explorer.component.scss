@@ -1,3 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.center-content {
+  display: flex;
+  justify-content: center;
+}
+
 span.song-link {
   cursor: pointer;
 }
@@ -5,4 +16,11 @@ span.song-link {
 button.song-link-button {
   color: inherit !important;
   opacity: 1 !important;
+}
+
+.help-link {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: 16px;
 }
