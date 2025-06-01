@@ -120,38 +120,59 @@
                     <mat-icon>edit_note</mat-icon>
                 </button>
             </span>): Hier kannst du den Songtext direkt im Editor ändern. Liedzeilen werden durch eine leere
-            Zeile getrennt.
-            <!-- TODO hier die echten Textkomponenten verwenden -->
-            <div class="song-text-editor-preview">
-                <textarea
-                    readonly
-                    rows="5"
-                    style="width:100%;resize:vertical;background:#f5f5f5;border-radius:4px;border:1px solid #ccc;padding:8px;font-family:inherit;font-size:1em;"
-                >Dies ist die erste Songzeile
-
-Dies ist die zweite Songzeile.
-Dies gehört noch zur zweiten Songzeile.</textarea>
-            </div>
+            Zeile getrennt.<br>
+            <mat-form-field class="text-area-form-field">
+                <mat-label>Songtext</mat-label>
+              <textarea matInput
+                class="song-text-area monospace-text"
+                rows="5"
+                [(ngModel)]="firstExample.text"
+                (ngModelChange)="generateBarsAndVoices(firstExample)"
+                ></textarea>
+            </mat-form-field><br>
+            Schaltest du in den <strong>Ansichtsmodus</strong> um, sehen die Zeilen dann so aus:
+            <br>
+            <mat-list class="text-line-list">
+                <div class="song-bars monospace-text">
+                    @for (line of firstExample.bars; track $index) {
+                    <app-song-bar
+                        #lineItem
+                        [line]="line"
+                        [voices]="firstExample.voices"
+                        [maxVoiceWidth]="firstExample.maxVoiceWidth"
+                        >
+                    </app-song-bar>
+                    }
+                </div>
+            </mat-list>
+            <br>
             Wenn du pro Zeile immer die gleiche Anzahl an Takten verwendest, macht das Setzen
             der Cues nachher einfacher. <br>
-            Du kannst auch verschiedene Farben für die einzelnen Stimmen oder Register verwenden.
-            <div class="song-text-editor-preview">
-                <textarea
-                    readonly
-                    rows="12"
-                    style="width:100%;resize:vertical;background:#f5f5f5;border-radius:4px;border:1px solid #ccc;padding:8px;font-family:inherit;font-size:1em;"
-                >voices:
-  s: red
-  a: gold
-  t: lime
-  b: fuchsia
-
-Erste Songzeile
-s: Sopran singt etwas
-a: Alt singt etwas
-t: Tenor singt etwas
-b: Bass singt etwas</textarea>
-            </div>
+            Du kannst auch verschiedene Farben für die einzelnen Stimmen oder Register verwenden.<br>
+            <mat-form-field class="text-area-form-field">
+                <mat-label>Songtext</mat-label>
+              <textarea matInput
+                class="song-text-area monospace-text"
+                rows="12"
+                [(ngModel)]="secondExample.text"
+                (ngModelChange)="generateBarsAndVoices(secondExample)"
+                ></textarea>
+            </mat-form-field><br>
+            Schaltest du in den <strong>Ansichtsmodus</strong> um, sehen die Zeilen dann so aus:
+            <br>
+            <mat-list class="text-line-list">
+                <div class="song-bars monospace-text">
+                    @for (line of secondExample.bars; track $index) {
+                    <app-song-bar
+                        #lineItem
+                        [line]="line"
+                        [voices]="secondExample.voices"
+                        [maxVoiceWidth]="secondExample.maxVoiceWidth"
+                        >
+                    </app-song-bar>
+                    }
+                </div>
+            </mat-list>
             Die Songzeile <strong>voices:</strong> definiert die Farben für die einzelnen Stimmen.
             Sie wird im Abspielmodus nicht angezeigt, sondern nur im Bearbeitungsmodus. Es können
             beliebig viele Stimmen definiert werden. Die Farben können entweder als Name (z. B. <code>red</code>)

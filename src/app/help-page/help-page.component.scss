@@ -84,3 +84,17 @@
     display: inline-flex; 
     align-items: center;
 }
+
+.song-text-area {
+    flex: 1 1 auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: max-height 0.2s;
+    resize: none;
+}
+
+.text-area-form-field {
+    width: 100%;
+    margin-top: 10px;
+}

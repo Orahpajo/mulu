@@ -18,10 +18,11 @@ import { v4 as uuidv4 } from 'uuid';
 import localforage from 'localforage';
 import { SongBarComponent } from './song-bar/song-bar.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CommonSongService } from '../../services/common-song.service';
 import { AudibleMetronome } from '../utils/audible-metronome';
 import { AudioFile } from '../model/audio-file.model';
-import {ProgressSpinnerMode, MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { CommonSongService } from '../services/common-song.service';
+import { VoiceService } from '../services/voice.service';
 
 const REACTION_TIME = .3;
 
@@ -81,7 +82,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
   maxVoiceWidth: string = '0px';
   buttonDisabledTooltip = 'Die vorgeladenen Lieder können nicht bearbeitet werden. Bitte kopiere das Lied.';
 
-  constructor(readonly store: Store, readonly commonSongService: CommonSongService) { }
+  constructor(readonly store: Store, readonly commonSongService: CommonSongService, readonly voiceService: VoiceService) { }
 
   onFileDragOver(event: DragEvent) {
     event.preventDefault();
@@ -160,7 +161,9 @@ export class SongViewComponent implements OnInit, OnDestroy {
       // set the song text
       if (song?.text) {
         this.songBars = song.text.split('\n\n');
-        this.createVoices();
+        this.voices = this.voiceService.createVoices(this.songBars);
+        this.maxVoiceWidth = this.voiceService.calculateMaxVoiceWidth(this.voices);    
+        this.songBars = this.songBars.filter(bar => !bar.toLowerCase().startsWith('voices:'));
       }
     });
   }
@@ -179,35 +182,6 @@ export class SongViewComponent implements OnInit, OnDestroy {
           });
       }
     });
-  }
-
-  createVoices() {
-    this.voices.clear();
-    const voiceBar = this.songBars.find(bar => bar.toLowerCase().startsWith('voices:'));
-    if (!voiceBar) return;
-
-    const lines = voiceBar.split('\n');
-    for (const line of lines) {
-      const match = line.match(/^\s*(.*):\s*(.+)$/i);
-      if (match) {
-        const key = match[1].trim();
-        const value = match[2].trim();
-        this.voices.set(key, value);
-      }
-    }
-
-    this.calculateMaxVoiceWidth();
-    this.songBars = this.songBars.filter(bar => !bar.toLowerCase().startsWith('voices:'));
-  }
-
-  calculateMaxVoiceWidth() {
-    const longestVoice = Array.from(this.voices.keys()).reduce((a, b) => (a.length > b.length ? a : b), '');
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    if (context) {
-      context.font = 'bold 14px monospace';
-      this.maxVoiceWidth = `${context.measureText(longestVoice).width}px`;
-    }
   }
 
   ngOnDestroy() {

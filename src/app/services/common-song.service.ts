@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, map, Observable, tap } from 'rxjs';
-import { SongFile } from '../app/model/song-file.model';
 import { Store } from '@ngrx/store';
-import { MuluFile } from '../app/model/mulu-file.model';
-import { AudioFile, AudioFileWithBytes } from '../app/model/audio-file.model';
+import { SongFile } from '../model/song-file.model';
+import { MuluFile } from '../model/mulu-file.model';
+import { AudioFileWithBytes } from '../model/audio-file.model';
 
 @Injectable({
   providedIn: 'root',
