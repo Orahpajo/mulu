@@ -17,7 +17,7 @@ import { FileExplorerComponent } from './file-explorer/file-explorer.component';
 })
 export class AppComponent implements OnInit {
   appVersion = version;
-  sidenavOpen = true;
+  sidenavOpen = false;
 
   constructor(private titleService: Title, readonly store: Store) {}
 
