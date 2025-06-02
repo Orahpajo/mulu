@@ -12,6 +12,7 @@ import { AudioFileWithBytes } from '../model/audio-file.model';
 export class CommonSongService {
   
   songFileNames: string[] = [
+    'I_3 Facade - Choreo',
     'I_5 Tratsch.mulu',
     'I_12 Schaff die Männer ran.mulu',
     'II_24 Mörder Mörder.mulu',
