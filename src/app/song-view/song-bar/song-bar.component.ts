@@ -30,11 +30,11 @@ export class SongBarComponent {
   }
 
   getVoice(line: string): string | null {
-    const match = line.match(/^(.+):/i);
+    const match = line.match(/^(.+?):/i);
     return match ? match[1] : null;
   }
 
   getLineText(line: string): string {
-    return line.replace(/^(.*):\s*/i, '');
+    return line.replace(/^(.*?):\s*/i, '');
   }
 }
