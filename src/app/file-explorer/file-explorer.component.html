@@ -1,11 +1,11 @@
-    <mat-tree #tree [dataSource]="treeNodes$ | async" [childrenAccessor]="childrenAccessor">
+    <mat-tree #tree [dataSource]="dataSource" [childrenAccessor]="childrenAccessor">
         <!-- Leaf nodes (Songs) -->
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
             <!-- use a disabled button to provide padding for tree leaf -->
             <button class="song-link-button" mat-icon-button disabled>
                 <mat-icon>lyrics</mat-icon>
             </button>
-            <span class="song-link" (click)="openSong(node.songId)">{{songNameById(node.songId) | async}}</span>
+            <span class="song-link" (click)="openSong(node.songId)">{{songNameById(node.songId)}}</span>
         </mat-tree-node>
 
         <!-- Folder Nodes -->
