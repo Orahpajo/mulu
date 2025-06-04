@@ -16,6 +16,7 @@ export class CommonSongService {
     'I_5 Tratsch.mulu',
     'I_12 Schaff die Männer ran.mulu',
     'II_24 Mörder Mörder.mulu',
+    'I_3 Facade - Choreo Video.mulu',
   ];
   
   constructor(private http: HttpClient,private store: Store) { }
