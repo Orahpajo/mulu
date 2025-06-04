@@ -46,5 +46,5 @@ credentials.txt
 .htpasswd
 
 # songfiles
-deploy/commonSongs/*
-public/commonSongs/
+deploy/commonSongs*/*
+public/commonSongs*/
