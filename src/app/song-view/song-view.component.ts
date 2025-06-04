@@ -72,6 +72,9 @@ export class SongViewComponent implements OnInit, OnDestroy {
   atBottom = false;
   audioFileBytes?: string;
 
+  autoScrollPaused = false;
+  private autoScrollTimeout?: any;
+
   isDragOver = false;
 
   showTextModeMenu = false;
@@ -262,6 +265,14 @@ export class SongViewComponent implements OnInit, OnDestroy {
   onTextScroll(container: HTMLElement) {
     this.atTop = container.scrollTop === 0;
     this.atBottom = container.scrollHeight - container.scrollTop === container.clientHeight;
+
+    if (!this.autoScrollPaused && this.audio && !this.audio.nativeElement.paused) {
+      this.autoScrollPaused = true;
+      clearTimeout(this.autoScrollTimeout);
+      this.autoScrollTimeout = setTimeout(() => {
+        this.autoScrollPaused = false;
+      }, 5000);
+    }
   }
 
   togglePlay(audio: HTMLAudioElement) {
@@ -317,6 +328,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   scrollToCurrentLine() {
     if (this.textmode !== 'view') return;
+    if (this.autoScrollPaused) return; 
     if (!this.scrollContainer || !this.lineItems) return;
     const current = this.lineItems.get(this.currentLine);
     if (!current) return;
