@@ -64,7 +64,6 @@ export class SongViewComponent implements OnInit, OnDestroy {
   audioFileLoading = false;
 
   duration = 0;
-  isPlaying: any;
 
   loopStart = -1;
   loopEnd = -1;
@@ -266,12 +265,11 @@ export class SongViewComponent implements OnInit, OnDestroy {
   }
 
   togglePlay(audio: HTMLAudioElement) {
-    if (this.isPlaying) {
+    if (!audio.paused) {
       audio.pause();
     } else {
       audio.play();
     }
-    this.isPlaying = !this.isPlaying;
   }
 
   onTimeUpdate(audio: HTMLAudioElement) {
@@ -288,12 +286,11 @@ export class SongViewComponent implements OnInit, OnDestroy {
     }
 
     // need to loop?
-    if (this.textmode === 'loop' && this.isPlaying && this.loopStart >= 0) { // able to loop?
+    if (this.textmode === 'loop' && !audio.paused && this.loopStart >= 0) { // able to loop?
       if (this.currentTime > audio.duration - .1 // song ended?
         || this.currentTime > (this.song!.cues[this.loopEnd + 1] || 0)
       ) {
         audio.pause();
-        this.isPlaying = false;
 
         if (!this.audibleMetronome.isRunning()) {
           console.log("Starte hörbares Metronom:");
@@ -307,7 +304,6 @@ export class SongViewComponent implements OnInit, OnDestroy {
               this.currentTime = this.song?.cues[this.currentLine]!;
               audio.currentTime = this.currentTime;
               audio.play();
-              this.isPlaying = true;
             }
           );
         } else {
