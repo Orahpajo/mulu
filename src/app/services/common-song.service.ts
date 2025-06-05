@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { forkJoin, map, Observable, tap } from 'rxjs';
+import { catchError, EMPTY, forkJoin, map, Observable, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { SongFile } from '../model/song-file.model';
 import { MuluFile } from '../model/mulu-file.model';
@@ -12,11 +12,10 @@ import { AudioFileWithBytes } from '../model/audio-file.model';
 export class CommonSongService {
   
   songFileNames: string[] = [
-    'I_3 Facade - Choreo.mulu',
     'I_5 Tratsch.mulu',
     'I_12 Schaff die Männer ran.mulu',
     'II_24 Mörder Mörder.mulu',
-    'I_3 Facade - Choreo Video.mulu',
+    'I_3 Facade - Choreo.mulu',
   ];
   
   constructor(private http: HttpClient,private store: Store) { }
@@ -28,6 +27,10 @@ export class CommonSongService {
           const songFile = song.songFile;
           
           return new SongFile(songFile.name, songFile.id, songFile.audiofiles, songFile.text, songFile.cues, true, songFile.selectedAudioFile?.id || null);
+        }),
+        catchError(err => {
+          console.log(err);
+          return EMPTY;
         })
       )
     );
