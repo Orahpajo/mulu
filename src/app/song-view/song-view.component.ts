@@ -179,7 +179,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
       } else {
         this.commonSongService.loadSongBytes(fileId)
           .subscribe(audioFile => {
-            this.updateAudioObjectUrl(bytes as string);
+            this.updateAudioObjectUrl(audioFile.bytes as string);
             this.audioFileLoading = false;
           });
       }
