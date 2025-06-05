@@ -171,7 +171,7 @@
               <mat-spinner></mat-spinner>
             } @else { 
               <video #audioRef
-                [src]="'data:' + song.selectedAudioFile.mimeType + ';base64,' + audioFileBytes"
+                [src]="audioObjectUrl"
                 (timeupdate)="onTimeUpdate(audioRef)"
                 (loadedmetadata)="onLoadedMetadata(audioRef)"
                 [attr.controls]="false"
@@ -182,7 +182,7 @@
             }
           } @else {
             <audio #audioRef
-              [src]="'data:' + song.selectedAudioFile.mimeType + ';base64,' + audioFileBytes"
+              [src]="audioObjectUrl"
               (timeupdate)="onTimeUpdate(audioRef)"
               (loadedmetadata)="onLoadedMetadata(audioRef)">
             </audio>

@@ -70,7 +70,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   atTop = true;
   atBottom = false;
-  audioFileBytes?: string;
+  audioObjectUrl?: string;
 
   autoScrollPaused = false;
   private autoScrollTimeout?: any;
@@ -174,12 +174,12 @@ export class SongViewComponent implements OnInit, OnDestroy {
     this.audioFileLoading = true;
     localforage.getItem(fileId).then((bytes) => {
       if (bytes){
-        this.audioFileBytes = bytes as string;
+        this.updateAudioObjectUrl(bytes as string);
         this.audioFileLoading = false;
       } else {
         this.commonSongService.loadSongBytes(fileId)
           .subscribe(audioFile => {
-            this.audioFileBytes = audioFile.bytes as string;
+            this.updateAudioObjectUrl(bytes as string);
             this.audioFileLoading = false;
           });
       }
@@ -420,6 +420,27 @@ export class SongViewComponent implements OnInit, OnDestroy {
       };
       reader.readAsDataURL(blob);
     });
+  }
+
+  private base64ToBlob(base64: string, mimeType: string): Blob {
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: mimeType });
+  }
+
+  private updateAudioObjectUrl(audioFileBytes: string) {
+    if (this.audioObjectUrl) {
+      URL.revokeObjectURL(this.audioObjectUrl);
+      this.audioObjectUrl = undefined;
+    }
+    if (audioFileBytes && this.song?.selectedAudioFile?.mimeType) {
+      const blob = this.base64ToBlob(audioFileBytes, this.song.selectedAudioFile.mimeType);
+      this.audioObjectUrl = URL.createObjectURL(blob);
+    }
   }
 
   onAudioFileSelected(event: any) {
