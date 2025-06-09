@@ -13,11 +13,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { deleteSongFileWithQuestion, duplicateSongFile, editSongFile, importSongFile, setVoiceFilter, toggleEditNameMode, toggleShowAudioFiles } from '../store/song-file.actions';
 import { Router, RouterModule } from '@angular/router';
 import { MuluFile } from '../model/mulu-file.model';
-import localforage from 'localforage';
-import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
-import { AudioFile, AudioFileWithBytes } from '../model/audio-file.model';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule, MatSelectionListChange } from '@angular/material/list';
+import { CommonSongService } from '../services/common-song.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -45,7 +44,6 @@ export class ToolbarComponent {
   @Output()
   sidenavOpenChange = new EventEmitter<boolean>();
 
-
   currentSongFile: SongFile | null = null;
   editSongTitleMode$: Observable<boolean>;
   showAudioFiles$: Observable<boolean>;
@@ -53,7 +51,7 @@ export class ToolbarComponent {
   voices = this.store.select(selectVoices);
   voiceFiter = this.store.select(selectVoiceFilter);
 
-  constructor(readonly store: Store, readonly router: Router) {
+  constructor(readonly store: Store, readonly router: Router, readonly commonSongService: CommonSongService) {
     this.store.select(selectCurrentSongFile).subscribe((currentSongFile) => {
       this.currentSongFile = currentSongFile?.clone() || null;
     });
@@ -91,51 +89,6 @@ export class ToolbarComponent {
     const newFilter = event.source.selectedOptions.selected.map(listItem => listItem.value);
     // change filter in store
     this.store.dispatch(setVoiceFilter(newFilter));
-  }
-
-  async shareSong(currentSongFile: SongFile) {
-    // Load Audio Files
-    const audioFiles: AudioFileWithBytes[] = [];
-    for (const audioFile of currentSongFile.audiofiles){
-      const bytes = await localforage.getItem(audioFile.id)
-      const audioFileWithBytes = {
-          ...audioFile,
-          bytes: bytes as string,
-        };
-      audioFiles.push(audioFileWithBytes);
-    }
-    const fileName = this.sanitizeFileName(currentSongFile.name) + '.mulu';
-    const muluFile: MuluFile = {
-      songFile: currentSongFile,
-      audioFiles,
-    };
-    const fileContent = JSON.stringify(muluFile, null, 2);
-    const file = new File([fileContent], fileName, { type: 'application/json' });
-  
-    // Check if the browser supports the Web Share API
-    navigator.share({
-      files: [file],
-      title: currentSongFile.name,
-      text: 'Mulu Song File',
-    }).catch(() => {
-      console.log('Web Share API not supported, falling back to download');
-      // Fallback: Download
-      const url = URL.createObjectURL(file);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 100);
-    })
-  }
-
-  private sanitizeFileName(name: string): string {
-    // Remove invalid characters and replace spaces with underscores
-    return name.replace(/[/\\?%*:|"<>]/g, '').replace(/\s+/g, '_');
   }
 
   importSong(){

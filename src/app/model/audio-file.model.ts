@@ -6,4 +6,6 @@ export interface AudioFile {
 
 export interface AudioFileWithBytes extends AudioFile {
     bytes: string;
+    /** Size in Bytes */
+    size: number; 
 }

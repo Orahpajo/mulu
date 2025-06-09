@@ -20,7 +20,7 @@ import { SongBarComponent } from './song-bar/song-bar.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AudibleMetronome } from '../utils/audible-metronome';
 import { AudioFile } from '../model/audio-file.model';
-import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonSongService } from '../services/common-song.service';
 import { VoiceService } from '../services/voice.service';
 
@@ -108,7 +108,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   deleteAudioFile(file: AudioFile) {
     // delete file from indexed db
-    localforage.setItem(file.id,null);
+    localforage.setItem(file.id, null);
 
     // Remove audiofile from song
     const updatedSong = this.song!.clone();
@@ -116,7 +116,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
     this.store.dispatch(editSongFile(updatedSong));
 
     // select another file if the selected is deleted
-    if (this.song?.selectedAudioFile?.id === file.id){
+    if (this.song?.selectedAudioFile?.id === file.id) {
       this.song.selectedAudioFile = this.song.audiofiles[0] || null;
     }
   }
@@ -131,7 +131,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
         this.textmode = song?.text === defaultText ? 'edit' : 'view';
 
         // show audiofiles upload field, if there are no audiofiles
-        if(song.audiofiles.length === 0){
+        if (song.audiofiles.length === 0) {
           this.store.dispatch(showAudioFiles());
         }
       });
@@ -143,22 +143,22 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
     // Current Song
     this.store.select(selectCurrentSongFile).subscribe((song) => {
-      const selectedFileChanged = 
+      const selectedFileChanged =
         // if there was no audio selected we will select it later so it changed
         !this.song?.selectedAudioFile ||
         // The new selected id exists and is different from the old one
-        song?.selectedAudioFile?.id 
+        song?.selectedAudioFile?.id
         && song.selectedAudioFile.id !== this.song?.selectedAudioFile?.id;
-      
+
       this.song = song?.clone() || null;
       if (!this.song) return;
 
       // select an audiofile if not selected
-      if (this.song && !this.song.selectedAudioFile){
+      if (this.song && !this.song.selectedAudioFile) {
         this.song.selectedAudioFile = this.song.audiofiles[0];
       }
       // did the selected audiofile change?
-      if (selectedFileChanged && this.song.selectedAudioFile){
+      if (selectedFileChanged && this.song.selectedAudioFile) {
         this.loadAudioFile(this.song.selectedAudioFile.id);
       }
 
@@ -166,7 +166,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
       if (song?.text) {
         this.songBars = song.text.split('\n\n');
         this.voiceColors = this.voiceService.createVoices(this.songBars);
-        this.maxVoiceWidth = this.voiceService.calculateMaxVoiceWidth(this.voiceColors);    
+        this.maxVoiceWidth = this.voiceService.calculateMaxVoiceWidth(this.voiceColors);
         this.songBars = this.songBars.filter(bar => !bar.toLowerCase().startsWith('voices:'));
       }
     });
@@ -174,18 +174,13 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   private loadAudioFile(fileId: string) {
     this.audioFileLoading = true;
-    localforage.getItem(fileId).then((bytes) => {
-      if (bytes){
+
+    this.commonSongService.loadAudioFile(fileId)
+      .pipe(first())
+      .subscribe(bytes => {
         this.updateAudioObjectUrl(bytes as string);
         this.audioFileLoading = false;
-      } else {
-        this.commonSongService.loadSongBytes(fileId)
-          .subscribe(audioFile => {
-            this.updateAudioObjectUrl(audioFile.bytes as string);
-            this.audioFileLoading = false;
-          });
-      }
-    });
+      })
   }
 
   ngOnDestroy() {
@@ -226,17 +221,17 @@ export class SongViewComponent implements OnInit, OnDestroy {
       if (this.loopStart < 0) {
         this.loopStart = lineNumber;
         // set current line if smaller than start
-        if (this.currentLine < this.loopStart){
+        if (this.currentLine < this.loopStart) {
           this.setCurrentLine(this.loopStart);
         }
-      // if loop start is marked mark loop end
+        // if loop start is marked mark loop end
       } else if (this.loopEnd < 0) {
         this.loopEnd = lineNumber;
         // set current line if larger than end
-        if (this.currentLine > this.loopEnd){
+        if (this.currentLine > this.loopEnd) {
           this.setCurrentLine(this.loopEnd);
         }
-      // if start and end are marked start marking again
+        // if start and end are marked start marking again
       } else {
         this.loopStart = lineNumber;
         this.loopEnd = -1;
@@ -330,7 +325,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   scrollToCurrentLine() {
     if (this.textmode !== 'view') return;
-    if (this.autoScrollPaused) return; 
+    if (this.autoScrollPaused) return;
     if (!this.scrollContainer || !this.lineItems) return;
     const current = this.lineItems.get(this.currentLine);
     if (!current) return;
@@ -387,10 +382,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
       const fileId = uuidv4();
 
       // Save file bytes in indexedDB
-      let bytes: string;
-      bytes = await this.readFileAsBase64(file);
-
-      await localforage.setItem(fileId, bytes);
+      await this.commonSongService.saveAudioFile(fileId,file);
 
       // Set file in Store
       const audioFile = { id: fileId, name: file.name, mimeType };
@@ -398,15 +390,6 @@ export class SongViewComponent implements OnInit, OnDestroy {
       updatedSong.selectedAudioFile = audioFile;
       this.store.dispatch(editSongFile(updatedSong));
     }
-  }
-
-  private readFileAsBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve((reader.result as string).split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
   }
 
   private blobToBase64(blob: Blob): Promise<string> {

@@ -183,7 +183,7 @@ export class SongFileEffects {
                 switchMap(async ([{ file }, songFiles, songTreeNodes]) => {
                     // Save audio bytes to localforage
                     for (const audioFile of file.audioFiles){
-                        await localforage.setItem(audioFile.id, audioFile.bytes);
+                        await this.commonSongService.saveAudioBytes(audioFile.id, audioFile.bytes);
                     }
                     // Save song file to localforage
                     await localforage.setItem('songFiles', JSON.stringify(songFiles));

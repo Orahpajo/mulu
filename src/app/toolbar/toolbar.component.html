@@ -52,7 +52,7 @@
                 <button (click)="deleteSong(currentSongFile)" mat-mini-fab matTooltip="Lied löschen">
                     <mat-icon>delete</mat-icon>
                 </button>
-                <button (click)="shareSong(currentSongFile)" mat-mini-fab matTooltip="Lied teilen oder herunterladen">
+                <button (click)="commonSongService.shareSong(currentSongFile)" mat-mini-fab matTooltip="Lied teilen oder herunterladen">
                     <mat-icon>share</mat-icon>
                 </button>
             </span>
@@ -85,7 +85,7 @@
                     <mat-icon>delete</mat-icon>
                     <span>Lied löschen</span>
                 </button>
-                <button mat-menu-item (click)="shareSong(currentSongFile)">
+                <button mat-menu-item (click)="commonSongService.shareSong(currentSongFile)">
                     <mat-icon>share</mat-icon>
                     <span>Lied teilen oder herunterladen</span>
                 </button>
