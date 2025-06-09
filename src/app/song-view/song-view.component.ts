@@ -12,17 +12,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
-import { first } from 'rxjs';
+import { catchError, EMPTY, first } from 'rxjs';
 import { MatListModule, MatSelectionList } from '@angular/material/list';
 import { v4 as uuidv4 } from 'uuid';
 import localforage from 'localforage';
 import { SongBarComponent } from './song-bar/song-bar.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AudibleMetronome } from '../utils/audible-metronome';
-import { AudioFile } from '../model/audio-file.model';
+import { AudioFile, AudioFileWithBytes } from '../model/audio-file.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonSongService } from '../services/common-song.service';
 import { VoiceService } from '../services/voice.service';
+import { MatDividerModule } from '@angular/material/divider';
 
 const REACTION_TIME = .3;
 
@@ -159,7 +160,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
       }
       // did the selected audiofile change?
       if (selectedFileChanged && this.song.selectedAudioFile) {
-        this.loadAudioFile(this.song.selectedAudioFile.id);
+        this.loadAudioFileFromLocal(this.song.selectedAudioFile.id);
       }
 
       // set the song text
@@ -172,15 +173,36 @@ export class SongViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  private loadAudioFile(fileId: string) {
+  private loadAudioFileFromLocal(fileId: string) {
     this.audioFileLoading = true;
 
-    this.commonSongService.loadAudioFile(fileId)
-      .pipe(first())
+    this.commonSongService.loadAudioFileFromLocal(fileId)
+      .pipe(first(),
+        catchError(err => {
+          console.log('audiofile not in lokal DB');
+          this.audioFileLoading = false;
+          return EMPTY;
+        }))
       .subscribe(bytes => {
         this.updateAudioObjectUrl(bytes as string);
         this.audioFileLoading = false;
       })
+  }
+
+  loadSelectedAudioFileFromWeb() {
+    this.audioFileLoading = true;
+
+    this.commonSongService.loadAudiFilesFromRemote(this.song.selectedAudioFile.id)
+      .subscribe(file => {
+        this.updateAudioObjectUrl(file.bytes);
+        this.audioFileLoading = false;
+      });
+  }
+
+  getSelectedAudioFileSize() {
+    const selectedAudioFile = this.song.selectedAudioFile as AudioFileWithBytes;
+    if (!selectedAudioFile.size) return '? MB';
+    return (selectedAudioFile.size / 1000000) + ' MB'
   }
 
   ngOnDestroy() {
@@ -385,7 +407,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
       await this.commonSongService.saveAudioFile(fileId,file);
 
       // Set file in Store
-      const audioFile = { id: fileId, name: file.name, mimeType };
+      const audioFile = { id: fileId, name: file.name, mimeType, size: file.size };
       updatedSong.audiofiles.push(audioFile);
       updatedSong.selectedAudioFile = audioFile;
       this.store.dispatch(editSongFile(updatedSong));

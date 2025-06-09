@@ -43,23 +43,24 @@ export class CommonSongService {
     return this.http.get<AudioFileWithBytes>(`/commonSongs/${fileId}.json`)
   }
 
-  loadAudioFile(fileId: string) {
+  loadAudioFileFromLocal(fileId: string) {
     return new Observable((subscriber) => {
       localforage.getItem(fileId).then(bytes => {
         if (bytes){
           subscriber.next(bytes);
           subscriber.complete();
         } else {
-          this.loadSongBytes(fileId).pipe(first()).subscribe(file =>{
-            // cache bytes in localforage
-            localforage.setItem(fileId,file.bytes);
-            // return byes
-            subscriber.next(file.bytes);
-            subscriber.complete();
-          });
+          subscriber.error()
         }
       })
     });
+  }
+
+  loadAudiFilesFromRemote(fileId: string) {
+      return this.loadSongBytes(fileId).pipe(tap(file =>{
+            // cache bytes in localforage
+            localforage.setItem(fileId,file.bytes);}
+          ));
   }
 
   saveAudioFile(fileId: string, file: File){
