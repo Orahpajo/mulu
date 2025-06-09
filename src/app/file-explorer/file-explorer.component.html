@@ -1,31 +1,30 @@
-    <mat-tree #tree [dataSource]="dataSource" [childrenAccessor]="childrenAccessor">
-        <!-- Leaf nodes (Songs) -->
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-            <!-- use a disabled button to provide padding for tree leaf -->
-            <button class="song-link-button" mat-icon-button disabled>
-                <mat-icon>lyrics</mat-icon>
-            </button>
-            <span class="song-link" (click)="openSong(node.songId)">{{songNameById(node.songId)}}</span>
-        </mat-tree-node>
+<mat-tree #tree [dataSource]="dataSource" [childrenAccessor]="childrenAccessor">
+    <!-- Leaf nodes (Songs) -->
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+        <!-- use a disabled button to provide padding for tree leaf -->
+        <button class="song-link-button" mat-icon-button disabled>
+            <mat-icon>lyrics</mat-icon>
+        </button>
+        <span class="song-link" (click)="openSong(node.songId)">{{songNameById(node.songId)}}</span>
+    </mat-tree-node>
 
-        <!-- Folder Nodes -->
-        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding
-            isExpandable [isExpanded]="node.expanded"
-            matTreeNodeToggle [cdkTreeNodeTypeaheadLabel]="node.name">
-            <button mat-icon-button matTreeNodeToggle [attr.aria-label] = "node.name + ' umschalten'">
-                <mat-icon>
-                    {{tree.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                </mat-icon>
-            </button>
-            {{node.name}}
-        </mat-tree-node>
-    </mat-tree>
+    <!-- Folder Nodes -->
+    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding isExpandable
+        [isExpanded]="node.expanded" matTreeNodeToggle [cdkTreeNodeTypeaheadLabel]="node.name">
+        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="node.name + ' umschalten'">
+            <mat-icon>
+                {{tree.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+        </button>
+        {{node.name}}
+    </mat-tree-node>
+</mat-tree>
 <div class="center-content">
     <a (click)="newSong()" mat-fab><mat-icon>add</mat-icon></a>
 </div>
 <div class="help-link">
-  <a (click)="openHelpPage()" mat-stroked-button>
-    <mat-icon>help_outline</mat-icon>
-    Hilfe &amp; Anleitung
-  </a>
+    <a (click)="openHelpPage()" mat-stroked-button>
+        <mat-icon>help_outline</mat-icon>
+        Hilfe &amp; Anleitung
+    </a>
 </div>

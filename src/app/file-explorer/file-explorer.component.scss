@@ -14,6 +14,9 @@ mat-tree {
 .center-content {
   display: flex;
   justify-content: center;
+  margin-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  // Fallback for older iOS-Versions:
+  margin-bottom: calc(8px + constant(safe-area-inset-bottom, 0px));
 }
 
 span.song-link {
@@ -29,5 +32,7 @@ button.song-link-button {
   display: flex;
   justify-content: center;
   margin-top: 10px;
-  margin-bottom: 16px;
+  margin-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  // Fallback for older iOS-Versions:
+  margin-bottom: calc(16px + constant(safe-area-inset-bottom, 0px));
 }
