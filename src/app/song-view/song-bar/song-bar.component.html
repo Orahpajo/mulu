@@ -5,16 +5,24 @@
   <div class="song-bar-content" 
       [ngClass]="isCurrent ? 'current-line-text' : 'song-line-text'">
       @for (line of lines; track $index) {
+        @if (!getVoice(line) || voiceFilter.includes(getVoice(line))){
+          <div class="song-line">
+            <!-- Voice Label -->
+            @if(getVoice(line)) {
+              <span
+                class="song-line-voice"
+                [ngStyle]="{ width: maxVoiceWidth }"
+                [ngStyle]="getVoiceStyle(line)">{{getVoice(line)}}</span>
+            }
+            <!-- Line Text -->
+            <span class="song-line-text">{{ getLineText(line) }}</span>
+          </div>
+        }
+      }
+      <!-- Show a filter icon if there are no lines anymore -->
+      @if (isCompletelyFilteredOut()){
         <div class="song-line">
-          <!-- Voice Label -->
-          @if(getVoice(line)) {
-            <span
-              class="song-line-voice"
-              [ngStyle]="{ width: maxVoiceWidth }"
-              [ngStyle]="getVoiceStyle(line)">{{getVoice(line)}}</span>
-          }
-          <!-- Line Text -->
-          <span class="song-line-text">{{ getLineText(line) }}</span>
+            <span class="song-line-text">🔇</span>
         </div>
       }
   </div>

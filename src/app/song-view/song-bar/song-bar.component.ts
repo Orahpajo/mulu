@@ -13,8 +13,9 @@ export class SongBarComponent {
   @Input() isCurrent: boolean = false;
   @Input() isInLoop: boolean = false;
   @Input() cue?: number;
-  @Input() voices?: Map<string, string>;
+  @Input() voiceColors?: Map<string, string>;
   @Input() maxVoiceWidth: string = '0px';
+  @Input() voiceFilter: string[] = [];
 
   get lines(): string[] {
     return this.line.split('\n');
@@ -22,8 +23,8 @@ export class SongBarComponent {
 
   getVoiceStyle(line: string) {
     const voice = line.split(':')[0].trim();
-    if (this.voices?.has(voice)) {
-      return { color: this.voices.get(voice), width: this.maxVoiceWidth };
+    if (this.voiceColors?.has(voice)) {
+      return { color: this.voiceColors.get(voice), width: this.maxVoiceWidth };
     } else {
       return { width: this.maxVoiceWidth };
     }
@@ -36,5 +37,15 @@ export class SongBarComponent {
 
   getLineText(line: string): string {
     return line.replace(/^(.*?):\s*/i, '');
+  }
+
+  /** are all lines filtered away? */
+  isCompletelyFilteredOut(): boolean{
+    // to be completely filtered, every line musst be filtered out
+    return this.lines.every(line => {
+      const voice = this.getVoice(line);
+      return !!voice // The line needs to have a voice or it is not filtered
+          && !this.voiceFilter.includes(voice); // The voice is not inlcuded in the (whitelist)filter
+    })
   }
 }

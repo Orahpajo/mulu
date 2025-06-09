@@ -64,3 +64,8 @@ export const deleteSongFile = createAction(
   '[Song File] Delete Song File',
   (file: SongFile) => ({ file })
 );
+
+export const setVoiceFilter = createAction(
+  '[Song File] Set Voice Filter',
+  (voiceFilter: string[]) => ({ voiceFilter })
+)

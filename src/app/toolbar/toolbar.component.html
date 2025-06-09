@@ -34,6 +34,18 @@
                     matTooltip="Lied-Dateien anzeigen">
                     <mat-icon>audio_file</mat-icon>
                 </button>
+                <button mat-mini-fab [matMenuTriggerFor]="filterMenu">
+                    <mat-icon>filter_alt</mat-icon>
+                </button>
+                <mat-menu #filterMenu="matMenu">
+                    <mat-selection-list (selectionChange)="filterChanged($event)" (click)="$event.stopPropagation();">
+                        @for (voice of (voices | async); track $index){
+                            <mat-list-option [value]="voice" [selected]="(voiceFiter | async).includes(voice)">
+                                {{voice}}
+                            </mat-list-option>
+                        }
+                    </mat-selection-list>
+                </mat-menu>
                 <button (click)="duplicateSong(currentSongFile)" mat-mini-fab matTooltip="Lied dublizieren">
                     <mat-icon>file_copy</mat-icon>
                 </button>
@@ -60,6 +72,10 @@
                     <span>Lied-Dateien 
                         {{ (showAudioFiles$ | async)? 'verbergen' : 'anzeigen' }}
                     </span>
+                </button>
+                <button mat-menu-item [matMenuTriggerFor]="filterMenu">
+                    <mat-icon>filter_alt</mat-icon>
+                    <span>Stimmen Filtern</span>
                 </button>
                 <button mat-menu-item (click)="duplicateSong(currentSongFile)">
                     <mat-icon>file_copy</mat-icon>

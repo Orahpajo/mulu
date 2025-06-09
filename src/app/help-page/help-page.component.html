@@ -70,7 +70,7 @@
     <!-- Liedtrack hochladen und auswählen -->
     <h2>
         <span class="inline-button-container">
-            Liedtrack auswählen
+            Lied-/Videotrack auswählen
             <button mat-mini-fab class="button-image">
                 <mat-icon>audio_file</mat-icon>
             </button>
@@ -86,9 +86,23 @@
         </span>) verstecken. Damit kannst du die Song-Dateien ein- und ausblenden.
         Im <strong>Song-Dateien</strong>-Bereich kannst du dann die Audio- oder Videodateien für den Song
         auswählen, die du abspielen möchtest. Du kannst mehrere Dateien hochladen und eine davon als
-        <strong>aktiv</strong> markieren. Diese wird dann beim Abspielen des Songs verwendet.
+        <strong>aktiv</strong> markieren. Diese wird dann beim Abspielen des Songs verwendet. Damit die Cues 
+        für alle tracks passen, müssen die Tracks gleich lang sein. Wenn du unterschiedlich lange track hast,
+        zum Beispiel einen Sing Along und eine Aufzeichnung, solltest du verschiedene Songs anlegen.
         Du kannst auch Dateien löschen, die du nicht mehr benötigst. Beachte, dass beim Löschen eines Songs
         auch alle zugehörigen Dateien entfernt werden.
+    </p>
+
+    <!-- Voice Filter -->
+     <h2> <span class="inline-button-container">
+            Stimmen filtern
+            <button mat-mini-fab class="button-image">
+                <mat-icon>filter_alt</mat-icon>
+            </button>
+        </span>
+    </h2>
+    <p>
+        Um im Song nur die Stimmen anzuzeigen, die du brauchst, kannst du die anderen Stimmen herausfiltern.
     </p>
 
     <!-- Songs duplizieren -->
@@ -145,7 +159,7 @@
                     <app-song-bar
                         #lineItem
                         [line]="line"
-                        [voices]="firstExample.voices"
+                        [voiceColors]="firstExample.voiceColors"
                         [maxVoiceWidth]="firstExample.maxVoiceWidth"
                         >
                     </app-song-bar>
@@ -173,7 +187,7 @@
                     <app-song-bar
                         #lineItem
                         [line]="line"
-                        [voices]="secondExample.voices"
+                        [voiceColors]="secondExample.voiceColors"
                         [maxVoiceWidth]="secondExample.maxVoiceWidth"
                         >
                     </app-song-bar>

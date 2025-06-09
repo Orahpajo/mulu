@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { defaultText, SongFile } from '../model/song-file.model';
-import { selectCurrentSongFile, selectShowAudioFiles } from '../store/song-file.feature';
+import { selectCurrentSongFile, selectShowAudioFiles, selectVoiceFilter } from '../store/song-file.feature';
 import { MatIconModule } from '@angular/material/icon';
 import { editSongFile, showAudioFiles } from '../store/song-file.actions';
 import { CommonModule } from '@angular/common';
@@ -53,6 +53,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
   @ViewChildren('lineItem', { read: ElementRef }) lineItems!: QueryList<ElementRef>;
 
   private audibleMetronome = new AudibleMetronome();
+  private voiceService = new VoiceService();
 
   currentTime = 0;
   currentLine = -1;
@@ -80,11 +81,12 @@ export class SongViewComponent implements OnInit, OnDestroy {
   showTextModeMenu = false;
 
   songBars: string[] = [];
-  voices: Map<string, string> = new Map();
+  voiceColors: Map<string, string> = new Map();
+  voiceFilter = this.store.select(selectVoiceFilter);
   maxVoiceWidth: string = '0px';
   buttonDisabledTooltip = 'Die vorgeladenen Lieder können nicht bearbeitet werden. Bitte kopiere das Lied.';
 
-  constructor(readonly store: Store, readonly commonSongService: CommonSongService, readonly voiceService: VoiceService) { }
+  constructor(readonly store: Store, readonly commonSongService: CommonSongService) { }
 
   onFileDragOver(event: DragEvent) {
     event.preventDefault();
@@ -127,7 +129,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
       .pipe(first(song => !!song))
       .subscribe((song) => {
         this.textmode = song?.text === defaultText ? 'edit' : 'view';
-        
+
         // show audiofiles upload field, if there are no audiofiles
         if(song.audiofiles.length === 0){
           this.store.dispatch(showAudioFiles());
@@ -163,8 +165,8 @@ export class SongViewComponent implements OnInit, OnDestroy {
       // set the song text
       if (song?.text) {
         this.songBars = song.text.split('\n\n');
-        this.voices = this.voiceService.createVoices(this.songBars);
-        this.maxVoiceWidth = this.voiceService.calculateMaxVoiceWidth(this.voices);    
+        this.voiceColors = this.voiceService.createVoices(this.songBars);
+        this.maxVoiceWidth = this.voiceService.calculateMaxVoiceWidth(this.voiceColors);    
         this.songBars = this.songBars.filter(bar => !bar.toLowerCase().startsWith('voices:'));
       }
     });

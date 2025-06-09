@@ -11,7 +11,7 @@ import { VoiceService } from '../services/voice.service';
 interface Example {
   text: string;
   bars?: string[];
-  voices?: Map<string, string>;
+  voiceColors?: Map<string, string>;
   maxVoiceWidth?: string;
 }
 
@@ -22,6 +22,8 @@ interface Example {
   styleUrl: './help-page.component.scss'
 })
 export class HelpPageComponent {
+  private voiceService = new VoiceService();
+
   firstExample: Example = {
     text: 'Dies ist die erste Zeile\n\nDies ist die zweite Zeile\nDies gehört noch zur zweiten Zeile', 
   }
@@ -39,15 +41,15 @@ export class HelpPageComponent {
             'b: Bass singt etwas\n',
   };
 
-  constructor(readonly voiceService: VoiceService) {
+  constructor() {
     this.generateBarsAndVoices(this.firstExample);
     this.generateBarsAndVoices(this.secondExample);
   }
 
   generateBarsAndVoices(example: Example) {
     example.bars = example.text.split('\n\n');
-    example.voices = this.voiceService.createVoices(example.bars);
-    example.maxVoiceWidth = this.voiceService.calculateMaxVoiceWidth(example.voices);    
+    example.voiceColors = this.voiceService.createVoices(example.bars);
+    example.maxVoiceWidth = this.voiceService.calculateMaxVoiceWidth(example.voiceColors);    
     example.bars = example.bars.filter(bar => !bar.toLowerCase().startsWith('voices:'));
   }
 }

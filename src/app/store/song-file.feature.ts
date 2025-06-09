@@ -8,6 +8,7 @@ import {
   editSongFile,
   importSongFile,
   openSongFile,
+  setVoiceFilter,
   setSongFiles,
   showAudioFiles,
   toggleEditNameMode,
@@ -15,6 +16,8 @@ import {
 } from './song-file.actions';
 import { v4 as uuidv4 } from 'uuid';
 import { SongTreeNode } from '../model/song-tree-node';
+import { inject } from '@angular/core';
+import { VoiceService } from '../services/voice.service';
 
 
 interface State {
@@ -23,6 +26,8 @@ interface State {
   editNameMode: boolean;
   showAudioFiles: boolean;
   songTreeNodes: SongTreeNode[];
+  voices: string[];
+  voiceFilter: string[];
 }
 
 const initialState: State = {
@@ -31,7 +36,11 @@ const initialState: State = {
   editNameMode: false,
   showAudioFiles: false,
   songTreeNodes: [],
+  voices: [],
+  voiceFilter:[]
 };
+
+const voiceService = new VoiceService();
 
 export const songFileFeature = createFeature({
   name: 'songFile',
@@ -98,15 +107,21 @@ export const songFileFeature = createFeature({
       const currentSongFile = state.songFiles.find(
         (songFile) => songFile.id === id
       );
+      // update voices
+      const voices = Array.from(voiceService.createVoices(currentSongFile.text.split('\n\n')).keys());
       return {
         ...state,
         currentSongFile: currentSongFile ? currentSongFile : null,
+        voices,
+        voiceFilter: voices,
       };
     }),
     on(closeCurrentSongFile, (state) => {
       return {
         ...state,
         currentSongFile: null,
+        voices: [],
+        voiceFilter: [],
       };
     }),
     on(toggleEditNameMode, (state) => {
@@ -136,12 +151,21 @@ export const songFileFeature = createFeature({
       const currentSongFile = songFiles.find(
         (songFile) => songFile.id === state.currentSongFile?.id
       );
+      // update voices
+      const voices = Array.from(voiceService.createVoices(file.text.split('\n\n')).keys());
       return {
         ...state,
         currentSongFile: currentSongFile ? currentSongFile : null,
-        songFiles
+        songFiles,
+        voices
       };
     }), 
+    on(setVoiceFilter, (state, { voiceFilter }) => {
+      return {
+        ... state,
+        voiceFilter
+      }
+    }),
     on(deleteSongFile, (state, { file }) => {
       const songFiles = state.songFiles.filter(
         (songFile) => songFile.id !== file.id
@@ -190,6 +214,8 @@ export const {
   selectSongTreeNodes,
   selectLatestSongFile,
   selectShowAudioFiles,
+  selectVoices,
+  selectVoiceFilter,
 } = songFileFeature;
 
 function guardDuplicateSongName(songName: string, state: State) {
