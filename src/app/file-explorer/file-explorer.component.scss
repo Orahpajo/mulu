@@ -1,10 +1,7 @@
 :host {
   display: flex;
   flex-direction: column;
-  height: 100%;
   min-height: 0;
-  padding-bottom: env(safe-area-inset-bottom, 20px); // 20px fallback for non-supporting browsers
-  box-sizing: border-box; // Ensures padding is included within the 100% height
 }
 
 mat-tree {
