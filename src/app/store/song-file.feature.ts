@@ -49,11 +49,14 @@ export const songFileFeature = createFeature({
     on(createSongFile, (state) => {
       const songName = guardDuplicateSongName('New Song',state);
       const newFile = SongFile.create(songName);
+      const voices = Array.from(voiceService.createVoices(newFile.text.split('\n\n')).keys());
       return {
         ...state,
         songFiles: [...state.songFiles, newFile],
         songTreeNodes: [...state.songTreeNodes, {songId: newFile.id}],
         currentSongFile: newFile,
+        voices,
+        voiceFilter: voices,
       };
     }),
     on(duplicateSongFile, (state, { file }) => {
@@ -153,11 +156,22 @@ export const songFileFeature = createFeature({
       );
       // update voices
       const voices = Array.from(voiceService.createVoices(file.text.split('\n\n')).keys());
+
+      // update filter
+      const oldVoices = state.voices;
+      const newVoices = voices.filter(v => !oldVoices.includes(v));
+      const removedVoices = oldVoices.filter(v => !voices.includes(v));
+      // remove removed voices from filter
+      const voiceFilter = state.voiceFilter.filter(v => !removedVoices.includes(v));
+      // add new voices to filter
+      newVoices.forEach(v => voiceFilter.push(v));
+
       return {
         ...state,
         currentSongFile: currentSongFile ? currentSongFile : null,
         songFiles,
-        voices
+        voices,
+        voiceFilter
       };
     }), 
     on(setVoiceFilter, (state, { voiceFilter }) => {
