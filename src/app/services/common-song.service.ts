@@ -101,6 +101,10 @@ export class CommonSongService {
     const audioFiles: AudioFileWithBytes[] = [];
     for (const audioFile of currentSongFile.audiofiles) {
       const bytes = await localforage.getItem(audioFile.id)
+      if (!bytes) {
+        alert('Bitte lade erst alle Lieddateien herunter.');
+        return;
+      }
       const audioFileWithBytes = {
         ...audioFile,
         bytes: bytes as string,
