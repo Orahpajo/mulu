@@ -202,7 +202,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
   getSelectedAudioFileSize() {
     const selectedAudioFile = this.song.selectedAudioFile as AudioFileWithBytes;
     if (!selectedAudioFile.size) return '? MB';
-    return (selectedAudioFile.size / 1000000) + ' MB'
+    return (selectedAudioFile.size / 1000000).toFixed(2) + ' MB';
   }
 
   ngOnDestroy() {
