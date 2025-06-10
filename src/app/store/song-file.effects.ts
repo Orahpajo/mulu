@@ -54,9 +54,15 @@ export class SongFileEffects {
 
                 // Download common Songs
                 const loadedSongFiles = await firstValueFrom(this.commonSongService.loadCommonSongs());
-                loadedSongFiles.forEach(lsf => {
-                    if(!songFiles.find(sf => sf.id === lsf.id)){
-                        songFiles.push(lsf);
+                loadedSongFiles.forEach(loadedFile => {
+                    const localFile = songFiles.find(sf => sf.id === loadedFile.id);
+                    if(!localFile){
+                        // if the file was never downloaded put it in the list
+                        songFiles.push(loadedFile);
+                    } else if (!localFile.lastEdit || loadedFile.lastEdit > localFile.lastEdit) {
+                        // if the file was updated, replace it in the list
+                        const index = songFiles.indexOf(localFile);
+                        songFiles[index] = loadedFile;
                     }
                 });
 

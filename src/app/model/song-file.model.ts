@@ -23,7 +23,8 @@ export class SongFile {
         public cues: (number | undefined)[],
         /** Is it a song, that is shared via the server */
         public isCommonSong: boolean,
-        private selectedAudioFileId: string | null
+        private selectedAudioFileId: string | null,
+        public lastEdit?: Date
     ) {}
 
     static create(
@@ -34,8 +35,9 @@ export class SongFile {
         cues: (number | undefined)[] = [],
         isCommonSong = false,
         selectedAudioFileId: string | null = null,
+        lastEdit = null,
     ): SongFile {
-        return new SongFile(name, id, audiofiles, text, cues, isCommonSong, selectedAudioFileId);
+        return new SongFile(name, id, audiofiles, text, cues, isCommonSong, selectedAudioFileId, lastEdit);
     }
 
     clone(): SongFile {
@@ -47,6 +49,7 @@ export class SongFile {
             [...this.cues],
             this.isCommonSong,
             this.selectedAudioFileId,
+            this.lastEdit
         );
     }
 

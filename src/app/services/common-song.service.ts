@@ -7,27 +7,32 @@ import { MuluFile } from '../model/mulu-file.model';
 import { AudioFileWithBytes } from '../model/audio-file.model';
 import localforage from 'localforage';
 
+export interface SongMetaData {
+  name: string,
+  lastEdit: Date,
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class CommonSongService {
-  
-  songFileNames: string[] = [
-    'I_5 Tratsch.mulu',
-    'I_12 Schaff die Männer ran.mulu',
-    'II_24 Mörder Mörder.mulu',
-    'I_3 Facade - Choreo.mulu',
+
+  songFileNames: SongMetaData[] = [
+    { name: 'I_5 Tratsch.mulu', lastEdit: new Date(2025, 6, 10, 17, 0) },
+    { name: 'I_12 Schaff die Männer ran.mulu', lastEdit: new Date(2025, 6, 10, 17, 0) },
+    { name: 'II_24 Mörder Mörder.mulu', lastEdit: new Date(2025, 6, 10, 17, 0) },
+    { name: 'I_3 Facade - Choreo.mulu', lastEdit: new Date(2025, 6, 10, 17, 0) },
   ];
-  
-  constructor(private http: HttpClient,private store: Store) { }
-  
+
+  constructor(private http: HttpClient, private store: Store) { }
+
   loadCommonSongs(): Observable<SongFile[]> {
     const requests = this.songFileNames.map(fileName =>
-      this.http.get<MuluFile>(`/commonSongs/${fileName}`).pipe(
+      this.http.get<MuluFile>(`/commonSongs/${fileName.name}`).pipe(
         map(song => {
           const songFile = song.songFile;
-          
-          return new SongFile(songFile.name, songFile.id, songFile.audiofiles, songFile.text, songFile.cues, true, songFile.selectedAudioFile?.id || null);
+
+          return new SongFile(songFile.name, songFile.id, songFile.audiofiles, songFile.text, songFile.cues, true, songFile.selectedAudioFile?.id || null, fileName.lastEdit);
         }),
         catchError(err => {
           console.log(err);
@@ -38,7 +43,7 @@ export class CommonSongService {
 
     return forkJoin(requests);
   }
-  
+
   loadSongBytes(fileId: string): Observable<AudioFileWithBytes> {
     return this.http.get<AudioFileWithBytes>(`/commonSongs/${fileId}.json`)
   }
@@ -46,7 +51,7 @@ export class CommonSongService {
   loadAudioFileFromLocal(fileId: string) {
     return new Observable((subscriber) => {
       localforage.getItem(fileId).then(bytes => {
-        if (bytes){
+        if (bytes) {
           subscriber.next(bytes);
           subscriber.complete();
         } else {
@@ -57,15 +62,16 @@ export class CommonSongService {
   }
 
   loadAudiFilesFromRemote(fileId: string) {
-      return this.loadSongBytes(fileId).pipe(tap(file =>{
-            // cache bytes in localforage
-            localforage.setItem(fileId,file.bytes);}
-          ));
+    return this.loadSongBytes(fileId).pipe(tap(file => {
+      // cache bytes in localforage
+      localforage.setItem(fileId, file.bytes);
+    }
+    ));
   }
 
-  saveAudioFile(fileId: string, file: File){
-      return this.readFileAsBase64(file)
-        .then(bytes => localforage.setItem(fileId, bytes));
+  saveAudioFile(fileId: string, file: File) {
+    return this.readFileAsBase64(file)
+      .then(bytes => localforage.setItem(fileId, bytes));
   }
 
   saveAudioBytes(fileId: string, bytes: string) {
@@ -93,13 +99,13 @@ export class CommonSongService {
   async shareSong(currentSongFile: SongFile) {
     // Load Audio Files
     const audioFiles: AudioFileWithBytes[] = [];
-    for (const audioFile of currentSongFile.audiofiles){
+    for (const audioFile of currentSongFile.audiofiles) {
       const bytes = await localforage.getItem(audioFile.id)
       const audioFileWithBytes = {
-          ...audioFile,
-          bytes: bytes as string,
-          size: this.base64ByteLength(bytes as string)
-        };
+        ...audioFile,
+        bytes: bytes as string,
+        size: this.base64ByteLength(bytes as string)
+      };
       audioFiles.push(audioFileWithBytes);
     }
     const fileName = this.sanitizeFileName(currentSongFile.name) + '.mulu';
@@ -109,7 +115,7 @@ export class CommonSongService {
     };
     const fileContent = JSON.stringify(muluFile, null, 2);
     const file = new File([fileContent], fileName, { type: 'application/json' });
-  
+
     // Check if the browser supports the Web Share API
     navigator.share({
       files: [file],
