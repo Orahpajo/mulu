@@ -167,17 +167,18 @@
     <!-- Song Controll -->
     @if(song && song.selectedAudioFile) {
         <div class="song-control-fixed">
+          @let fileType = song.selectedAudioFile.mimeType.startsWith('video/')? 'Video' : 'Lied';
           @if (audioFileLoading){
             <mat-spinner></mat-spinner>
           } 
           @else if (!audioObjectUrl) {
             <div class="song-control-buttons">
               <button mat-stroked-button (click)="loadSelectedAudioFileFromWeb()">
-                Lied Herunterladen ({{getSelectedAudioFileSize()}})
+                {{fileType}} Herunterladen ({{getSelectedAudioFileSize()}})
               </button>
             </div>
           } @else {
-            @if(song.selectedAudioFile.mimeType.startsWith('video/')) {
+            @if(fileType === 'Video') {
               @if (audioFileLoading){
                 <mat-spinner></mat-spinner>
               } @else { 
