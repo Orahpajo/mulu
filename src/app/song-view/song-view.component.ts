@@ -455,6 +455,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
     if (this.song && selectedFile && this.song.selectedAudioFile?.id !== selectedFile.id) {
       const updatedSong = this.song.clone();
       updatedSong.selectedAudioFile = selectedFile;
+      this.audioObjectUrl = null;
       this.store.dispatch(editSongFile(updatedSong));
     }
   }
