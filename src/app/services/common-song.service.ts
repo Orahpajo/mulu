@@ -78,6 +78,10 @@ export class CommonSongService {
     return localforage.setItem(fileId, bytes);
   }
 
+  deleteAudioBytes(fileId: string){
+    return localforage.removeItem(fileId);
+  }
+
   base64ByteLength(base64: string): number {
     // remove possible data url prefix
     const cleaned = base64.split(',').pop() || '';

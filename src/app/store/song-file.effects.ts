@@ -153,7 +153,12 @@ export class SongFileEffects {
     closeSongFileAfterDelete$ = createEffect(() => 
         this.actions$.pipe(
             ofType(deleteSongFile),
-            map(() => closeCurrentSongFile())
+            map((file) => {
+                for (let audioFile of file.file.audiofiles){
+                    this.commonSongService.deleteAudioBytes(audioFile.id);
+                }
+                return closeCurrentSongFile()
+            })
         )
     );
 
