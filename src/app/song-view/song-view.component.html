@@ -127,7 +127,7 @@
     @if (song) {    
         <!-- Song Marking, looping or Viewing -->
         @if (textmode !== 'edit') {
-            <div class="song-text-scroll-outer">
+            <div class="song-text-scroll-outer" [ngClass]="{ 'video-present': isVideoPresent }">
                 <div class="blur-top" [class.visible]="!atTop"></div>
                 <div class="song-text-scroll-container"
                      #scrollContainer

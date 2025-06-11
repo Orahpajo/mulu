@@ -459,4 +459,9 @@ export class SongViewComponent implements OnInit, OnDestroy {
       this.store.dispatch(editSongFile(updatedSong));
     }
   }
+
+  /** True if the selected file is a video */
+  get isVideoPresent(): boolean {
+    return !!this.song?.selectedAudioFile?.mimeType?.startsWith('video/') && !!this.audioObjectUrl;
+  }
 }

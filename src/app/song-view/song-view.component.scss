@@ -41,6 +41,12 @@
     flex-direction: column;
     transition: max-height 0.2s;
   }
+
+  .song-text-scroll-outer.video-present {
+    /* Reduce max-height/min-height when video is present */
+    min-height: calc(100vh - 100px - 45vh); // 45vh is max video height
+    max-height: calc(100vh - 100px - 45vh);
+  }
   
   .song-text-scroll-container {
     height: 100%;
