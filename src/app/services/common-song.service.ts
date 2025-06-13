@@ -21,7 +21,7 @@ export class CommonSongService {
     { name: 'I_3 Facade - Choreo.mulu', lastEdit: new Date(2025, 6, 11, 17, 59) },
     { name: 'I_5 Tratsch.mulu', lastEdit: new Date(2025, 6, 10, 17, 0) },
     { name: 'I_12 Schaff die Männer ran.mulu', lastEdit: new Date(2025, 6, 10, 17, 0) },
-    { name: 'I_18 Lebendig - Singalong', lastEdit: new Date(2025, 6, 13, 12, 0) },
+    { name: 'I_18 Lebendig - Singalong.mulu', lastEdit: new Date(2025, 6, 13, 12, 0) },
     { name: 'II_24 Mörder Mörder.mulu', lastEdit: new Date(2025, 6, 10, 17, 0) },
     { name: 'II_24 Mörder Mörder - Choreo.mulu', lastEdit: new Date(2025, 6, 10, 23, 0) },
   ];
