@@ -13,6 +13,8 @@ import {
   showAudioFiles,
   toggleEditNameMode,
   toggleShowAudioFiles,
+  muteFilteredBars,
+  toggleMuteFilteredBars,
 } from './song-file.actions';
 import { v4 as uuidv4 } from 'uuid';
 import { SongTreeNode } from '../model/song-tree-node';
@@ -25,6 +27,7 @@ interface State {
   currentSongFile: SongFile | null;
   editNameMode: boolean;
   showAudioFiles: boolean;
+  muteFilteredBars: boolean;
   songTreeNodes: SongTreeNode[];
   voices: string[];
   voiceFilter: string[];
@@ -35,6 +38,7 @@ const initialState: State = {
   currentSongFile: null,
   editNameMode: false,
   showAudioFiles: false,
+  muteFilteredBars: false,
   songTreeNodes: [],
   voices: [],
   voiceFilter:[]
@@ -204,6 +208,8 @@ export const songFileFeature = createFeature({
         showAudioFiles: true
       }
     }),
+    on(muteFilteredBars, (state) => ({...state, muteFilteredBars: true})),
+    on(toggleMuteFilteredBars, (state) => ({...state, muteFilteredBars: !state.muteFilteredBars})),
   ),
   extraSelectors: ({ selectSongFiles }) => {
     const selectLatestSongFile = createSelector(
@@ -228,6 +234,7 @@ export const {
   selectSongTreeNodes,
   selectLatestSongFile,
   selectShowAudioFiles,
+  selectMuteFilteredBars,
   selectVoices,
   selectVoiceFilter,
 } = songFileFeature;

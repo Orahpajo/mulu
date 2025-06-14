@@ -32,6 +32,14 @@ export const showAudioFiles = createAction(
   '[Song File] Show Audio Files'
 );
 
+export const muteFilteredBars = createAction(
+  '[Song File] Mute Filtered Bars'
+);
+
+export const toggleMuteFilteredBars = createAction(
+  '[Song File] Toggle Mute Filtered Bars'
+);
+
 export const toggleEditNameMode = createAction(
   '[Song File] Toggle Edit Name Mode'
 );

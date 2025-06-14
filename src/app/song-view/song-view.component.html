@@ -142,7 +142,8 @@
                           [isInLoop]="isLineInLoop($index)"
                           [cue]="song.cues[$index]"
                           [voiceColors]="voiceColors"
-                          [voiceFilter]="voiceFilter | async"
+                          [voiceFilter]="voiceFilter"
+                          [isCompletelyFilteredOut]="isCompletelyFilteredOut($index)"
                           [maxVoiceWidth]="maxVoiceWidth"
                           (click)="onLineClick($index)">
                         </app-song-bar>

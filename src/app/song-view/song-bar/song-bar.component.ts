@@ -16,6 +16,7 @@ export class SongBarComponent {
   @Input() voiceColors?: Map<string, string>;
   @Input() maxVoiceWidth: string = '0px';
   @Input() voiceFilter: string[] = [];
+  @Input() isCompletelyFilteredOut = false;
 
   get lines(): string[] {
     return this.line.split('\n');
@@ -39,13 +40,4 @@ export class SongBarComponent {
     return line.replace(/^(.*?):\s*/i, '');
   }
 
-  /** are all lines filtered away? */
-  isCompletelyFilteredOut(): boolean{
-    // to be completely filtered, every line musst be filtered out
-    return this.lines.every(line => {
-      const voice = this.getVoice(line);
-      return !!voice // The line needs to have a voice or it is not filtered
-          && !this.voiceFilter.includes(voice); // The voice is not inlcuded in the (whitelist)filter
-    })
-  }
 }

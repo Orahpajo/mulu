@@ -1,9 +1,9 @@
 import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { defaultText, SongFile } from '../model/song-file.model';
-import { selectCurrentSongFile, selectShowAudioFiles, selectVoiceFilter } from '../store/song-file.feature';
+import { selectCurrentSongFile, selectMuteFilteredBars, selectShowAudioFiles, selectVoiceFilter } from '../store/song-file.feature';
 import { MatIconModule } from '@angular/material/icon';
-import { editSongFile, showAudioFiles } from '../store/song-file.actions';
+import { editSongFile, muteFilteredBars, showAudioFiles } from '../store/song-file.actions';
 import { CommonModule } from '@angular/common';
 import { MatSliderModule } from '@angular/material/slider';
 import { SecondsToMmssPipe } from '../pipes/seconds-to-mmss.pipe';
@@ -63,6 +63,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   textmode: 'edit' | 'mark' | 'view' | 'loop' = 'view';
   showAudioFiles = false;
+  muteFilteredBars = false;
   audioFileLoading = false;
 
   duration = 0;
@@ -83,7 +84,7 @@ export class SongViewComponent implements OnInit, OnDestroy {
 
   songBars: string[] = [];
   voiceColors: Map<string, string> = new Map();
-  voiceFilter = this.store.select(selectVoiceFilter);
+  voiceFilter: string[] = [];
   maxVoiceWidth: string = '0px';
   buttonDisabledTooltip = 'Die vorgeladenen Lieder können nicht bearbeitet werden. Bitte kopiere das Lied.';
 
@@ -126,6 +127,10 @@ export class SongViewComponent implements OnInit, OnDestroy {
     this.updateTextModeMenu();
     window.addEventListener('resize', this.updateTextModeMenu.bind(this));
 
+    this.store.select(selectVoiceFilter).subscribe(voiceFilter => {
+      this.voiceFilter = voiceFilter;
+    });
+
     this.store.select(selectCurrentSongFile)
       .pipe(first(song => !!song))
       .subscribe((song) => {
@@ -140,6 +145,11 @@ export class SongViewComponent implements OnInit, OnDestroy {
     // Show Audio Files
     this.store.select(selectShowAudioFiles).subscribe((showAudioFiles) => {
       this.showAudioFiles = showAudioFiles;
+    });
+
+    // mute filtered bars
+    this.store.select(selectMuteFilteredBars).subscribe((muteFilteredBars) => {
+      this.muteFilteredBars = muteFilteredBars;
     });
 
     // Current Song
@@ -315,6 +325,15 @@ export class SongViewComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Is audio Muted because of filtered bar?
+    if (this.audio){
+      if (this.muteFilteredBars && this.isCompletelyFilteredOut(this.currentLine)) {
+        this.audio.nativeElement.muted = true;
+      } else {
+        this.audio.nativeElement.muted = false;
+      }
+    }
+
     // need to loop?
     if (this.textmode === 'loop' && !audio.paused && this.loopStart >= 0) { // able to loop?
       if (this.currentTime > audio.duration - .1 // song ended?
@@ -343,6 +362,22 @@ export class SongViewComponent implements OnInit, OnDestroy {
     }
 
     this.scrollToCurrentLine();
+  }
+
+  /** are all lines filtered away? */
+  isCompletelyFilteredOut( barIndex: number): boolean{
+    const lines = this.songBars[barIndex].split('\n');
+    // to be completely filtered, every line musst be filtered out
+    return lines.every(line => {
+      const voice = this.getVoice(line);
+      return !!voice // The line needs to have a voice or it is not filtered
+          && !this.voiceFilter.includes(voice); // The voice is not inlcuded in the (whitelist)filter
+    })
+  }
+
+  getVoice(line: string): string | null {
+    const match = line.match(/^(.+?):/i);
+    return match ? match[1] : null;
   }
 
   scrollToCurrentLine() {
