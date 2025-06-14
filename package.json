@@ -1,6 +1,6 @@
 {
   "name": "mulu",
-  "version": "0.17.5",
+  "version": "0.18.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
