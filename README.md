@@ -45,6 +45,8 @@ Wenn man nur einzelne Dateien extrahieren möchte, kann man so vorgehen:
 
 #### 3. Gemeinsame Songdateien (commonSongs) hochladen
 
+Damit ein commonSong online vergfügbar ist, muss er in den `common-song.service.ts` eingetragen werden.
+
 Um die Songdateien und zugehörigen Audiofiles hochzuladen, verwende:
 
 ```sh
