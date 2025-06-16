@@ -9,8 +9,22 @@ DEST_DIR="${SCRIPT_DIR}/../public/commonSongs"
 # Zielverzeichnis erstellen, falls es nicht existiert
 mkdir -p "$DEST_DIR"
 
-# Alle .mulu-Dateien im Quellverzeichnis durchlaufen
-for file in "$SOURCE_DIR"/*.mulu; do
+# Optionaler Parameter: Dateiname
+if [ -n "$1" ]; then
+    FILES=("$SOURCE_DIR/$1")
+else
+    FILES=("$SOURCE_DIR"/*.mulu)
+fi
+
+# Autocomplete für Dateinamen in commonSongs
+_mulu_autocomplete() {
+    COMPREPLY=( $(compgen -W "$(basename -a $SOURCE_DIR/*.mulu 2>/dev/null)" -- "${COMP_WORDS[COMP_CWORD]}") )
+}
+complete -F _mulu_autocomplete $(basename $0)
+
+# Alle .mulu-Dateien im Quellverzeichnis (oder nur die gewählte) durchlaufen
+for file in "${FILES[@]}"; do
+    [ -e "$file" ] || continue
     # Dateiinhalt lesen
     content=$(cat "$file")
 

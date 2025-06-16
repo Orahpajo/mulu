@@ -1,0 +1,17 @@
+#if autocomplete does not work add
+# autoload -Uz compinit && compinit
+# to ~/.zshrc and reload terminal
+
+_extraxtCommonFiles() {
+  local -a files
+  files=(${SCRIPT_DIR:-$(dirname $words[1])}/commonSongs/*.mulu(N:t))
+  _describe 'file' files
+}
+compdef _extraxtCommonFiles extraxtCommonFiles.sh
+
+_uploadCommonSongs() {
+  local -a files
+  files=(${SCRIPT_DIR:-$(dirname $words[1])}/../public/commonSongs/*.mulu(N:t))
+  _describe 'file' files
+}
+compdef _uploadCommonSongs uploadCommonSongs.sh

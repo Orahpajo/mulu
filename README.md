@@ -1,64 +1,5 @@
 # Mulu
 
-**Mulu** dient dazu, Musikstücke zu üben – sei es für Tanz oder Gesang.  
-Man kann ein Lied oder Video in den lokalen Browser-Storage laden, den Text dazu in Markdown erfassen und bei laufendem Lied auf den Text tippen, um zu markieren, welche Textstelle zu welchem Teil des Lieds gehört. Danach kann man einfach auf Textstellen tippen, um im Lied dorthin zu springen. Außerdem kann man einen Loop-Bereich festlegen, der dann immer wieder wiederholt wird – wahlweise mit Einzählen vor jeder Wiederholung.
-
----
-
-## 🔁 Weitere Loop-Funktionen
-
-- **Mehrere Loops speichern**: Nicht nur ein Loop-Bereich, sondern mehrere benannte Loops anlegen (z. B. „Refrain“, „Bridge“, „Schwierige Stelle 1“).
-- **Automatisches Durchlaufen mehrerer Loops**: Mit Pausen oder Wiederholungen dazwischen – z. B. für gezieltes Training.
-
----
-
-## 🎵 Audio-Features
-
-- **Abspielgeschwindigkeit anpassen** (ohne Tonhöhe zu ändern): Sehr nützlich für Gesang oder schwierige Tanzstellen.
-- **Tonhöhe anpassen**: Hilfreich zum Singen in anderen Tonlagen.
-- **EQ/Balance/Mono-Optionen**: Z. B. um Lead-Vocals besser zu hören oder zu unterdrücken.
-
----
-
-## ⌨️ Markdown-Text-Features
-
-- **Unterstützung für Abschnitte, Überschriften, Refrains etc.** per Markdown (`#`, `##`, `**` etc.).
-- **Auto-Sync-Vorschläge**: Vorschläge für Textstellen durch Erkennung von Pausen oder Beats.
-- **Option zum Importieren von LRC-Dateien**: Falls jemand bereits getimte Lyrics hat.
-
----
-
-## 🧠 Übungsmodus
-
-- **Quiz-Modus**: „Sing weiter ab hier“ – das Audio stoppt und der Text wird teilweise ausgeblendet.
-- **Blenden-Modus**: Text wird bei Wiederholungen Stück für Stück weniger angezeigt.
-- **Fortschrittsanzeige**: Z. B. wie oft eine Stelle korrekt geübt wurde.
-
----
-
-## 📁 Verwaltung & Sharing
-
-- **Export/Import-Funktion**: Lied, Markdown und Markierungen als Bundle speichern und laden.
-- **Teilen per QR-Code oder Link**: Optional auch über Cloud/Backend, falls lokal nicht ausreicht.
-
----
-
-## 🖱️ UI-Ideen
-
-- **Mini-Wellenform-Ansicht**: Zur besseren Orientierung.
-- **Text farblich markieren**: Nach Status („unmarkiert“, „markiert“, „Loop-Ziel“).
-- **Tooltips oder visuelle Hinweise**: Beim Markieren oder Setzen von Loops.
-
----
-
-## 🧰 Technisches
-
-- **Kompatibilität mit mobilen und Touch-Geräten**.
-- **Undo/Redo**: Für Markierungen.
-- **Lokale Speicherung mit Backup-Möglichkeit**: Z. B. Datei-Export.
-
----
-
 ## 🚀 Deployment & Semantic Versioning
 
 ### Voraussetzungen
@@ -66,13 +7,78 @@ Man kann ein Lied oder Video in den lokalen Browser-Storage laden, den Text dazu
 - Node.js und npm installiert
 - Angular CLI installiert
 - Für Webhost-Deploy: `lftp` installiert 
+- Für Autocomplete: zsh (empfohlen) und ggf. jq für die Scripts
 
 ### Semantic Versioning
 
 Vor jedem Deployment wird automatisch die Version gemäß [Semantic Versioning](https://semver.org/) erhöht und ein Git-Tag gesetzt.  
 Das passiert durch das Skript `deploy/semantic-versioning.sh` und wird von den Deploy-Skripten automatisch ausgeführt.
 
+### Deployment auf eigenen Webhost (FTP)
+
+#### 1. Hauptanwendung deployen
+
+```sh
+./deploy/webhost.sh [prod|test]
+```
+- Erstellt einen Production- oder Test-Build und lädt die Dateien per FTP nach `public_html/mulu` (prod) oder `public_html/mulu-t` (test) auf deinen Server.
+- Die Zugangsdaten stehen in `deploy/credentials.txt` (Format siehe dort).
+- Die Seite ist dann z. B. unter [http://mulu.marvs.net](http://mulu.marvs.net) erreichbar.
+- **Hinweis:** Der Ordner `public/commonSongs` wird dabei nicht automatisch mit hochgeladen!
+
+#### 2. Gemeinsame Songdateien für den Upload vorbereiten
+
+Die Songdateien können über die mulu app geteilt bzw. heruntergeladen werden. Dabei wird ein **.mulu** Datei zerzeugt. Diese datei dann nach `deploy/commonSongs` Kopieren. 
+
+So können die Datein dann als commonSong extrahiert werden:
+
+```sh
+./deploy/extractCommonFiles.sh
+```
+
+Wenn man nur einzelne Dateien extrahieren möchte, kann man so vorgehen:
+
+```sh
+./deploy/extractCommonFiles.sh <dateiname>
+```
+
+
+#### 3. Gemeinsame Songdateien (commonSongs) hochladen
+
+Um die Songdateien und zugehörigen Audiofiles hochzuladen, verwende:
+
+```sh
+./deploy/uploadCommonSongs.sh [Dateiname.mulu] [prod|test]
+```
+- Ohne Parameter werden alle `.mulu`-Dateien und die darin referenzierten Audiofile-JSONs aus `public/commonSongs` hochgeladen.
+- Mit Dateinamen (z.B. `I_5 Tratsch.mulu`) wird nur diese Datei und die zugehörigen Audiofiles hochgeladen.
+- Der zweite Parameter bestimmt das Ziel (`prod` = Hauptseite, sonst Testumgebung).
+
+### Autocomplete für die Deploy-Skripte (zsh)
+
+Damit du Dateinamen beim Aufruf von `extraxtCommonFiles.sh` und `uploadCommonSongs.sh` bequem mit Tab vervollständigen kannst:
+
+1. Stelle sicher, dass du zsh verwendest (Standard auf macOS). Prüfe ggf. mit `echo $SHELL`.
+2. Füge in deine `~/.zshrc` (falls nicht vorhanden):
+   ```sh
+   autoload -Uz compinit && compinit
+   ```
+   und starte ein neues Terminal oder führe `source ~/.zshrc` aus.
+3. Lade das Autocomplete-Skript:
+   ```sh
+   source ./deploy/_deploy-autocomplete
+   ```
+   (Pfad ggf. anpassen)
+4. Jetzt kannst du z.B. schreiben:
+   ```sh
+   ./deploy/uploadCommonSongs.sh <TAB>
+   ./deploy/extraxtCommonFiles.sh <TAB>
+   ```
+   und bekommst alle verfügbaren `.mulu`-Dateien zur Auswahl.
+
 ### Deployment auf GitHub Pages
+
+Nur zu Testzwecken. Eigentlich nicht mehr nötig.
 
 ```sh
 cd deploy
@@ -80,16 +86,3 @@ cd deploy
 ```
 - Erstellt einen Production-Build und deployed diesen auf GitHub Pages.
 - Die Seite ist dann unter [https://orahpajo.github.io/mulu/](https://orahpajo.github.io/mulu/) erreichbar.
-
-### Deployment auf eigenen Webhost (FTP)
-
-```sh
-cd deploy
-./webhost.sh
-```
-- Erstellt einen Production-Build und lädt die Dateien per FTP nach `public_html/mulu` auf deinen Server.
-- Die Zugangsdaten stehen in `deploy/credentials.txt` (Format siehe dort).
-- Die Seite ist dann z. B. unter [http://mulu.marvs.net](http://mulu.marvs.net) erreichbar.
-
-
----
