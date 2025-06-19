@@ -28,7 +28,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "ignore": ["commonSongs/**"]
               }
             ],
             "styles": [
@@ -57,7 +58,14 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public",
+                  "ignore": ["commonSongs/**"]
+                }
+              ]
             },
             "test": {
               "fileReplacements": [
@@ -66,12 +74,25 @@
                   "with": "src/environments/environment.test.ts"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public",
+                  "ignore": ["commonSongs/**"]
+                }
+              ]
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
             }
           },
           "defaultConfiguration": "prod"
@@ -86,6 +107,9 @@
               "buildTarget": "mulu:build:test"
             },
             "development": {
+              "buildTarget": "mulu:build:development"
+            },
+            "default": {
               "buildTarget": "mulu:build:development"
             }
           },
