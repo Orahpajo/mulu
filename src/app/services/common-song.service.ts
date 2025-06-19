@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, EMPTY, first, forkJoin, map, Observable, tap } from 'rxjs';
+import { catchError, EMPTY, first, forkJoin, map, Observable, of, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { SongFile } from '../model/song-file.model';
 import { MuluFile } from '../model/mulu-file.model';
@@ -40,7 +40,7 @@ export class CommonSongService {
         }),
         catchError(err => {
           console.log(err);
-          return EMPTY;
+          return of(SongFile.create('<DownloadError> '+fileName.name));
         })
       )
     );
