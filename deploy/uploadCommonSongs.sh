@@ -29,7 +29,7 @@ if [ ! -f "$mulu_file" ]; then
     return
 fi
   echo "Uploading $mulu_file to $FTP_HOST:$FTP_TARGET ..."
-  lftp -c "open -u $FTP_USER,$FTP_PASS $FTP_HOST; put -O $FTP_TARGET '$mulu_file'; bye"
+  lftp -c "open -u $FTP_USER,$FTP_PASS $FTP_HOST; mkdir -p $FTP_TARGET; put -O $FTP_TARGET '$mulu_file'; bye"
 
   # IDs der Audiofiles extrahieren und zugehörige JSON hochladen
   local ids=$(jq -r '.songFile.audiofiles[].id' "$mulu_file" 2>/dev/null)
@@ -37,7 +37,7 @@ fi
     local json_file="$PUBLIC_COMMONSONGS/$id.json"
     if [ -f "$json_file" ]; then
       echo "Uploading $json_file to $FTP_HOST:$FTP_TARGET ..."
-      lftp -c "open -u $FTP_USER,$FTP_PASS $FTP_HOST; put -O $FTP_TARGET '$json_file'; bye"
+      lftp -c "open -u $FTP_USER,$FTP_PASS $FTP_HOST; mkdir -p $FTP_TARGET; put -O $FTP_TARGET '$json_file'; bye"
     else
       echo "Warnung: $json_file nicht gefunden, wird übersprungen."
     fi
